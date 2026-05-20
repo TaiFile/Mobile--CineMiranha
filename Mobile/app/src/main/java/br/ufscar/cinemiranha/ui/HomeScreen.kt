@@ -2,6 +2,7 @@ package br.ufscar.cinemiranha.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -58,7 +59,10 @@ private val TextSecond  = Color(0xFF8F9098)
 private val AgeBadge    = Color(0xFFFF8C00)
 
 @Composable
-fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
+fun HomeScreen(
+    onMovieClick: (Long) -> Unit = {},
+    viewModel: HomeViewModel = viewModel()
+) {
     val state by viewModel.uiState.collectAsState()
 
     Scaffold(
@@ -78,8 +82,9 @@ fun HomeScreen(viewModel: HomeViewModel = viewModel()) {
                     onRetry = { viewModel.loadMovies() }
                 )
                 else -> MovieContent(
-                    nowPlaying = state.nowPlayingMovies,
-                    comingSoon = state.comingSoonMovies
+                    nowPlaying    = state.nowPlayingMovies,
+                    comingSoon    = state.comingSoonMovies,
+                    onMovieClick  = onMovieClick
                 )
             }
         }
@@ -202,14 +207,16 @@ private fun ErrorState(message: String, onRetry: () -> Unit) {
 @Composable
 private fun MovieContent(
     nowPlaying: List<MovieResponse>,
-    comingSoon: List<MovieResponse>
+    comingSoon: List<MovieResponse>,
+    onMovieClick: (Long) -> Unit
 ) {
     LazyColumn(contentPadding = PaddingValues(vertical = 16.dp)) {
         item {
             MovieSection(
                 title        = "Filmes em cartaz:",
                 movies       = nowPlaying,
-                showDuration = true
+                showDuration = true,
+                onMovieClick = onMovieClick
             )
         }
         item { Spacer(modifier = Modifier.height(28.dp)) }
@@ -217,7 +224,8 @@ private fun MovieContent(
             MovieSection(
                 title        = "Em breve:",
                 movies       = comingSoon,
-                showDuration = false
+                showDuration = false,
+                onMovieClick = onMovieClick
             )
         }
     }
@@ -227,7 +235,8 @@ private fun MovieContent(
 private fun MovieSection(
     title: String,
     movies: List<MovieResponse>,
-    showDuration: Boolean
+    showDuration: Boolean,
+    onMovieClick: (Long) -> Unit
 ) {
     Column {
         Row(
@@ -254,7 +263,11 @@ private fun MovieSection(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(movies) { movie ->
-                    MovieCard(movie = movie, showDuration = showDuration)
+                    MovieCard(
+                        movie        = movie,
+                        showDuration = showDuration,
+                        onClick      = { onMovieClick(movie.id) }
+                    )
                 }
             }
         }
@@ -262,8 +275,8 @@ private fun MovieSection(
 }
 
 @Composable
-private fun MovieCard(movie: MovieResponse, showDuration: Boolean) {
-    Column(modifier = Modifier.width(128.dp)) {
+private fun MovieCard(movie: MovieResponse, showDuration: Boolean, onClick: () -> Unit) {
+    Column(modifier = Modifier.width(128.dp).clickable { onClick() }) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()

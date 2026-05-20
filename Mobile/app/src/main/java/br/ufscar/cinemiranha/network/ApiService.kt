@@ -1,7 +1,9 @@
 package br.ufscar.cinemiranha.network
 
 import br.ufscar.cinemiranha.model.MovieResponse
+import br.ufscar.cinemiranha.model.SessionResponse
 import retrofit2.http.GET
+import retrofit2.http.Path
 
 interface ApiService {
 
@@ -9,5 +11,8 @@ interface ApiService {
     suspend fun getMovies(): List<MovieResponse>
 
     @GET("movies/{id}")
-    suspend fun getMovie(@retrofit2.http.Path("id") id: Long): MovieResponse
+    suspend fun getMovie(@Path("id") id: Long): MovieResponse
+
+    @GET("movies/{id}/sessions")
+    suspend fun getMovieSessions(@Path("id") id: Long): List<SessionResponse>
 }

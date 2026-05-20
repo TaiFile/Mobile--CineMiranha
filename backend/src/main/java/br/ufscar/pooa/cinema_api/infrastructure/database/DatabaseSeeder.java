@@ -1,14 +1,18 @@
 package br.ufscar.pooa.cinema_api.infrastructure.database;
 
-import br.ufscar.pooa.cinema_api.domain.repositories.client.IClientRepository;
-import br.ufscar.pooa.cinema_api.domain.repositories.genre.IGenreRepository;
-import br.ufscar.pooa.cinema_api.domain.repositories.manager.IManagerRepository;
-import br.ufscar.pooa.cinema_api.domain.repositories.movie.IMovieRepository;
-import br.ufscar.pooa.cinema_api.domain.repositories.room.IRoomRepository;
-import br.ufscar.pooa.cinema_api.domain.repositories.row.IRowRepository;
-import br.ufscar.pooa.cinema_api.domain.repositories.seat.ISeatRepository;
-import br.ufscar.pooa.cinema_api.domain.repositories.session.ISessionRepository;
-import br.ufscar.pooa.cinema_api.domain.repositories.theater.ITheaterRepository;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
 import br.ufscar.pooa.cinema_api.domain.entities.Address;
 import br.ufscar.pooa.cinema_api.domain.entities.Client;
 import br.ufscar.pooa.cinema_api.domain.entities.Genre;
@@ -27,17 +31,15 @@ import br.ufscar.pooa.cinema_api.domain.enums.Role;
 import br.ufscar.pooa.cinema_api.domain.enums.RoomType;
 import br.ufscar.pooa.cinema_api.domain.enums.SeatType;
 import br.ufscar.pooa.cinema_api.domain.enums.Subtitle;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.Profile;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import br.ufscar.pooa.cinema_api.domain.repositories.client.IClientRepository;
+import br.ufscar.pooa.cinema_api.domain.repositories.genre.IGenreRepository;
+import br.ufscar.pooa.cinema_api.domain.repositories.manager.IManagerRepository;
+import br.ufscar.pooa.cinema_api.domain.repositories.movie.IMovieRepository;
+import br.ufscar.pooa.cinema_api.domain.repositories.room.IRoomRepository;
+import br.ufscar.pooa.cinema_api.domain.repositories.row.IRowRepository;
+import br.ufscar.pooa.cinema_api.domain.repositories.seat.ISeatRepository;
+import br.ufscar.pooa.cinema_api.domain.repositories.session.ISessionRepository;
+import br.ufscar.pooa.cinema_api.domain.repositories.theater.ITheaterRepository;
 
 @Component
 @Profile("dev")
@@ -82,7 +84,6 @@ public class DatabaseSeeder implements CommandLineRunner {
 
         System.out.println("Iniciando seeding MÍNIMO para criação de Ticket...");
 
-        // 1. Theater
         Address address = new Address()
             .setZipCode("13560-000")
             .setStreet("Rua do Teste")
@@ -95,13 +96,12 @@ public class DatabaseSeeder implements CommandLineRunner {
             .setLongitude(-47.8836);
         Theater theater = new Theater()
             .setName("Cine Teste")
-            .setLogoUrl("http://logo.url/logo.png")
+            .setLogoUrl("https://placehold.co/200x200/292929/FFFFFF/png?text=Cine+Teste")
             .setRooms(new ArrayList<>())
             .setAddress(address)
             .setManagers(new ArrayList<>());
         Theater savedTheater = theaterRepository.save(theater);
 
-        // 2. Client
         Client client = new Client()
             .setEmail("cliente@teste.com")
             .setPassword(passwordEncoder.encode("123456"))
@@ -122,7 +122,6 @@ public class DatabaseSeeder implements CommandLineRunner {
         manager.setBirthDate(LocalDate.now().minusYears(25));
         Manager savedManager = managerRepository.save(manager);
 
-        // 3. Room
         Room room = new Room()
             .setName("Sala Teste 1")
             .setRoomType(RoomType.STANDARD)
@@ -131,14 +130,12 @@ public class DatabaseSeeder implements CommandLineRunner {
             .setSessions(new ArrayList<>());
         Room savedRoom = roomRepository.save(room);
 
-        // 4. Row
         Row row = new Row()
             .setLetter('A')
             .setRoom(savedRoom)
             .setSeats(new HashSet<>());
         Row savedRow = rowRepository.save(row);
 
-        // 5. Seat
         Seat seat = new Seat()
             .setNumber('1')
             .setRow(savedRow)
@@ -146,13 +143,11 @@ public class DatabaseSeeder implements CommandLineRunner {
             .setSeatType(SeatType.STANDARD);
         Seat savedSeat = seatRepository.save(seat);
 
-        // 6. Genre
         Genre genre = new Genre()
             .setName("Ação")
             .setMovies(new ArrayList<>());
         Genre savedGenre = genreRepository.save(genre);
 
-        // 7. Movie
         List<Genre> genres = new ArrayList<>();
         genres.add(savedGenre);
         Movie movie = new Movie()
@@ -160,14 +155,13 @@ public class DatabaseSeeder implements CommandLineRunner {
             .setGenres(genres)
             .setSessions(new ArrayList<>())
             .setDurationInSeconds(7500)
-            .setTrailerUrl("http://trailer.url/trailer.mp4")
-            .setCoverUrl("http://cover.url/cover.jpg")
+            .setTrailerUrl("https://www.youtube.com/watch?v=ScMzIvxBSi4")
+            .setCoverUrl("https://placehold.co/400x600/292929/FFFFFF/png?text=Filme+De+Teste")
             .setSynopsis("Um filme de teste para uma API incrível.")
             .setTitle("Filme de Teste")
             .setStatus(MovieStatus.NOW_PLAYING);
         Movie savedMovie = movieRepository.save(movie);
 
-        // 8. Session
         Session session = new Session()
             .setFormat(Format.TWO_D)
             .setDate(LocalDateTime.now(ZoneId.of("America/Sao_Paulo")).plusHours(1).plusMinutes(1))
@@ -178,7 +172,6 @@ public class DatabaseSeeder implements CommandLineRunner {
             .setTickets(new ArrayList<>());
         Session savedSession = sessionRepository.save(session);
 
-        // Adding more rooms, genres, movies and sessions
 
         Room room2 = new Room()
             .setName("Sala Teste 2")
@@ -207,7 +200,7 @@ public class DatabaseSeeder implements CommandLineRunner {
             .setDurationInSeconds(8100)
             .setAgeRating(AgeRating.SIXTEEN_YEARS)
             .setGenres(List.of(scifiGenre, dramaGenre))
-            .setCoverUrl("https://picsum.photos/200/300?random=1")
+            .setCoverUrl("https://placehold.co/400x600/292929/FFFFFF/png?text=The+Godcomputer")
             .setTrailerUrl("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
             .setStatus(MovieStatus.NOW_PLAYING);
         movieRepository.save(movie2);
@@ -239,8 +232,8 @@ public class DatabaseSeeder implements CommandLineRunner {
             .setDurationInSeconds(5820)
             .setAgeRating(AgeRating.TWELVE_YEARS)
             .setGenres(List.of(comedyGenre))
-            .setCoverUrl("https://picsum.photos/200/300?random=2")
-            .setTrailerUrl("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+            .setCoverUrl("https://placehold.co/400x600/292929/FFFFFF/png?text=Weekend+at+Bernies+3")
+            .setTrailerUrl("https://www.youtube.com/watch?v=YCQou_vQZhc")
             .setStatus(MovieStatus.NOW_PLAYING);
         movieRepository.save(movie3);
 
@@ -261,8 +254,8 @@ public class DatabaseSeeder implements CommandLineRunner {
             .setDurationInSeconds(7800)
             .setAgeRating(AgeRating.EIGHTEEN_YEARS)
             .setGenres(List.of(horrorGenre, dramaGenre))
-            .setCoverUrl("https://picsum.photos/200/300?random=3")
-            .setTrailerUrl("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+            .setCoverUrl("https://placehold.co/400x600/292929/FFFFFF/png?text=The+Haunting+of+Hill+House+2")
+            .setTrailerUrl("https://www.youtube.com/watch?v=G9OzG53VwIk")
             .setStatus(MovieStatus.NOW_PLAYING);
         movieRepository.save(movie4);
 
@@ -276,7 +269,6 @@ public class DatabaseSeeder implements CommandLineRunner {
             .setTickets(new ArrayList<>());
         sessionRepository.save(session5);
 
-        // Adding movies from user request
 
         Genre animationGenre = new Genre().setName("Animação");
         Genre familyGenre = new Genre().setName("Família");
@@ -288,12 +280,11 @@ public class DatabaseSeeder implements CommandLineRunner {
             List.of(animationGenre, familyGenre, adventureGenre, fantasyGenre, musicalGenre,
                 crimeGenre));
 
-        // emCartaz
         Movie movieAindaEstouAqui = new Movie()
             .setTitle("AINDA ESTOU AQUI")
             .setDurationInSeconds(8100)
-            .setCoverUrl("/Images/ainda-estou-aqui.jpg")
-            .setTrailerUrl("https://www.youtube.com/embed/_NzqP0jmk3o")
+            .setCoverUrl("https://placehold.co/400x600/292929/FFFFFF/png?text=Ainda+Estou+Aqui")
+            .setTrailerUrl("https://www.youtube.com/watch?v=0kFqgI75W5A")
             .setSynopsis(
                 "Rio de Janeiro, início dos anos 1970. O país enfrenta o endurecimento da ditadura militar. Os Paiva — Rubens, Eunice e seus cinco filhos — vivem na frente da praia, numa casa de portas abertas para os amigos. Um dia, Rubens é levado por militares à paisana e desaparece. Eunice, cuja busca pela verdade sobre o destino de seu marido se estenderia por décadas, é obrigada a se reinventar e traçar um novo futuro para si e seus filhos. Baseado no livro biográfico de Marcelo Rubens Paiva.")
             .setAgeRating(AgeRating.FOURTEEN_YEARS)
@@ -313,7 +304,8 @@ public class DatabaseSeeder implements CommandLineRunner {
         Movie movieChicoBento = new Movie()
             .setTitle("CHICO BENTO E A GOIABEIRA MARAVILHOSA")
             .setDurationInSeconds(6000)
-            .setCoverUrl("/Images/chico-bento.jpg")
+            .setCoverUrl("https://placehold.co/400x600/292929/FFFFFF/png?text=Chico+Bento")
+            .setTrailerUrl("https://www.youtube.com/watch?v=yY3T0t7r3X4")
             .setAgeRating(AgeRating.GENERAL_AUDIENCE)
             .setGenres(List.of(animationGenre, comedyGenre, familyGenre))
             .setStatus(MovieStatus.NOW_PLAYING);
@@ -331,7 +323,8 @@ public class DatabaseSeeder implements CommandLineRunner {
         Movie movieMoana2 = new Movie()
             .setTitle("MOANA 2")
             .setDurationInSeconds(7200)
-            .setCoverUrl("/Images/moana-2.jpg")
+            .setCoverUrl("https://placehold.co/400x600/292929/FFFFFF/png?text=Moana+2")
+            .setTrailerUrl("https://www.youtube.com/watch?v=hDZ7y8RP5q4")
             .setAgeRating(AgeRating.GENERAL_AUDIENCE)
             .setGenres(List.of(animationGenre, adventureGenre, familyGenre))
             .setStatus(MovieStatus.NOW_PLAYING);
@@ -349,7 +342,8 @@ public class DatabaseSeeder implements CommandLineRunner {
         Movie movieWicked = new Movie()
             .setTitle("WICKED")
             .setDurationInSeconds(9600)
-            .setCoverUrl("/Images/wicked.jpg")
+            .setCoverUrl("https://placehold.co/400x600/292929/FFFFFF/png?text=Wicked")
+            .setTrailerUrl("https://www.youtube.com/watch?v=6COmYeLsz4c")
             .setAgeRating(AgeRating.TWELVE_YEARS)
             .setGenres(List.of(fantasyGenre, musicalGenre))
             .setStatus(MovieStatus.NOW_PLAYING);
@@ -364,11 +358,11 @@ public class DatabaseSeeder implements CommandLineRunner {
             .setMovie(movieWicked);
         sessionRepository.save(sessionWicked);
 
-        // emBreve
         Movie movieShrek5 = new Movie()
             .setTitle("SHREK 5")
             .setDurationInSeconds(0)
-            .setCoverUrl("/Images/shrek-5.jpg")
+            .setCoverUrl("https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgBhZgroNdeO9pEs8-zMCBLLXwwow6FYKW9bUw2VWVRR8o2HU4EX9kPfNtMYs_C20XwvaqLzuYqXPX6opSSQmmS2BY0_HiZ24CYcWElPV9nJ_WE4Kqhb7ZuK8QtzZ0_Ns6cyzZEVghm2KaZ8CiL3qVQsLsCBVhFVNAArUsFfrrvUjN-vu_KUs6BlEtbs76j/s1100/shrek-5-poster.jpg")
+            .setTrailerUrl("https://www.youtube.com/watch?v=8b9Y3D3B_9g")
             .setGenres(List.of(animationGenre, comedyGenre, familyGenre))
             .setStatus(MovieStatus.COMING_SOON);
         movieRepository.save(movieShrek5);
@@ -376,7 +370,8 @@ public class DatabaseSeeder implements CommandLineRunner {
         Movie movieCapitaoAmerica = new Movie()
             .setTitle("CAPITÃO AMÉRICA: ADMIRÁVEL MUNDO NOVO")
             .setDurationInSeconds(0)
-            .setCoverUrl("/Images/capitao-america.jpg")
+            .setCoverUrl("https://placehold.co/400x600/292929/FFFFFF/png?text=Capitao+America")
+            .setTrailerUrl("https://www.youtube.com/watch?v=1pHDWnXmK7Y")
             .setGenres(List.of(savedGenre, scifiGenre)) // Ação e Ficção Científica
             .setStatus(MovieStatus.COMING_SOON);
         movieRepository.save(movieCapitaoAmerica);
@@ -384,7 +379,8 @@ public class DatabaseSeeder implements CommandLineRunner {
         Movie movieCoringa2 = new Movie()
             .setTitle("CORINGA 2")
             .setDurationInSeconds(0)
-            .setCoverUrl("/Images/coringa-2.jpg")
+            .setCoverUrl("https://placehold.co/400x600/292929/FFFFFF/png?text=Coringa+2")
+            .setTrailerUrl("https://www.youtube.com/watch?v=_OKAwz2MsJs")
             .setGenres(List.of(crimeGenre, dramaGenre, musicalGenre))
             .setStatus(MovieStatus.COMING_SOON);
         movieRepository.save(movieCoringa2);

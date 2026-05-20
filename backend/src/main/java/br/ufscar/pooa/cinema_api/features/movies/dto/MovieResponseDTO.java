@@ -37,8 +37,6 @@ public class MovieResponseDTO {
         this.genreNames = genreNames;
     }
 
-    // Getters e Setters
-
     public Long getId() {
         return id;
     }

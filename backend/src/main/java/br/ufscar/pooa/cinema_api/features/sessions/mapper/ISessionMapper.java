@@ -14,6 +14,7 @@ public interface ISessionMapper {
 
     @Mapping(source = "movie.id", target = "movieId")
     @Mapping(source = "room.id", target = "roomId")
+    @Mapping(source = "room.name", target = "roomName")
     SessionResponseDTO toSessionResponseDTO(Session session);
 
     @Mapping(source = "movie.id", target = "movieId")

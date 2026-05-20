@@ -7,8 +7,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitClient {
 
-    // 10.0.2.2 é o endereço do localhost no emulador Android.
-    // Se estiver usando dispositivo físico, troque pelo IP da sua máquina na rede local.
     private const val BASE_URL = "http://10.0.2.2:8080/"
 
     private val okHttpClient = OkHttpClient.Builder()
