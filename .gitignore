@@ -1,0 +1,20 @@
+.claude
+.idea
+.github
+
+# Android / Mobile
+Mobile/.gradle/
+Mobile/build/
+Mobile/app/build/
+Mobile/local.properties
+Mobile/**/*.iml
+Mobile/.idea/workspace.xml
+Mobile/.idea/caches/
+Mobile/.idea/deploymentTargetSelector.xml
+Mobile/.idea/deviceManager.xml
+Mobile/.idea/navEditor.xml
+Mobile/.idea/assetWizardSettings.xml
+Mobile/.externalNativeBuild/
+Mobile/.cxx/
+*.jks
+*.keystore

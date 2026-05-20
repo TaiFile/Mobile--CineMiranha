@@ -1,0 +1,24 @@
+# Gradle
+.gradle/
+build/
+app/build/
+
+# Arquivo local com o caminho do SDK (específico de cada máquina)
+local.properties
+
+# IntelliJ / Android Studio — gerados automaticamente
+*.iml
+.idea/workspace.xml
+.idea/caches/
+.idea/deploymentTargetSelector.xml
+.idea/deviceManager.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+
+# Arquivos de build nativos
+.externalNativeBuild/
+.cxx/
+
+# Keystore de release (nunca commitar chaves)
+*.jks
+*.keystore
