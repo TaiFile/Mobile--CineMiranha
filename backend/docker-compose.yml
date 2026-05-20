@@ -1,0 +1,10 @@
+services:
+  Cinema-db:
+    image: 'postgres:16.0-alpine3.18'
+    container_name: Cinema-db
+    environment:
+      - POSTGRES_USER=root
+      - POSTGRES_PASSWORD=root
+      - POSTGRES_DB=cinema-db
+    ports:
+      - "5432:5432"
