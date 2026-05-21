@@ -50,6 +50,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -128,14 +129,14 @@ private fun SessionsTopBar(onBack: () -> Unit) {
         IconButton(onClick = onBack) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Voltar",
+                contentDescription = stringResource(R.string.cd_back),
                 tint = SPrimary
             )
         }
         Spacer(modifier = Modifier.weight(1f))
         Image(
             painter = painterResource(id = R.drawable.logo),
-            contentDescription = "Logo",
+            contentDescription = stringResource(R.string.cd_logo),
             modifier = Modifier
                 .height(36.dp)
                 .wrapContentWidth(unbounded = true),
@@ -159,7 +160,7 @@ private fun SessionsBottomBar() {
     ) {
         Image(
             painter = painterResource(id = R.drawable.logo),
-            contentDescription = "Logo",
+            contentDescription = stringResource(R.string.cd_logo),
             modifier = Modifier
                 .height(50.dp)
                 .wrapContentWidth(unbounded = true),
@@ -201,7 +202,7 @@ private fun SessionsContent(
     ) {
         item {
             Text(
-                text = "Escolha da sessão",
+                text = stringResource(R.string.choose_session),
                 color = SPrimary,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
@@ -248,7 +249,7 @@ private fun SessionsContent(
         if (byRoom.isEmpty()) {
             item {
                 Text(
-                    text = "Nenhuma sessão disponível",
+                    text = stringResource(R.string.no_sessions),
                     color = SSecond,
                     fontSize = 13.sp,
                     modifier = Modifier.padding(horizontal = 16.dp)
@@ -350,12 +351,12 @@ private fun FilterRow(
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         FilterDropdown(
-            label = selectedSubtitle ?: "Legenda",
+            label = selectedSubtitle ?: stringResource(R.string.filter_subtitle),
             options = listOf(null) + subtitleOptions.map { it as String? },
             onSelected = onSubtitleSelected
         )
         FilterDropdown(
-            label = selectedFormat ?: "Formato",
+            label = selectedFormat ?: stringResource(R.string.filter_format),
             options = listOf(null) + formatOptions.map { it as String? },
             onSelected = onFormatSelected
         )
@@ -396,7 +397,7 @@ private fun FilterDropdown(
                 DropdownMenuItem(
                     text = {
                         Text(
-                            text = opt ?: "Todos",
+                            text = opt ?: stringResource(R.string.filter_all),
                             color = SPrimary,
                             fontSize = 13.sp
                         )
@@ -514,7 +515,7 @@ private fun SessionsError(message: String, onRetry: () -> Unit) {
         TextButton(onClick = onRetry) {
             Icon(Icons.Default.Refresh, contentDescription = null, tint = SRed, modifier = Modifier.size(18.dp))
             Spacer(modifier = Modifier.width(6.dp))
-            Text("Tentar novamente", color = SRed)
+            Text(stringResource(R.string.retry), color = SRed)
         }
     }
 }

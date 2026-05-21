@@ -1,10 +1,10 @@
 package br.ufscar.cinemiranha
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.navigation.NavType
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -21,7 +21,7 @@ import br.ufscar.cinemiranha.ui.CardDetailsScreen
 import br.ufscar.cinemiranha.ui.SuccessScreen
 import br.ufscar.cinemiranha.ui.theme.CineMiranhaTheme
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
