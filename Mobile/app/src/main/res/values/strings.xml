@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">CineMiranha</string>
+
+    <!-- Content descriptions -->
+    <string name="cd_back">Back</string>
+    <string name="cd_logo">Logo</string>
+    <string name="cd_menu">Menu</string>
+    <string name="cd_trailer">Trailer</string>
+
+    <!-- Common -->
+    <string name="retry">Try again</string>
+
+    <!-- Home -->
+    <string name="now_playing">Now showing:</string>
+    <string name="coming_soon">Coming soon:</string>
+    <string name="see_more">See more</string>
+    <string name="no_movies">No movies available</string>
+
+    <!-- Movie Detail -->
+    <string name="synopsis">Synopsis</string>
+    <string name="buy_tickets">GET TICKETS</string>
+
+    <!-- Sessions -->
+    <string name="choose_session">Choose session</string>
+    <string name="no_sessions">No sessions available</string>
+    <string name="filter_subtitle">Subtitle</string>
+    <string name="filter_format">Format</string>
+    <string name="filter_all">All</string>
+</resources>

@@ -42,7 +42,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.core.os.LocaleListCompat
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -96,6 +100,9 @@ fun HomeScreen(
 
 @Composable
 private fun TopBar() {
+    val currentLocales = AppCompatDelegate.getApplicationLocales()
+    val isPtBr = !currentLocales.isEmpty && currentLocales[0]?.language == "pt"
+    
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -110,7 +117,7 @@ private fun TopBar() {
         ) {
             Icon(
                 imageVector = Icons.Default.Menu,
-                contentDescription = "Menu",
+                contentDescription = stringResource(R.string.cd_menu),
                 tint = TextPrimary,
                 modifier = Modifier.fillMaxSize()
             )
@@ -120,7 +127,26 @@ private fun TopBar() {
         AppLogo(modifier = Modifier.height(40.dp))
         Spacer(modifier = Modifier.weight(1f))
 
-        Spacer(modifier = Modifier.size(28.dp))
+        Box(
+            modifier = Modifier
+                .size(28.dp)
+                .clip(RoundedCornerShape(4.dp))
+                .background(AccentRed)
+                .clickable {
+                    val tag = if (isPtBr) "en" else "pt-BR"
+                    AppCompatDelegate.setApplicationLocales(
+                        LocaleListCompat.forLanguageTags(tag)
+                    )
+                },
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = if (isPtBr) "EN" else "PT",
+                color = TextPrimary,
+                fontSize = 10.sp,
+                fontWeight = FontWeight.Bold
+            )
+        }
     }
 }
 
@@ -142,7 +168,7 @@ private fun BottomBar() {
 private fun AppLogo(modifier: Modifier = Modifier) {
     Image(
         painter = painterResource(id = R.drawable.logo),
-        contentDescription = "Logo",
+        contentDescription = stringResource(R.string.cd_logo),
         modifier = modifier.wrapContentWidth(unbounded = true),
         contentScale = ContentScale.Fit,
         colorFilter = ColorFilter.tint(AccentRed)
@@ -179,7 +205,7 @@ private fun ErrorState(message: String, onRetry: () -> Unit) {
                 modifier = Modifier.size(18.dp)
             )
             Spacer(modifier = Modifier.width(6.dp))
-            Text("Tentar novamente", color = AccentRed)
+            Text(stringResource(R.string.retry), color = AccentRed)
         }
     }
 }
@@ -193,7 +219,7 @@ private fun MovieContent(
     LazyColumn(contentPadding = PaddingValues(vertical = 16.dp)) {
         item {
             MovieSection(
-                title        = "Filmes em cartaz:",
+                title = stringResource(R.string.now_playing),
                 movies       = nowPlaying,
                 showDuration = true,
                 onMovieClick = onMovieClick
@@ -202,7 +228,7 @@ private fun MovieContent(
         item { Spacer(modifier = Modifier.height(28.dp)) }
         item {
             MovieSection(
-                title        = "Em breve:",
+                title = stringResource(R.string.coming_soon),
                 movies       = comingSoon,
                 showDuration = false,
                 onMovieClick = onMovieClick
@@ -227,12 +253,12 @@ private fun MovieSection(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(text = title, color = TextPrimary, fontSize = 17.sp, fontWeight = FontWeight.Bold)
-            Text(text = "Ver mais", color = AccentRed, fontSize = 13.sp)
+            Text(text = stringResource(R.string.see_more), color = AccentRed, fontSize = 13.sp)
         }
         Spacer(modifier = Modifier.height(12.dp))
         if (movies.isEmpty()) {
             Text(
-                text = "Nenhum filme disponível",
+                text = stringResource(R.string.no_movies),
                 color = TextSecond,
                 fontSize = 13.sp,
                 modifier = Modifier.padding(horizontal = 16.dp)

@@ -8,10 +8,11 @@
         android:label="CineMiranha"
         android:supportsRtl="true"
         android:networkSecurityConfig="@xml/network_security_config"
-        android:theme="@android:style/Theme.Material.NoActionBar">
+        android:theme="@style/Theme.CineMiranha">
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:localeConfig="@xml/locale_config">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

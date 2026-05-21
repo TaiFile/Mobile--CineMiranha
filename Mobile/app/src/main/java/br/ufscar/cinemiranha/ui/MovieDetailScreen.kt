@@ -45,6 +45,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -110,14 +111,14 @@ private fun DetailTopBar(onBack: () -> Unit) {
         IconButton(onClick = onBack) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Voltar",
+                contentDescription = stringResource(R.string.cd_back),
                 tint = TextPrimary
             )
         }
         Spacer(modifier = Modifier.weight(1f))
         Image(
             painter = painterResource(id = R.drawable.logo),
-            contentDescription = "Logo",
+            contentDescription = stringResource(R.string.cd_logo),
             modifier = Modifier
                 .height(36.dp)
                 .wrapContentWidth(unbounded = true),
@@ -141,7 +142,7 @@ private fun DetailBottomBar() {
     ) {
         Image(
             painter = painterResource(id = R.drawable.logo),
-            contentDescription = "Logo",
+            contentDescription = stringResource(R.string.cd_logo),
             modifier = Modifier
                 .height(50.dp)
                 .wrapContentWidth(unbounded = true),
@@ -178,7 +179,7 @@ private fun MovieDetail(movie: MovieResponse, onBuyTickets: () -> Unit = {}) {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 if (!movie.synopsis.isNullOrBlank()) {
-                    Text(text = "Sinopse", color = TextPrimary, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                    Text(text = stringResource(R.string.synopsis), color = TextPrimary, fontSize = 14.sp, fontWeight = FontWeight.Bold)
                     Spacer(modifier = Modifier.height(6.dp))
                     Text(
                         text = movie.synopsis,
@@ -198,7 +199,7 @@ private fun MovieDetail(movie: MovieResponse, onBuyTickets: () -> Unit = {}) {
                     colors = ButtonDefaults.buttonColors(containerColor = Surface)
                 ) {
                     Text(
-                        text = "ADQUIRIR INGRESSOS",
+                        text = stringResource(R.string.buy_tickets),
                         color = TextPrimary,
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
@@ -253,7 +254,7 @@ private fun HeroSection(movie: MovieResponse) {
             ) {
                 Icon(
                     imageVector = Icons.Default.PlayArrow,
-                    contentDescription = "Trailer",
+                    contentDescription = stringResource(R.string.cd_trailer),
                     tint = Background,
                     modifier = Modifier.size(32.dp)
                 )
@@ -328,7 +329,7 @@ private fun ErrorDetail(message: String, onRetry: () -> Unit) {
         TextButton(onClick = onRetry) {
             Icon(Icons.Default.Refresh, contentDescription = null, tint = AccentRed, modifier = Modifier.size(18.dp))
             Spacer(modifier = Modifier.width(6.dp))
-            Text("Tentar novamente", color = AccentRed)
+            Text(stringResource(R.string.retry), color = AccentRed)
         }
     }
 }
