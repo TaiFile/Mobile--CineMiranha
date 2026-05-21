@@ -2,7 +2,6 @@ package br.ufscar.cinemiranha.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -60,6 +59,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import br.ufscar.cinemiranha.R
 import br.ufscar.cinemiranha.model.MovieResponse
 import br.ufscar.cinemiranha.model.SessionResponse
+import br.ufscar.cinemiranha.ui.components.Stepper
 import br.ufscar.cinemiranha.viewmodel.SessionsViewModel
 import coil.compose.AsyncImage
 
@@ -71,7 +71,7 @@ private val SSecond  = Color(0xFF8F9098)
 private val SDivider = Color(0xFF494A50)
 
 @Composable
-fun SessionsScreen(movieId: Long, onBack: () -> Unit) {
+fun SessionsScreen(movieId: Long, onBack: () -> Unit, onSessionSelected: (Long) -> Unit) {
     val vm: SessionsViewModel = viewModel(factory = SessionsViewModel.factory(movieId))
     val state by vm.uiState.collectAsState()
 
@@ -80,29 +80,36 @@ fun SessionsScreen(movieId: Long, onBack: () -> Unit) {
         bottomBar = { SessionsBottomBar() },
         containerColor = SBg
     ) { padding ->
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            when {
-                state.isLoading -> Box(Modifier.fillMaxSize(), Alignment.Center) {
-                    CircularProgressIndicator(color = SRed)
+            Stepper(currentStep = 0)
+            
+            Box(
+                modifier = Modifier.weight(1f)
+            ) {
+                when {
+                    state.isLoading -> Box(Modifier.fillMaxSize(), Alignment.Center) {
+                        CircularProgressIndicator(color = SRed)
+                    }
+                    state.errorMessage != null -> SessionsError(
+                        message = state.errorMessage!!,
+                        onRetry = { vm.load() }
+                    )
+                    else -> SessionsContent(
+                        movie           = state.movie,
+                        sessions        = state.sessions,
+                        selectedDate    = state.selectedDate,
+                        selectedSubtitle = state.selectedSubtitle,
+                        selectedFormat  = state.selectedFormat,
+                        onDateSelected  = { vm.selectDate(it) },
+                        onSubtitleSelected = { vm.selectSubtitle(it) },
+                        onFormatSelected   = { vm.selectFormat(it) },
+                        onSessionSelected = onSessionSelected
+                    )
                 }
-                state.errorMessage != null -> SessionsError(
-                    message = state.errorMessage!!,
-                    onRetry = { vm.load() }
-                )
-                else -> SessionsContent(
-                    movie           = state.movie,
-                    sessions        = state.sessions,
-                    selectedDate    = state.selectedDate,
-                    selectedSubtitle = state.selectedSubtitle,
-                    selectedFormat  = state.selectedFormat,
-                    onDateSelected  = { vm.selectDate(it) },
-                    onSubtitleSelected = { vm.selectSubtitle(it) },
-                    onFormatSelected   = { vm.selectFormat(it) }
-                )
             }
         }
     }
@@ -171,7 +178,8 @@ private fun SessionsContent(
     selectedFormat: String?,
     onDateSelected: (String?) -> Unit,
     onSubtitleSelected: (String?) -> Unit,
-    onFormatSelected: (String?) -> Unit
+    onFormatSelected: (String?) -> Unit,
+    onSessionSelected: (Long) -> Unit
 ) {
     val dates = sessions.map { it.dateDayLabel() }.distinct().sorted()
 
@@ -249,7 +257,7 @@ private fun SessionsContent(
         } else {
             byRoom.forEach { (roomName, roomSessions) ->
                 item {
-                    RoomSection(roomName = roomName, sessions = roomSessions)
+                    RoomSection(roomName = roomName, sessions = roomSessions, onSessionSelected = onSessionSelected)
                     Spacer(modifier = Modifier.height(16.dp))
                 }
             }
@@ -404,7 +412,7 @@ private fun FilterDropdown(
 }
 
 @Composable
-private fun RoomSection(roomName: String, sessions: List<SessionResponse>) {
+private fun RoomSection(roomName: String, sessions: List<SessionResponse>, onSessionSelected: (Long) -> Unit) {
     Column(modifier = Modifier.padding(horizontal = 16.dp)) {
         Box(
             modifier = Modifier
@@ -425,7 +433,11 @@ private fun RoomSection(roomName: String, sessions: List<SessionResponse>) {
                 repeat(columns) { colIdx ->
                     val idx = rowIdx * columns + colIdx
                     if (idx < sessions.size) {
-                        SessionTimeCard(sessions[idx], modifier = Modifier.weight(1f))
+                        SessionTimeCard(
+                            session = sessions[idx],
+                            modifier = Modifier.weight(1f),
+                            onClick = { onSessionSelected(sessions[idx].id) }
+                        )
                     } else {
                         Spacer(modifier = Modifier.weight(1f))
                     }
@@ -437,11 +449,12 @@ private fun RoomSection(roomName: String, sessions: List<SessionResponse>) {
 }
 
 @Composable
-private fun SessionTimeCard(session: SessionResponse, modifier: Modifier = Modifier) {
+private fun SessionTimeCard(session: SessionResponse, modifier: Modifier = Modifier, onClick: () -> Unit) {
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(6.dp))
             .background(Color.White)
+            .clickable(onClick = onClick)
             .padding(vertical = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
