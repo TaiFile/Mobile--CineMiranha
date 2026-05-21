@@ -2,8 +2,10 @@ package br.ufscar.cinemiranha.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.ViewModelProvider
 import br.ufscar.cinemiranha.model.MovieResponse
 import br.ufscar.cinemiranha.network.RetrofitClient
+import br.ufscar.cinemiranha.repository.MovieRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,7 +18,7 @@ data class HomeUiState(
     val errorMessage: String? = null
 )
 
-class HomeViewModel : ViewModel() {
+class HomeViewModel(private val movieRepository: MovieRepository) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
@@ -29,7 +31,7 @@ class HomeViewModel : ViewModel() {
         _uiState.value = HomeUiState(isLoading = true)
         viewModelScope.launch {
             try {
-                val movies = RetrofitClient.apiService.getMovies()
+                val movies = movieRepository.getMovies()
                 _uiState.value = HomeUiState(
                     nowPlayingMovies = movies.filter { it.status == "NOW_PLAYING" },
                     comingSoonMovies = movies.filter { it.status == "COMING_SOON" },
@@ -41,6 +43,14 @@ class HomeViewModel : ViewModel() {
                     errorMessage = "Não foi possível carregar os filmes.\n${e.message}"
                 )
             }
+        }
+    }
+
+    companion object {
+        val Factory: ViewModelProvider.Factory = object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
+            override fun <T : ViewModel> create(modelClass: Class<T>): T =
+                HomeViewModel(MovieRepository(RetrofitClient.apiService)) as T
         }
     }
 }

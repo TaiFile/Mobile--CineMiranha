@@ -66,7 +66,7 @@ private val AgeBadge    = Color(0xFFFF8C00)
 @Composable
 fun HomeScreen(
     onMovieClick: (Long) -> Unit = {},
-    viewModel: HomeViewModel = viewModel()
+    viewModel: HomeViewModel = viewModel(factory = HomeViewModel.Factory)
 ) {
     val state by viewModel.uiState.collectAsState()
 

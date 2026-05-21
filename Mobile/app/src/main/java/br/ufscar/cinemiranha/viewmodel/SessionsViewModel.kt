@@ -6,6 +6,8 @@ import androidx.lifecycle.viewModelScope
 import br.ufscar.cinemiranha.model.MovieResponse
 import br.ufscar.cinemiranha.model.SessionResponse
 import br.ufscar.cinemiranha.network.RetrofitClient
+import br.ufscar.cinemiranha.repository.MovieRepository
+import br.ufscar.cinemiranha.repository.SessionRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,7 +23,11 @@ data class SessionsUiState(
     val selectedFormat: String? = null
 )
 
-class SessionsViewModel(private val movieId: Long) : ViewModel() {
+class SessionsViewModel(
+    private val movieId: Long,
+    private val movieRepository: MovieRepository,
+    private val sessionRepository: SessionRepository
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SessionsUiState())
     val uiState: StateFlow<SessionsUiState> = _uiState.asStateFlow()
@@ -34,8 +40,8 @@ class SessionsViewModel(private val movieId: Long) : ViewModel() {
         _uiState.value = SessionsUiState(isLoading = true)
         viewModelScope.launch {
             try {
-                val movie = RetrofitClient.apiService.getMovie(movieId)
-                val sessions = RetrofitClient.apiService.getMovieSessions(movieId)
+                val movie = movieRepository.getMovie(movieId)
+                val sessions = sessionRepository.getSessions(movieId)
                 val firstDate = sessions.map { it.dateDayLabel() }.distinct().firstOrNull()
                 _uiState.value = SessionsUiState(
                     movie = movie,
@@ -68,7 +74,11 @@ class SessionsViewModel(private val movieId: Long) : ViewModel() {
         fun factory(movieId: Long): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T =
-                SessionsViewModel(movieId) as T
+                SessionsViewModel(
+                    movieId,
+                    MovieRepository(RetrofitClient.apiService),
+                    SessionRepository(RetrofitClient.apiService)
+                ) as T
         }
     }
 }
