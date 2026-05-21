@@ -283,8 +283,8 @@ public class DatabaseSeeder implements CommandLineRunner {
         Movie movieAindaEstouAqui = new Movie()
             .setTitle("AINDA ESTOU AQUI")
             .setDurationInSeconds(8100)
-            .setCoverUrl("https://placehold.co/400x600/292929/FFFFFF/png?text=Ainda+Estou+Aqui")
-            .setTrailerUrl("https://www.youtube.com/watch?v=0kFqgI75W5A")
+            .setCoverUrl("https://image.tmdb.org/t/p/w500/zNAw7jK8bwCK56rIW676pdgkwhd.jpg")
+            .setTrailerUrl("https://www.youtube.com/watch?v=eruDAfbZvoY")
             .setSynopsis(
                 "Rio de Janeiro, início dos anos 1970. O país enfrenta o endurecimento da ditadura militar. Os Paiva — Rubens, Eunice e seus cinco filhos — vivem na frente da praia, numa casa de portas abertas para os amigos. Um dia, Rubens é levado por militares à paisana e desaparece. Eunice, cuja busca pela verdade sobre o destino de seu marido se estenderia por décadas, é obrigada a se reinventar e traçar um novo futuro para si e seus filhos. Baseado no livro biográfico de Marcelo Rubens Paiva.")
             .setAgeRating(AgeRating.FOURTEEN_YEARS)
@@ -304,8 +304,9 @@ public class DatabaseSeeder implements CommandLineRunner {
         Movie movieChicoBento = new Movie()
             .setTitle("CHICO BENTO E A GOIABEIRA MARAVILHOSA")
             .setDurationInSeconds(6000)
-            .setCoverUrl("https://placehold.co/400x600/292929/FFFFFF/png?text=Chico+Bento")
-            .setTrailerUrl("https://www.youtube.com/watch?v=yY3T0t7r3X4")
+            .setCoverUrl("https://image.tmdb.org/t/p/w500/a5AuXy70HjNy7RJexXwNpoBGkg0.jpg")
+            .setTrailerUrl("https://www.youtube.com/watch?v=jp54vQvfqEY")
+            .setSynopsis("Chico Bento cresceu colhendo goiabas da goiabeira do Nhô Lau, mas quando o Dr. Agripino decide construir uma estrada que derrubará a árvore centenária, Chico e seus amigos farão de tudo para salvá-la.")
             .setAgeRating(AgeRating.GENERAL_AUDIENCE)
             .setGenres(List.of(animationGenre, comedyGenre, familyGenre))
             .setStatus(MovieStatus.NOW_PLAYING);
@@ -323,8 +324,8 @@ public class DatabaseSeeder implements CommandLineRunner {
         Movie movieMoana2 = new Movie()
             .setTitle("MOANA 2")
             .setDurationInSeconds(7200)
-            .setCoverUrl("https://placehold.co/400x600/292929/FFFFFF/png?text=Moana+2")
-            .setTrailerUrl("https://www.youtube.com/watch?v=hDZ7y8RP5q4")
+            .setCoverUrl("https://image.tmdb.org/t/p/w500/dnqgkKoIGf6hErzRm6VtaK1OJrD.jpg")
+            .setTrailerUrl("https://www.youtube.com/watch?v=OLHrdmwW7KM")
             .setAgeRating(AgeRating.GENERAL_AUDIENCE)
             .setGenres(List.of(animationGenre, adventureGenre, familyGenre))
             .setStatus(MovieStatus.NOW_PLAYING);
@@ -342,8 +343,8 @@ public class DatabaseSeeder implements CommandLineRunner {
         Movie movieWicked = new Movie()
             .setTitle("WICKED")
             .setDurationInSeconds(9600)
-            .setCoverUrl("https://placehold.co/400x600/292929/FFFFFF/png?text=Wicked")
-            .setTrailerUrl("https://www.youtube.com/watch?v=6COmYeLsz4c")
+            .setCoverUrl("https://image.tmdb.org/t/p/w500/qcaKkLwIXCAxJtpetVYHniCvLZj.jpg")
+            .setTrailerUrl("https://www.youtube.com/watch?v=FRJplq6nutA")
             .setAgeRating(AgeRating.TWELVE_YEARS)
             .setGenres(List.of(fantasyGenre, musicalGenre))
             .setStatus(MovieStatus.NOW_PLAYING);
@@ -361,8 +362,8 @@ public class DatabaseSeeder implements CommandLineRunner {
         Movie movieShrek5 = new Movie()
             .setTitle("SHREK 5")
             .setDurationInSeconds(0)
-            .setCoverUrl("https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgBhZgroNdeO9pEs8-zMCBLLXwwow6FYKW9bUw2VWVRR8o2HU4EX9kPfNtMYs_C20XwvaqLzuYqXPX6opSSQmmS2BY0_HiZ24CYcWElPV9nJ_WE4Kqhb7ZuK8QtzZ0_Ns6cyzZEVghm2KaZ8CiL3qVQsLsCBVhFVNAArUsFfrrvUjN-vu_KUs6BlEtbs76j/s1100/shrek-5-poster.jpg")
-            .setTrailerUrl("https://www.youtube.com/watch?v=8b9Y3D3B_9g")
+            .setCoverUrl("https://image.tmdb.org/t/p/w500/8XwmMjwiQ91Rm0eU4AcxyFA3XUZ.jpg")
+            .setTrailerUrl("https://www.youtube.com/watch?v=I9-wXs4KtrU")
             .setGenres(List.of(animationGenre, comedyGenre, familyGenre))
             .setStatus(MovieStatus.COMING_SOON);
         movieRepository.save(movieShrek5);
@@ -370,8 +371,8 @@ public class DatabaseSeeder implements CommandLineRunner {
         Movie movieCapitaoAmerica = new Movie()
             .setTitle("CAPITÃO AMÉRICA: ADMIRÁVEL MUNDO NOVO")
             .setDurationInSeconds(0)
-            .setCoverUrl("https://placehold.co/400x600/292929/FFFFFF/png?text=Capitao+America")
-            .setTrailerUrl("https://www.youtube.com/watch?v=1pHDWnXmK7Y")
+            .setCoverUrl("https://image.tmdb.org/t/p/w500/5nbSgP8f5LMCI0PwVRRaHJaUmR3.jpg")
+            .setTrailerUrl("https://www.youtube.com/watch?v=FEa9pPqGhPY")
             .setGenres(List.of(savedGenre, scifiGenre)) // Ação e Ficção Científica
             .setStatus(MovieStatus.COMING_SOON);
         movieRepository.save(movieCapitaoAmerica);
@@ -379,7 +380,7 @@ public class DatabaseSeeder implements CommandLineRunner {
         Movie movieCoringa2 = new Movie()
             .setTitle("CORINGA 2")
             .setDurationInSeconds(0)
-            .setCoverUrl("https://placehold.co/400x600/292929/FFFFFF/png?text=Coringa+2")
+            .setCoverUrl("https://image.tmdb.org/t/p/w500/9RmVr8dPWicFyPZ5JCQK3NcBNB5.jpg")
             .setTrailerUrl("https://www.youtube.com/watch?v=_OKAwz2MsJs")
             .setGenres(List.of(crimeGenre, dramaGenre, musicalGenre))
             .setStatus(MovieStatus.COMING_SOON);
