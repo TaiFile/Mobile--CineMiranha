@@ -10,12 +10,16 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -44,6 +48,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -108,7 +113,8 @@ private fun SessionsTopBar(onBack: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(SBg)
+            .background(SSurface)
+            .windowInsetsPadding(WindowInsets.statusBars)
             .padding(horizontal = 8.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -126,7 +132,8 @@ private fun SessionsTopBar(onBack: () -> Unit) {
             modifier = Modifier
                 .height(36.dp)
                 .wrapContentWidth(unbounded = true),
-            contentScale = ContentScale.Fit
+            contentScale = ContentScale.Fit,
+            colorFilter = ColorFilter.tint(SRed)
         )
         Spacer(modifier = Modifier.weight(1f))
         Spacer(modifier = Modifier.size(48.dp))
@@ -138,7 +145,8 @@ private fun SessionsBottomBar() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(SBg)
+            .background(SSurface)
+            .windowInsetsPadding(WindowInsets.navigationBars)
             .padding(vertical = 14.dp),
         contentAlignment = Alignment.Center
     ) {
@@ -148,7 +156,8 @@ private fun SessionsBottomBar() {
             modifier = Modifier
                 .height(50.dp)
                 .wrapContentWidth(unbounded = true),
-            contentScale = ContentScale.Fit
+            contentScale = ContentScale.Fit,
+            colorFilter = ColorFilter.tint(SRed)
         )
     }
 }
@@ -432,13 +441,13 @@ private fun SessionTimeCard(session: SessionResponse, modifier: Modifier = Modif
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(6.dp))
-            .border(1.dp, SDivider, RoundedCornerShape(6.dp))
+            .background(Color.White)
             .padding(vertical = 8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = session.timeLabel(),
-            color = SPrimary,
+            color = SBg,
             fontSize = 15.sp,
             fontWeight = FontWeight.Bold
         )
@@ -455,10 +464,10 @@ private fun FormatBadge(label: String) {
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(3.dp))
-            .background(SSurface)
+            .background(SDivider)
             .padding(horizontal = 5.dp, vertical = 2.dp)
     ) {
-        Text(text = label, color = SSecond, fontSize = 10.sp)
+        Text(text = label, color = SPrimary, fontSize = 10.sp)
     }
 }
 
@@ -467,10 +476,10 @@ private fun SubtitleBadge(label: String) {
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(3.dp))
-            .background(SSurface)
+            .background(SDivider)
             .padding(horizontal = 5.dp, vertical = 2.dp)
     ) {
-        Text(text = label, color = SSecond, fontSize = 10.sp)
+        Text(text = label, color = SPrimary, fontSize = 10.sp)
     }
 }
 

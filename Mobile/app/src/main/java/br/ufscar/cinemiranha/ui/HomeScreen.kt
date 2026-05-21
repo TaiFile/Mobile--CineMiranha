@@ -3,6 +3,10 @@ package br.ufscar.cinemiranha.ui
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,6 +42,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -96,7 +101,8 @@ private fun TopBar() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Background)
+            .background(Surface)
+            .windowInsetsPadding(WindowInsets.statusBars)
             .padding(horizontal = 16.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -151,7 +157,8 @@ private fun BottomBar() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Background)
+            .background(Surface)
+            .windowInsetsPadding(WindowInsets.navigationBars)
             .padding(vertical = 14.dp),
         contentAlignment = Alignment.Center
     ) {
@@ -165,7 +172,8 @@ private fun AppLogo(modifier: Modifier = Modifier) {
         painter = painterResource(id = R.drawable.logo),
         contentDescription = "Logo",
         modifier = modifier.wrapContentWidth(unbounded = true),
-        contentScale = ContentScale.Fit
+        contentScale = ContentScale.Fit,
+        colorFilter = ColorFilter.tint(AccentRed)
     )
 }
 

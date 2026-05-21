@@ -1,6 +1,10 @@
 package br.ufscar.cinemiranha.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -97,7 +102,8 @@ private fun DetailTopBar(onBack: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Background)
+            .background(Surface)
+            .windowInsetsPadding(WindowInsets.statusBars)
             .padding(horizontal = 8.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -115,7 +121,8 @@ private fun DetailTopBar(onBack: () -> Unit) {
             modifier = Modifier
                 .height(36.dp)
                 .wrapContentWidth(unbounded = true),
-            contentScale = ContentScale.Fit
+            contentScale = ContentScale.Fit,
+            colorFilter = ColorFilter.tint(AccentRed)
         )
         Spacer(modifier = Modifier.weight(1f))
         Spacer(modifier = Modifier.size(48.dp))
@@ -127,7 +134,8 @@ private fun DetailBottomBar() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Background)
+            .background(Surface)
+            .windowInsetsPadding(WindowInsets.navigationBars)
             .padding(vertical = 14.dp),
         contentAlignment = Alignment.Center
     ) {
@@ -137,7 +145,8 @@ private fun DetailBottomBar() {
             modifier = Modifier
                 .height(50.dp)
                 .wrapContentWidth(unbounded = true),
-            contentScale = ContentScale.Fit
+            contentScale = ContentScale.Fit,
+            colorFilter = ColorFilter.tint(AccentRed)
         )
     }
 }

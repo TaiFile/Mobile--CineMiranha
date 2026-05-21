@@ -12,12 +12,14 @@ import androidx.navigation.navArgument
 import br.ufscar.cinemiranha.ui.HomeScreen
 import br.ufscar.cinemiranha.ui.MovieDetailScreen
 import br.ufscar.cinemiranha.ui.SessionsScreen
+import br.ufscar.cinemiranha.ui.theme.CineMiranhaTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            CineMiranhaTheme {
             val navController = rememberNavController()
 
             NavHost(navController = navController, startDestination = "home") {
@@ -49,6 +51,7 @@ class MainActivity : ComponentActivity() {
                         onBack  = { navController.popBackStack() }
                     )
                 }
+            }
             }
         }
     }
