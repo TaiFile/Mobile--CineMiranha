@@ -26,9 +26,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -122,33 +120,7 @@ private fun TopBar() {
         AppLogo(modifier = Modifier.height(40.dp))
         Spacer(modifier = Modifier.weight(1f))
 
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            IconButton(
-                onClick = {},
-                modifier = Modifier.size(24.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Search,
-                    contentDescription = "Buscar",
-                    tint = TextPrimary,
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
-
-            Spacer(modifier = Modifier.width(16.dp))
-
-            IconButton(
-                onClick = {},
-                modifier = Modifier.size(24.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Person,
-                    contentDescription = "Perfil",
-                    tint = TextPrimary,
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
-        }
+        Spacer(modifier = Modifier.size(28.dp))
     }
 }
 
