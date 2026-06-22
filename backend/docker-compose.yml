@@ -1,6 +1,6 @@
 services:
   Cinema-db:
-    image: 'postgres:16.0-alpine3.18'
+    image: 'postgres:latest'
     container_name: Cinema-db
     environment:
       - POSTGRES_USER=root
