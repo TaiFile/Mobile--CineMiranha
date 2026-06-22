@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -58,7 +59,7 @@ fun PaymentMethodScreen(
             ) {
                 item {
                     Text(
-                        text = "Escolha sua forma de pagamento",
+                        text = stringResource(R.string.choose_payment_method),
                         color = SPrimary,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
@@ -77,9 +78,9 @@ fun PaymentMethodScreen(
 
                 item {
                     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                        PaymentMethodButton("Cartão de Crédito", Icons.Default.CreditCard) { onSelectMethod("CREDIT") }
-                        PaymentMethodButton("Cartão de Débito", Icons.Default.CreditCard) { onSelectMethod("DEBIT") }
-                        PaymentMethodButton("PIX", Icons.Default.Pix) { onSelectMethod("PIX") }
+                        PaymentMethodButton(stringResource(R.string.payment_credit_card), Icons.Default.CreditCard) { onSelectMethod("CREDIT") }
+                        PaymentMethodButton(stringResource(R.string.payment_debit_card), Icons.Default.CreditCard) { onSelectMethod("DEBIT") }
+                        PaymentMethodButton(stringResource(R.string.payment_pix), Icons.Default.Pix) { onSelectMethod("PIX") }
                     }
                 }
             }
@@ -120,12 +121,12 @@ private fun PaymentTopBar(onBack: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(onClick = onBack) {
-            Icon(Icons.AutoMirrored.Filled.ArrowBack, "Voltar", tint = SPrimary)
+            Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.cd_back), tint = SPrimary)
         }
         Spacer(modifier = Modifier.weight(1f))
         Image(
             painter = painterResource(id = R.drawable.logo),
-            contentDescription = "Logo",
+            contentDescription = stringResource(R.string.cd_logo),
             modifier = Modifier.height(36.dp),
             colorFilter = ColorFilter.tint(SRed)
         )
@@ -146,7 +147,7 @@ private fun PaymentBottomBar() {
     ) {
         Image(
             painter = painterResource(id = R.drawable.logo),
-            contentDescription = "Logo",
+            contentDescription = stringResource(R.string.cd_logo),
             modifier = Modifier.height(30.dp),
             colorFilter = ColorFilter.tint(SRed)
         )

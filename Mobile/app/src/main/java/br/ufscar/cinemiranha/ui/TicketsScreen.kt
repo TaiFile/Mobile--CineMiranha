@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -72,7 +73,7 @@ fun TicketsScreen(
             ) {
                 item {
                     Text(
-                        text = "Escolha seus ingressos",
+                        text = stringResource(R.string.choose_tickets),
                         color = SPrimary,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
@@ -87,7 +88,7 @@ fun TicketsScreen(
 
                 item {
                     Text(
-                        text = "Você selecionou ${selectedSeats.size} poltronas: ${selectedSeats.joinToString(", ")}",
+                        text = stringResource(R.string.selected_seats_label, selectedSeats.size, selectedSeats.joinToString(", ")),
                         color = SPrimary,
                         fontSize = 14.sp
                     )
@@ -95,7 +96,7 @@ fun TicketsScreen(
 
                 item {
                     TicketTypeItem(
-                        label = "Inteira",
+                        label = stringResource(R.string.ticket_full),
                         price = "R$40,00",
                         count = checkoutState.fullPriceCount,
                         onIncrease = { 
@@ -113,7 +114,7 @@ fun TicketsScreen(
 
                 item {
                     TicketTypeItem(
-                        label = "Meia",
+                        label = stringResource(R.string.ticket_half),
                         price = "R$20,00",
                         count = checkoutState.halfPriceCount,
                         onIncrease = { 
@@ -140,7 +141,7 @@ fun TicketsScreen(
                         colors = ButtonDefaults.buttonColors(containerColor = SSecond, disabledContainerColor = SDivider),
                         shape = RoundedCornerShape(8.dp)
                     ) {
-                        Text("AVANÇAR", color = SBg, fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.btn_next), color = SBg, fontWeight = FontWeight.Bold)
                     }
                 }
             }
@@ -205,7 +206,7 @@ private fun TicketMovieInfo(movie: MovieResponse, session: SessionResponse) {
                 fontWeight = FontWeight.Bold
             )
             Text(
-                text = "Duração do filme: ${movie.durationInSeconds?.let { it / 60 } ?: 0} minutos",
+                text = stringResource(R.string.movie_duration, (movie.durationInSeconds?.let { it / 60 } ?: 0)),
                 color = SSecond,
                 fontSize = 12.sp
             )
@@ -229,12 +230,12 @@ private fun TicketsTopBar(onBack: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(onClick = onBack) {
-            Icon(Icons.AutoMirrored.Filled.ArrowBack, "Voltar", tint = SPrimary)
+            Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.cd_back), tint = SPrimary)
         }
         Spacer(modifier = Modifier.weight(1f))
         Image(
             painter = painterResource(id = R.drawable.logo),
-            contentDescription = "Logo",
+            contentDescription = stringResource(R.string.cd_logo),
             modifier = Modifier.height(36.dp),
             colorFilter = ColorFilter.tint(SRed)
         )
@@ -255,7 +256,7 @@ private fun TicketsBottomBar() {
     ) {
         Image(
             painter = painterResource(id = R.drawable.logo),
-            contentDescription = "Logo",
+            contentDescription = stringResource(R.string.cd_logo),
             modifier = Modifier.height(30.dp),
             colorFilter = ColorFilter.tint(SRed)
         )

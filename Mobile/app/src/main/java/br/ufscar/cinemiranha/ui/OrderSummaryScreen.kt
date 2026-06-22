@@ -17,7 +17,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -69,12 +71,12 @@ fun OrderSummaryScreen(
             ) {
                 item {
                     Text(
-                        text = "Confirma seu pedido",
+                        text = stringResource(R.string.confirm_order),
                         color = SPrimary,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.fillMaxWidth(),
-                        textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                        textAlign = TextAlign.Center
                     )
                 }
 
@@ -86,17 +88,17 @@ fun OrderSummaryScreen(
                     item {
                         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                             HorizontalDivider(color = SDivider)
-                            SummaryInfoRow("Local:", "Unidade UFSCAR")
+                            SummaryInfoRow(stringResource(R.string.summary_location), stringResource(R.string.summary_location_value))
                             HorizontalDivider(color = SDivider)
-                            SummaryInfoRow("Data e hora:", "${session.dateDayLabel()}  ${session.timeLabel()}")
+                            SummaryInfoRow(stringResource(R.string.summary_date_time), "${session.dateDayLabel()}  ${session.timeLabel()}")
                             HorizontalDivider(color = SDivider)
                             
                             val ticketTypeDesc = buildString {
-                                if (checkoutState.fullPriceCount > 0) append("${checkoutState.fullPriceCount} Inteira")
+                                if (checkoutState.fullPriceCount > 0) append("${checkoutState.fullPriceCount} ${stringResource(R.string.ticket_full)}")
                                 if (checkoutState.fullPriceCount > 0 && checkoutState.halfPriceCount > 0) append(", ")
-                                if (checkoutState.halfPriceCount > 0) append("${checkoutState.halfPriceCount} Meia")
+                                if (checkoutState.halfPriceCount > 0) append("${checkoutState.halfPriceCount} ${stringResource(R.string.ticket_half)}")
                             }
-                            SummaryInfoRow("Assentos:", "${checkoutState.selectedSeats.joinToString(", ")} ($ticketTypeDesc)")
+                            SummaryInfoRow(stringResource(R.string.summary_seats), "${checkoutState.selectedSeats.joinToString(", ")} ($ticketTypeDesc)")
                             
                             HorizontalDivider(color = SDivider)
                             
@@ -107,7 +109,7 @@ fun OrderSummaryScreen(
                                     checkoutViewModel.availableSnacks.find { it.id == id }?.let { "${qty}x ${it.name}" }
                                 }.joinToString(", ")
                             }
-                            SummaryInfoRow("Snackbar:", snacksSummary)
+                            SummaryInfoRow(stringResource(R.string.summary_snackbar), snacksSummary)
                             HorizontalDivider(color = SDivider)
                         }
                     }
@@ -120,7 +122,7 @@ fun OrderSummaryScreen(
                             colors = ButtonDefaults.buttonColors(containerColor = Color.White),
                             shape = RoundedCornerShape(8.dp)
                         ) {
-                            Text("Editar compra", color = SBg)
+                            Text(stringResource(R.string.btn_edit_order), color = SBg)
                         }
                     }
                 }
@@ -142,7 +144,7 @@ fun OrderSummaryScreen(
                         colors = ButtonDefaults.buttonColors(containerColor = SSecond),
                         shape = RoundedCornerShape(8.dp)
                     ) {
-                        Text("AVANÇAR", color = SBg, fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.btn_next), color = SBg, fontWeight = FontWeight.Bold)
                     }
                 }
             }
@@ -159,18 +161,18 @@ fun OrderTotalCard(ticketCount: Int, ticketTotal: Float, snackTotal: Float) {
             .background(Color.White)
             .padding(16.dp)
     ) {
-        Text("Seu Pedido:", color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+        Text(stringResource(R.string.order_summary_title), color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 16.sp)
         Spacer(modifier = Modifier.height(8.dp))
         HorizontalDivider(color = Color.Black.copy(alpha = 0.1f))
         
-        SummaryPriceRow("$ticketCount Ingressos", "R$ ${String.format(Locale.getDefault(), "%.2f", ticketTotal)}")
-        SummaryPriceRow("Snackbar", "R$ ${String.format(Locale.getDefault(), "%.2f", snackTotal)}")
-        SummaryPriceRow("Desconto", "R$ 0,00")
+        SummaryPriceRow(stringResource(R.string.summary_tickets_count, ticketCount), "R$ ${String.format(Locale.getDefault(), "%.2f", ticketTotal)}")
+        SummaryPriceRow(stringResource(R.string.summary_snackbar_label), "R$ ${String.format(Locale.getDefault(), "%.2f", snackTotal)}")
+        SummaryPriceRow(stringResource(R.string.summary_discount), "R$ 0,00")
         
         HorizontalDivider(color = Color.Black.copy(alpha = 0.5f), modifier = Modifier.padding(vertical = 8.dp))
         
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Text("TOTAL", color = Color.Black, fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.summary_total), color = Color.Black, fontWeight = FontWeight.Bold)
             Text("R$ ${String.format(Locale.getDefault(), "%.2f", ticketTotal + snackTotal)}", color = Color.Black, fontWeight = FontWeight.Bold)
         }
     }
@@ -223,7 +225,7 @@ private fun SummaryMovieInfo(movie: MovieResponse, session: SessionResponse) {
                 fontWeight = FontWeight.Bold
             )
             Text(
-                text = "Duração do filme: ${movie.durationInSeconds?.let { it / 60 } ?: 0} minutos",
+                text = stringResource(R.string.movie_duration, (movie.durationInSeconds?.let { it / 60 } ?: 0)),
                 color = SSecond,
                 fontSize = 12.sp
             )
@@ -233,7 +235,7 @@ private fun SummaryMovieInfo(movie: MovieResponse, session: SessionResponse) {
                 fontSize = 12.sp
             )
         }
-        Icon(Icons.Default.Delete, contentDescription = "Remover", tint = SSecond)
+        Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.cd_remove), tint = SSecond)
     }
 }
 
@@ -248,12 +250,12 @@ private fun SummaryTopBar(onBack: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(onClick = onBack) {
-            Icon(Icons.AutoMirrored.Filled.ArrowBack, "Voltar", tint = SPrimary)
+            Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.cd_back), tint = SPrimary)
         }
         Spacer(modifier = Modifier.weight(1f))
         Image(
             painter = painterResource(id = R.drawable.logo),
-            contentDescription = "Logo",
+            contentDescription = stringResource(R.string.cd_logo),
             modifier = Modifier.height(36.dp),
             colorFilter = ColorFilter.tint(SRed)
         )
@@ -274,7 +276,7 @@ private fun SummaryBottomBar() {
     ) {
         Image(
             painter = painterResource(id = R.drawable.logo),
-            contentDescription = "Logo",
+            contentDescription = stringResource(R.string.cd_logo),
             modifier = Modifier.height(30.dp),
             colorFilter = ColorFilter.tint(SRed)
         )

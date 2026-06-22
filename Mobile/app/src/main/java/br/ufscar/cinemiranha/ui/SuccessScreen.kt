@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -38,7 +39,7 @@ fun SuccessScreen(onBackToMenu: () -> Unit) {
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Obrigado pela compra!",
+                text = stringResource(R.string.thanks_purchase),
                 color = SPrimary,
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
@@ -48,7 +49,7 @@ fun SuccessScreen(onBackToMenu: () -> Unit) {
             Spacer(modifier = Modifier.height(24.dp))
             
             Text(
-                text = "Enviamos o ingresso para o seu email",
+                text = stringResource(R.string.success_email_info),
                 color = SPrimary,
                 fontSize = 16.sp,
                 textAlign = TextAlign.Center
@@ -57,7 +58,7 @@ fun SuccessScreen(onBackToMenu: () -> Unit) {
             Spacer(modifier = Modifier.height(8.dp))
             
             Text(
-                text = "Ou veja ele na aba \"meus ingressos\" no ícone de perfil",
+                text = stringResource(R.string.success_profile_info),
                 color = SSecond,
                 fontSize = 14.sp,
                 textAlign = TextAlign.Center
@@ -71,7 +72,7 @@ fun SuccessScreen(onBackToMenu: () -> Unit) {
                 shape = RoundedCornerShape(8.dp),
                 modifier = Modifier.height(48.dp)
             ) {
-                Text("VOLTAR PARA O MENU", color = SBg, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.btn_back_to_menu), color = SBg, fontWeight = FontWeight.Bold)
             }
         }
     }
@@ -89,7 +90,7 @@ private fun SuccessBottomBar() {
     ) {
         Image(
             painter = painterResource(id = R.drawable.logo),
-            contentDescription = "Logo",
+            contentDescription = stringResource(R.string.cd_logo),
             modifier = Modifier.height(30.dp),
             colorFilter = ColorFilter.tint(SRed)
         )

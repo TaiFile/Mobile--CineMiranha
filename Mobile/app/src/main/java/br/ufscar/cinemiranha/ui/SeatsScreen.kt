@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -62,7 +63,7 @@ fun SeatsScreen(movieId: Long, sessionId: Long, onBack: () -> Unit, onSeatsSelec
             ) {
                 item {
                     Text(
-                        text = "Escolha seus assentos",
+                        text = stringResource(R.string.choose_seats),
                         color = SPrimary,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
@@ -85,7 +86,7 @@ fun SeatsScreen(movieId: Long, sessionId: Long, onBack: () -> Unit, onSeatsSelec
                             colors = ButtonDefaults.buttonColors(containerColor = SDivider),
                             shape = RoundedCornerShape(8.dp)
                         ) {
-                            Text("Visão dos assentos", color = SPrimary)
+                            Text(stringResource(R.string.seats_view), color = SPrimary)
                         }
                         
                         Spacer(modifier = Modifier.height(24.dp))
@@ -166,15 +167,15 @@ private fun SeatGrid(selectedSeats: Set<String>, onSeatToggle: (String) -> Unit)
 @Composable
 private fun SeatLegend() {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text("Legenda", color = SPrimary, fontWeight = FontWeight.Bold, fontSize = 14.sp)
-        LegendItem(Color.White, "Assentos com melhor visão de leitura de legenda", isSpecial = true)
-        LegendItem(SDivider, "Assentos ocupados", isOccupied = true)
-        LegendItem(SRed, "Assentos selecionados")
+        Text(stringResource(R.string.legend), color = SPrimary, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+        LegendItem(Color.White, stringResource(R.string.legend_best_view))
+        LegendItem(SDivider, stringResource(R.string.legend_occupied), isOccupied = true)
+        LegendItem(SRed, stringResource(R.string.legend_selected))
     }
 }
 
 @Composable
-private fun LegendItem(color: Color, text: String, isOccupied: Boolean = false, isSpecial: Boolean = false) {
+private fun LegendItem(color: Color, text: String, isOccupied: Boolean = false) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Box(
             modifier = Modifier
@@ -217,7 +218,7 @@ private fun SeatMovieInfo(movie: MovieResponse, session: SessionResponse) {
                 fontWeight = FontWeight.Bold
             )
             Text(
-                text = "Duração do filme: ${movie.durationInSeconds?.let { it / 60 } ?: 0} minutos",
+                text = stringResource(R.string.movie_duration, (movie.durationInSeconds?.let { it / 60 } ?: 0)),
                 color = SSecond,
                 fontSize = 12.sp
             )
@@ -241,12 +242,12 @@ private fun SeatsTopBar(onBack: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(onClick = onBack) {
-            Icon(Icons.AutoMirrored.Filled.ArrowBack, "Voltar", tint = SPrimary)
+            Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.cd_back), tint = SPrimary)
         }
         Spacer(modifier = Modifier.weight(1f))
         Image(
             painter = painterResource(id = R.drawable.logo),
-            contentDescription = "Logo",
+            contentDescription = stringResource(R.string.cd_logo),
             modifier = Modifier.height(36.dp),
             colorFilter = ColorFilter.tint(SRed)
         )
@@ -288,13 +289,13 @@ private fun SeatsBottomBar(selectedCount: Int, onConfirm: () -> Unit) {
                     .height(48.dp)
                     .fillMaxWidth(0.8f)
             ) {
-                Text("ESCOLHER INGRESSOS", color = SBg, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.btn_choose_tickets), color = SBg, fontWeight = FontWeight.Bold)
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
         Image(
             painter = painterResource(id = R.drawable.logo),
-            contentDescription = "Logo",
+            contentDescription = stringResource(R.string.cd_logo),
             modifier = Modifier.height(30.dp).align(Alignment.CenterHorizontally),
             colorFilter = ColorFilter.tint(SRed)
         )

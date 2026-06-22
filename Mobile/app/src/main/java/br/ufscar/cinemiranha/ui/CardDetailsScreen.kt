@@ -15,6 +15,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -60,7 +61,7 @@ fun CardDetailsScreen(
             ) {
                 item {
                     Text(
-                        text = "Coloque os dados do cartão",
+                        text = stringResource(R.string.enter_card_details),
                         color = SPrimary,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
@@ -71,11 +72,11 @@ fun CardDetailsScreen(
 
                 item {
                     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                        CardTextField(value = name, onValueChange = { name = it }, label = "Nome do Titular")
-                        CardTextField(value = cpf, onValueChange = { cpf = it }, label = "CPF do Titular")
-                        CardTextField(value = cardNumber, onValueChange = { cardNumber = it }, label = "Número do Cartão")
-                        CardTextField(value = expiry, onValueChange = { expiry = it }, label = "Data de Validade")
-                        CardTextField(value = cvv, onValueChange = { cvv = it }, label = "Código de Segurança")
+                        CardTextField(value = name, onValueChange = { name = it }, label = stringResource(R.string.card_holder_name))
+                        CardTextField(value = cpf, onValueChange = { cpf = it }, label = stringResource(R.string.card_holder_cpf))
+                        CardTextField(value = cardNumber, onValueChange = { cardNumber = it }, label = stringResource(R.string.card_number))
+                        CardTextField(value = expiry, onValueChange = { expiry = it }, label = stringResource(R.string.card_expiry))
+                        CardTextField(value = cvv, onValueChange = { cvv = it }, label = stringResource(R.string.card_cvv))
                     }
                 }
 
@@ -92,7 +93,7 @@ fun CardDetailsScreen(
                         colors = ButtonDefaults.buttonColors(containerColor = SSecond),
                         shape = RoundedCornerShape(8.dp)
                     ) {
-                        Text("CONFIRMAR COMPRA", color = SBg, fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.btn_confirm_purchase), color = SBg, fontWeight = FontWeight.Bold)
                     }
                 }
             }
@@ -134,12 +135,12 @@ private fun CardTopBar(onBack: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(onClick = onBack) {
-            Icon(Icons.AutoMirrored.Filled.ArrowBack, "Voltar", tint = SPrimary)
+            Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.cd_back), tint = SPrimary)
         }
         Spacer(modifier = Modifier.weight(1f))
         Image(
             painter = painterResource(id = R.drawable.logo),
-            contentDescription = "Logo",
+            contentDescription = stringResource(R.string.cd_logo),
             modifier = Modifier.height(36.dp),
             colorFilter = ColorFilter.tint(SRed)
         )
@@ -160,7 +161,7 @@ private fun CardBottomBar() {
     ) {
         Image(
             painter = painterResource(id = R.drawable.logo),
-            contentDescription = "Logo",
+            contentDescription = stringResource(R.string.cd_logo),
             modifier = Modifier.height(30.dp),
             colorFilter = ColorFilter.tint(SRed)
         )

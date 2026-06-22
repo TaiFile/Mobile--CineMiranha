@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -42,8 +43,19 @@ fun SnacksScreen(
     onBack: () -> Unit,
     onNext: () -> Unit
 ) {
-    val categories = listOf("Pipoca", "Doces", "Bebidas", "Combos", "Combos de filmes", "Promoções")
-    var selectedCategory by remember { mutableStateOf("Pipoca") }
+    val categories = listOf(
+        stringResource(R.string.cat_popcorn),
+        stringResource(R.string.cat_sweets),
+        stringResource(R.string.cat_drinks),
+        stringResource(R.string.cat_combos),
+        stringResource(R.string.cat_movie_combos),
+        stringResource(R.string.cat_promotions)
+    )
+    var selectedCategory by remember { mutableStateOf("") }
+    if (selectedCategory.isEmpty()) {
+        selectedCategory = categories[0]
+    }
+    
     val uiState by viewModel.uiState.collectAsState()
 
     Scaffold(
@@ -59,7 +71,7 @@ fun SnacksScreen(
             Stepper(currentStep = 3)
 
             Text(
-                text = "Escolha seus snacks",
+                text = stringResource(R.string.choose_snacks),
                 color = SPrimary,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
@@ -112,7 +124,7 @@ fun SnacksScreen(
                 colors = ButtonDefaults.buttonColors(containerColor = SSecond),
                 shape = RoundedCornerShape(8.dp)
             ) {
-                Text("AVANÇAR", color = SBg, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.btn_next), color = SBg, fontWeight = FontWeight.Bold)
             }
         }
     }
@@ -141,11 +153,16 @@ private fun SnackItem(
             Text(text = snack.name, color = SPrimary, fontWeight = FontWeight.Bold, fontSize = 16.sp)
             Text(text = snack.description, color = SSecond, fontSize = 12.sp)
             Spacer(modifier = Modifier.weight(1f))
-            Text(text = "R$ ${String.format(Locale.getDefault(), "%.2f", snack.price)}", color = SPrimary, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            Text(
+                text = "R$ ${String.format(Locale.getDefault(), "%.2f", snack.price)}",
+                color = SPrimary,
+                fontWeight = FontWeight.Bold,
+                fontSize = 16.sp
+            )
             
             Row(verticalAlignment = Alignment.CenterVertically) {
                 IconButton(onClick = onRemove, modifier = Modifier.size(24.dp)) {
-                    Icon(Icons.Default.RemoveCircleOutline, null, tint = SPrimary)
+                    Icon(Icons.Default.RemoveCircleOutline, stringResource(R.string.cd_remove), tint = SPrimary)
                 }
                 Text(text = "$quantity", color = SPrimary, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 8.dp))
                 IconButton(onClick = onAdd, modifier = Modifier.size(24.dp)) {
@@ -183,12 +200,12 @@ private fun SnacksTopBar(onBack: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(onClick = onBack) {
-            Icon(Icons.AutoMirrored.Filled.ArrowBack, "Voltar", tint = SPrimary)
+            Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.cd_back), tint = SPrimary)
         }
         Spacer(modifier = Modifier.weight(1f))
         Image(
             painter = painterResource(id = R.drawable.logo),
-            contentDescription = "Logo",
+            contentDescription = stringResource(R.string.cd_logo),
             modifier = Modifier.height(36.dp),
             colorFilter = ColorFilter.tint(SRed)
         )
@@ -209,7 +226,7 @@ private fun SnacksBottomBar() {
     ) {
         Image(
             painter = painterResource(id = R.drawable.logo),
-            contentDescription = "Logo",
+            contentDescription = stringResource(R.string.cd_logo),
             modifier = Modifier.height(30.dp),
             colorFilter = ColorFilter.tint(SRed)
         )

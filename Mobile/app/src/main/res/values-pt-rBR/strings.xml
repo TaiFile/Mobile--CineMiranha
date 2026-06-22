@@ -6,9 +6,11 @@
     <string name="cd_logo">Logo</string>
     <string name="cd_menu">Menu</string>
     <string name="cd_trailer">Trailer</string>
+    <string name="cd_remove">Remover</string>
 
     <!-- Common -->
     <string name="retry">Tentar novamente</string>
+    <string name="btn_next">AVANÇAR</string>
 
     <!-- Home -->
     <string name="now_playing">Filmes em cartaz:</string>
@@ -26,4 +28,64 @@
     <string name="filter_subtitle">Legenda</string>
     <string name="filter_format">Formato</string>
     <string name="filter_all">Todos</string>
+
+    <!-- Seats -->
+    <string name="choose_seats">Escolha seus assentos</string>
+    <string name="seats_view">Visão dos assentos</string>
+    <string name="legend">Legenda</string>
+    <string name="legend_best_view">Assentos com melhor visão de leitura de legenda</string>
+    <string name="legend_occupied">Assentos ocupados</string>
+    <string name="legend_selected">Assentos selecionados</string>
+    <string name="movie_duration">Duração do filme: %1$d minutos</string>
+    <string name="btn_choose_tickets">ESCOLHER INGRESSOS</string>
+
+    <!-- Tickets -->
+    <string name="choose_tickets">Escolha seus ingressos</string>
+    <string name="selected_seats_label">Você selecionou %1$d poltronas: %2$s</string>
+    <string name="ticket_full">Inteira</string>
+    <string name="ticket_half">Meia</string>
+
+    <!-- Snacks -->
+    <string name="choose_snacks">Escolha seus snacks</string>
+    <string name="cat_popcorn">Pipoca</string>
+    <string name="cat_sweets">Doces</string>
+    <string name="cat_drinks">Bebidas</string>
+    <string name="cat_combos">Combos</string>
+    <string name="cat_movie_combos">Combos de filmes</string>
+    <string name="cat_promotions">Promoções</string>
+
+    <!-- Order Summary -->
+    <string name="confirm_order">Confirma seu pedido</string>
+    <string name="summary_location">Local:</string>
+    <string name="summary_location_value">Unidade UFSCAR</string>
+    <string name="summary_date_time">Data e hora:</string>
+    <string name="summary_seats">Assentos:</string>
+    <string name="summary_snackbar">Snackbar:</string>
+    <string name="btn_edit_order">Editar compra</string>
+    <string name="order_summary_title">Seu Pedido:</string>
+    <string name="summary_tickets_count">%1$d Ingressos</string>
+    <string name="summary_snackbar_label">Snackbar</string>
+    <string name="summary_discount">Desconto</string>
+    <string name="summary_total">TOTAL</string>
+
+    <!-- Payment -->
+    <string name="choose_payment_method">Escolha sua forma de pagamento</string>
+    <string name="payment_credit_card">Cartão de Crédito</string>
+    <string name="payment_debit_card">Cartão de Débito</string>
+    <string name="payment_pix">PIX</string>
+
+    <!-- Card Details -->
+    <string name="enter_card_details">Coloque os dados do cartão</string>
+    <string name="card_holder_name">Nome do Titular</string>
+    <string name="card_holder_cpf">CPF do Titular</string>
+    <string name="card_number">Número do Cartão</string>
+    <string name="card_expiry">Data de Validade</string>
+    <string name="card_cvv">Código de Segurança</string>
+    <string name="btn_confirm_purchase">CONFIRMAR COMPRA</string>
+
+    <!-- Success -->
+    <string name="thanks_purchase">Obrigado pela compra!</string>
+    <string name="success_email_info">Enviamos o ingresso para o seu email</string>
+    <string name="success_profile_info">Ou veja ele na aba \"meus ingressos\" no ícone de perfil</string>
+    <string name="btn_back_to_menu">VOLTAR PARA O MENU</string>
 </resources>

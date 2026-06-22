@@ -6,9 +6,11 @@
     <string name="cd_logo">Logo</string>
     <string name="cd_menu">Menu</string>
     <string name="cd_trailer">Trailer</string>
+    <string name="cd_remove">Remove</string>
 
     <!-- Common -->
     <string name="retry">Try again</string>
+    <string name="btn_next">NEXT</string>
 
     <!-- Home -->
     <string name="now_playing">Now showing:</string>
@@ -26,4 +28,64 @@
     <string name="filter_subtitle">Subtitle</string>
     <string name="filter_format">Format</string>
     <string name="filter_all">All</string>
+
+    <!-- Seats -->
+    <string name="choose_seats">Choose your seats</string>
+    <string name="seats_view">Seats view</string>
+    <string name="legend">Legend</string>
+    <string name="legend_best_view">Seats with best view for subtitles</string>
+    <string name="legend_occupied">Occupied seats</string>
+    <string name="legend_selected">Selected seats</string>
+    <string name="movie_duration">Movie duration: %1$d minutes</string>
+    <string name="btn_choose_tickets">CHOOSE TICKETS</string>
+
+    <!-- Tickets -->
+    <string name="choose_tickets">Choose your tickets</string>
+    <string name="selected_seats_label">You selected %1$d seats: %2$s</string>
+    <string name="ticket_full">Full Price</string>
+    <string name="ticket_half">Half Price</string>
+
+    <!-- Snacks -->
+    <string name="choose_snacks">Choose your snacks</string>
+    <string name="cat_popcorn">Popcorn</string>
+    <string name="cat_sweets">Sweets</string>
+    <string name="cat_drinks">Drinks</string>
+    <string name="cat_combos">Combos</string>
+    <string name="cat_movie_combos">Movie Combos</string>
+    <string name="cat_promotions">Promotions</string>
+
+    <!-- Order Summary -->
+    <string name="confirm_order">Confirm your order</string>
+    <string name="summary_location">Location:</string>
+    <string name="summary_location_value">UFSCAR Unit</string>
+    <string name="summary_date_time">Date and time:</string>
+    <string name="summary_seats">Seats:</string>
+    <string name="summary_snackbar">Snackbar:</string>
+    <string name="btn_edit_order">Edit order</string>
+    <string name="order_summary_title">Your Order:</string>
+    <string name="summary_tickets_count">%1$d Tickets</string>
+    <string name="summary_snackbar_label">Snackbar</string>
+    <string name="summary_discount">Discount</string>
+    <string name="summary_total">TOTAL</string>
+
+    <!-- Payment -->
+    <string name="choose_payment_method">Choose your payment method</string>
+    <string name="payment_credit_card">Credit Card</string>
+    <string name="payment_debit_card">Debit Card</string>
+    <string name="payment_pix">PIX</string>
+
+    <!-- Card Details -->
+    <string name="enter_card_details">Enter card details</string>
+    <string name="card_holder_name">Cardholder Name</string>
+    <string name="card_holder_cpf">Cardholder CPF</string>
+    <string name="card_number">Card Number</string>
+    <string name="card_expiry">Expiry Date</string>
+    <string name="card_cvv">CVV</string>
+    <string name="btn_confirm_purchase">CONFIRM PURCHASE</string>
+
+    <!-- Success -->
+    <string name="thanks_purchase">Thanks for your purchase!</string>
+    <string name="success_email_info">We sent the ticket to your email</string>
+    <string name="success_profile_info">Or see it in the \"my tickets\" tab in the profile icon</string>
+    <string name="btn_back_to_menu">BACK TO MENU</string>
 </resources>
