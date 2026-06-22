@@ -26,10 +26,10 @@ private val SSurface = Color(0xFF2F3036)
 private val SRed = Color(0xFFBF0903)
 private val SPrimary = Color(0xFFFAFAFA)
 private val SSecond = Color(0xFF8F9098)
-private val SDivider = Color(0xFF494A50)
 
 @Composable
 fun CardDetailsScreen(
+    ticketCount: Int,
     ticketTotal: Float,
     snackTotal: Float,
     onBack: () -> Unit,
@@ -80,7 +80,7 @@ fun CardDetailsScreen(
                 }
 
                 item {
-                    OrderTotalCard(ticketTotal = ticketTotal, snackTotal = snackTotal)
+                    OrderTotalCard(ticketCount = ticketCount, ticketTotal = ticketTotal, snackTotal = snackTotal)
                 }
 
                 item {

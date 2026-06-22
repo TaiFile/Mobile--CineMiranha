@@ -25,8 +25,10 @@ import br.ufscar.cinemiranha.R
 import br.ufscar.cinemiranha.model.MovieResponse
 import br.ufscar.cinemiranha.model.SessionResponse
 import br.ufscar.cinemiranha.ui.components.Stepper
+import br.ufscar.cinemiranha.viewmodel.CheckoutViewModel
 import br.ufscar.cinemiranha.viewmodel.SessionsViewModel
 import coil.compose.AsyncImage
+import java.util.Locale
 
 private val SBg = Color(0xFF1F2024)
 private val SSurface = Color(0xFF2F3036)
@@ -39,15 +41,14 @@ private val SDivider = Color(0xFF494A50)
 fun OrderSummaryScreen(
     movieId: Long,
     sessionId: Long,
-    selectedSeats: List<String>,
-    fullPriceCount: Int,
-    halfPriceCount: Int,
+    checkoutViewModel: CheckoutViewModel,
     onBack: () -> Unit,
     onNext: () -> Unit
 ) {
     val vm: SessionsViewModel = viewModel(factory = SessionsViewModel.factory(movieId))
     val state by vm.uiState.collectAsState()
     val session = state.sessions.find { it.id == sessionId }
+    val checkoutState by checkoutViewModel.uiState.collectAsState()
 
     Scaffold(
         topBar = { SummaryTopBar(onBack = onBack) },
@@ -89,9 +90,24 @@ fun OrderSummaryScreen(
                             HorizontalDivider(color = SDivider)
                             SummaryInfoRow("Data e hora:", "${session.dateDayLabel()}  ${session.timeLabel()}")
                             HorizontalDivider(color = SDivider)
-                            SummaryInfoRow("Assentos:", "${selectedSeats.joinToString(", ")} (Meia - R$ 20,00)") // simplified
+                            
+                            val ticketTypeDesc = buildString {
+                                if (checkoutState.fullPriceCount > 0) append("${checkoutState.fullPriceCount} Inteira")
+                                if (checkoutState.fullPriceCount > 0 && checkoutState.halfPriceCount > 0) append(", ")
+                                if (checkoutState.halfPriceCount > 0) append("${checkoutState.halfPriceCount} Meia")
+                            }
+                            SummaryInfoRow("Assentos:", "${checkoutState.selectedSeats.joinToString(", ")} ($ticketTypeDesc)")
+                            
                             HorizontalDivider(color = SDivider)
-                            SummaryInfoRow("Snackbar:", "---")
+                            
+                            val snacksSummary = if (checkoutState.selectedSnacks.isEmpty()) {
+                                "---"
+                            } else {
+                                checkoutState.selectedSnacks.mapNotNull { (id, qty) ->
+                                    checkoutViewModel.availableSnacks.find { it.id == id }?.let { "${qty}x ${it.name}" }
+                                }.joinToString(", ")
+                            }
+                            SummaryInfoRow("Snackbar:", snacksSummary)
                             HorizontalDivider(color = SDivider)
                         }
                     }
@@ -100,7 +116,7 @@ fun OrderSummaryScreen(
                 item {
                     Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd) {
                         Button(
-                            onClick = {},
+                            onClick = onBack,
                             colors = ButtonDefaults.buttonColors(containerColor = Color.White),
                             shape = RoundedCornerShape(8.dp)
                         ) {
@@ -111,8 +127,9 @@ fun OrderSummaryScreen(
 
                 item {
                     OrderTotalCard(
-                        ticketTotal = (fullPriceCount * 40 + halfPriceCount * 20).toFloat(),
-                        snackTotal = 0f
+                        ticketCount = checkoutState.fullPriceCount + checkoutState.halfPriceCount,
+                        ticketTotal = checkoutViewModel.getTotalTicketPrice(),
+                        snackTotal = checkoutViewModel.getTotalSnackPrice()
                     )
                 }
 
@@ -134,7 +151,7 @@ fun OrderSummaryScreen(
 }
 
 @Composable
-fun OrderTotalCard(ticketTotal: Float, snackTotal: Float) {
+fun OrderTotalCard(ticketCount: Int, ticketTotal: Float, snackTotal: Float) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -146,15 +163,15 @@ fun OrderTotalCard(ticketTotal: Float, snackTotal: Float) {
         Spacer(modifier = Modifier.height(8.dp))
         HorizontalDivider(color = Color.Black.copy(alpha = 0.1f))
         
-        SummaryPriceRow("1 Ingressos", "R$ ${String.format("%.2f", ticketTotal)}")
-        SummaryPriceRow("Snackbar", "R$ ${String.format("%.2f", snackTotal)}")
-        SummaryPriceRow("Desconto", "R$ 00,00")
+        SummaryPriceRow("$ticketCount Ingressos", "R$ ${String.format(Locale.getDefault(), "%.2f", ticketTotal)}")
+        SummaryPriceRow("Snackbar", "R$ ${String.format(Locale.getDefault(), "%.2f", snackTotal)}")
+        SummaryPriceRow("Desconto", "R$ 0,00")
         
         HorizontalDivider(color = Color.Black.copy(alpha = 0.5f), modifier = Modifier.padding(vertical = 8.dp))
         
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Text("TOTAL", color = Color.Black, fontWeight = FontWeight.Bold)
-            Text("R$ ${String.format("%.2f", ticketTotal + snackTotal)}", color = Color.Black, fontWeight = FontWeight.Bold)
+            Text("R$ ${String.format(Locale.getDefault(), "%.2f", ticketTotal + snackTotal)}", color = Color.Black, fontWeight = FontWeight.Bold)
         }
     }
 }
@@ -175,9 +192,9 @@ private fun SummaryPriceRow(label: String, price: String) {
 @Composable
 private fun SummaryInfoRow(label: String, value: String) {
     Row(modifier = Modifier.fillMaxWidth()) {
-        Text(text = label, color = SPrimary, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+        Text(text = label, color = SPrimary, fontWeight = FontWeight.Bold, fontSize = 14.sp, modifier = Modifier.width(100.dp))
         Spacer(modifier = Modifier.width(8.dp))
-        Text(text = value, color = SSecond, fontSize = 14.sp)
+        Text(text = value, color = SSecond, fontSize = 14.sp, modifier = Modifier.weight(1f))
     }
 }
 

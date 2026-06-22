@@ -5,6 +5,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.navigation.NavType
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -20,6 +21,7 @@ import br.ufscar.cinemiranha.ui.PaymentMethodScreen
 import br.ufscar.cinemiranha.ui.CardDetailsScreen
 import br.ufscar.cinemiranha.ui.SuccessScreen
 import br.ufscar.cinemiranha.ui.theme.CineMiranhaTheme
+import br.ufscar.cinemiranha.viewmodel.CheckoutViewModel
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,10 +31,13 @@ class MainActivity : AppCompatActivity() {
             CineMiranhaTheme {
                 val navController = rememberNavController()
 
+                val checkoutViewModel: CheckoutViewModel = viewModel()
+
                 NavHost(navController = navController, startDestination = "home") {
                     composable("home") {
                         HomeScreen(
                             onMovieClick = { movieId ->
+                                checkoutViewModel.resetCheckout()
                                 navController.navigate("movie/$movieId")
                             }
                         )
@@ -75,116 +80,84 @@ class MainActivity : AppCompatActivity() {
                             sessionId = sessionId,
                             onBack = { navController.popBackStack() },
                             onSeatsSelected = { seats ->
-                                val seatsStr = seats.joinToString(",")
-                                navController.navigate("tickets/$movieId/$sessionId/$seatsStr")
+                                checkoutViewModel.setSelectedSeats(seats)
+                                navController.navigate("tickets/$movieId/$sessionId")
                             }
                         )
                     }
                     composable(
-                        route = "tickets/{movieId}/{sessionId}/{seats}",
+                        route = "tickets/{movieId}/{sessionId}",
                         arguments = listOf(
                             navArgument("movieId") { type = NavType.LongType },
-                            navArgument("sessionId") { type = NavType.LongType },
-                            navArgument("seats") { type = NavType.StringType }
+                            navArgument("sessionId") { type = NavType.LongType }
                         )
                     ) { backStackEntry ->
                         val movieId = backStackEntry.arguments!!.getLong("movieId")
                         val sessionId = backStackEntry.arguments!!.getLong("sessionId")
-                        val seats = backStackEntry.arguments!!.getString("seats")?.split(",") ?: emptyList()
                         TicketsScreen(
                             movieId = movieId,
                             sessionId = sessionId,
-                            selectedSeats = seats,
-                            onBack = { navController.popBackStack() },
-                            onNext = { full, half ->
-                                navController.navigate("snacks/$movieId/$sessionId/${seats.joinToString(",")}/$full/$half")
-                            }
-                        )
-                    }
-                    composable(
-                        route = "snacks/{movieId}/{sessionId}/{seats}/{full}/{half}",
-                        arguments = listOf(
-                            navArgument("movieId") { type = NavType.LongType },
-                            navArgument("sessionId") { type = NavType.LongType },
-                            navArgument("seats") { type = NavType.StringType },
-                            navArgument("full") { type = NavType.IntType },
-                            navArgument("half") { type = NavType.IntType }
-                        )
-                    ) { backStackEntry ->
-                        val movieId = backStackEntry.arguments!!.getLong("movieId")
-                        val sessionId = backStackEntry.arguments!!.getLong("sessionId")
-                        val seats = backStackEntry.arguments!!.getString("seats")?.split(",") ?: emptyList()
-                        val full = backStackEntry.arguments!!.getInt("full")
-                        val half = backStackEntry.arguments!!.getInt("half")
-                        SnacksScreen(
+                            checkoutViewModel = checkoutViewModel,
                             onBack = { navController.popBackStack() },
                             onNext = {
-                                navController.navigate("summary/$movieId/$sessionId/${seats.joinToString(",")}/$full/$half")
+                                navController.navigate("snacks/$movieId/$sessionId")
                             }
                         )
                     }
                     composable(
-                        route = "summary/{movieId}/{sessionId}/{seats}/{full}/{half}",
+                        route = "snacks/{movieId}/{sessionId}",
                         arguments = listOf(
                             navArgument("movieId") { type = NavType.LongType },
-                            navArgument("sessionId") { type = NavType.LongType },
-                            navArgument("seats") { type = NavType.StringType },
-                            navArgument("full") { type = NavType.IntType },
-                            navArgument("half") { type = NavType.IntType }
+                            navArgument("sessionId") { type = NavType.LongType }
                         )
                     ) { backStackEntry ->
                         val movieId = backStackEntry.arguments!!.getLong("movieId")
                         val sessionId = backStackEntry.arguments!!.getLong("sessionId")
-                        val seats = backStackEntry.arguments!!.getString("seats")?.split(",") ?: emptyList()
-                        val full = backStackEntry.arguments!!.getInt("full")
-                        val half = backStackEntry.arguments!!.getInt("half")
+                        SnacksScreen(
+                            viewModel = checkoutViewModel,
+                            onBack = { navController.popBackStack() },
+                            onNext = {
+                                navController.navigate("summary/$movieId/$sessionId")
+                            }
+                        )
+                    }
+                    composable(
+                        route = "summary/{movieId}/{sessionId}",
+                        arguments = listOf(
+                            navArgument("movieId") { type = NavType.LongType },
+                            navArgument("sessionId") { type = NavType.LongType }
+                        )
+                    ) { backStackEntry ->
+                        val movieId = backStackEntry.arguments!!.getLong("movieId")
+                        val sessionId = backStackEntry.arguments!!.getLong("sessionId")
                         OrderSummaryScreen(
                             movieId = movieId,
                             sessionId = sessionId,
-                            selectedSeats = seats,
-                            fullPriceCount = full,
-                            halfPriceCount = half,
+                            checkoutViewModel = checkoutViewModel,
                             onBack = { navController.popBackStack() },
                             onNext = {
-                                val total = (full * 40 + half * 20).toFloat()
-                                navController.navigate("payment/$total/0")
+                                navController.navigate("payment")
                             }
                         )
                     }
-                    composable(
-                        route = "payment/{ticketTotal}/{snackTotal}",
-                        arguments = listOf(
-                            navArgument("ticketTotal") { type = NavType.FloatType },
-                            navArgument("snackTotal") { type = NavType.FloatType }
-                        )
-                    ) { backStackEntry ->
-                        val ticketTotal = backStackEntry.arguments!!.getFloat("ticketTotal")
-                        val snackTotal = backStackEntry.arguments!!.getFloat("snackTotal")
+                    composable(route = "payment") {
                         PaymentMethodScreen(
-                            ticketTotal = ticketTotal,
-                            snackTotal = snackTotal,
+                            checkoutViewModel = checkoutViewModel,
                             onBack = { navController.popBackStack() },
                             onSelectMethod = { method ->
                                 if (method == "PIX") {
                                     navController.navigate("success")
                                 } else {
-                                    navController.navigate("card_details/$ticketTotal/$snackTotal")
+                                    navController.navigate("card_details")
                                 }
                             }
                         )
                     }
-                    composable(
-                        route = "card_details/{ticketTotal}/{snackTotal}",
-                        arguments = listOf(
-                            navArgument("ticketTotal") { type = NavType.FloatType },
-                            navArgument("snackTotal") { type = NavType.FloatType }
-                        )
-                    ) { backStackEntry ->
-                        val ticketTotal = backStackEntry.arguments!!.getFloat("ticketTotal")
-                        val snackTotal = backStackEntry.arguments!!.getFloat("snackTotal")
+                    composable(route = "card_details") {
                         CardDetailsScreen(
-                            ticketTotal = ticketTotal,
-                            snackTotal = snackTotal,
+                            ticketCount = checkoutViewModel.getTotalTicketCount(),
+                            ticketTotal = checkoutViewModel.getTotalTicketPrice(),
+                            snackTotal = checkoutViewModel.getTotalSnackPrice(),
                             onBack = { navController.popBackStack() },
                             onConfirm = { navController.navigate("success") }
                         )
@@ -192,6 +165,7 @@ class MainActivity : AppCompatActivity() {
                     composable("success") {
                         SuccessScreen(
                             onBackToMenu = {
+                                checkoutViewModel.resetCheckout()
                                 navController.navigate("home") {
                                     popUpTo("home") { inclusive = true }
                                 }

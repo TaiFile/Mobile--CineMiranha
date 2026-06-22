@@ -11,9 +11,10 @@ import androidx.compose.material.icons.filled.CreditCard
 import androidx.compose.material.icons.filled.Pix
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -23,21 +24,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.ufscar.cinemiranha.R
 import br.ufscar.cinemiranha.ui.components.Stepper
+import br.ufscar.cinemiranha.viewmodel.CheckoutViewModel
 
 private val SBg = Color(0xFF1F2024)
 private val SSurface = Color(0xFF2F3036)
 private val SRed = Color(0xFFBF0903)
 private val SPrimary = Color(0xFFFAFAFA)
-private val SSecond = Color(0xFF8F9098)
-private val SDivider = Color(0xFF494A50)
 
 @Composable
 fun PaymentMethodScreen(
-    ticketTotal: Float,
-    snackTotal: Float,
+    checkoutViewModel: CheckoutViewModel,
     onBack: () -> Unit,
     onSelectMethod: (String) -> Unit
 ) {
+    val uiState by checkoutViewModel.uiState.collectAsState()
+
     Scaffold(
         topBar = { PaymentTopBar(onBack = onBack) },
         bottomBar = { PaymentBottomBar() },
@@ -67,7 +68,11 @@ fun PaymentMethodScreen(
                 }
 
                 item {
-                    OrderTotalCard(ticketTotal = ticketTotal, snackTotal = snackTotal)
+                    OrderTotalCard(
+                        ticketCount = uiState.fullPriceCount + uiState.halfPriceCount,
+                        ticketTotal = checkoutViewModel.getTotalTicketPrice(),
+                        snackTotal = checkoutViewModel.getTotalSnackPrice()
+                    )
                 }
 
                 item {

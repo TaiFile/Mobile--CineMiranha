@@ -27,6 +27,7 @@ import br.ufscar.cinemiranha.R
 import br.ufscar.cinemiranha.model.MovieResponse
 import br.ufscar.cinemiranha.model.SessionResponse
 import br.ufscar.cinemiranha.ui.components.Stepper
+import br.ufscar.cinemiranha.viewmodel.CheckoutViewModel
 import br.ufscar.cinemiranha.viewmodel.SessionsViewModel
 import coil.compose.AsyncImage
 
@@ -41,16 +42,16 @@ private val SDivider = Color(0xFF494A50)
 fun TicketsScreen(
     movieId: Long,
     sessionId: Long,
-    selectedSeats: List<String>,
+    checkoutViewModel: CheckoutViewModel,
     onBack: () -> Unit,
-    onNext: (Int, Int) -> Unit
+    onNext: () -> Unit
 ) {
     val vm: SessionsViewModel = viewModel(factory = SessionsViewModel.factory(movieId))
     val state by vm.uiState.collectAsState()
     val session = state.sessions.find { it.id == sessionId }
-
-    var fullPriceCount by remember { mutableIntStateOf(0) }
-    var halfPriceCount by remember { mutableIntStateOf(0) }
+    
+    val checkoutState by checkoutViewModel.uiState.collectAsState()
+    val selectedSeats = checkoutState.selectedSeats
 
     Scaffold(
         topBar = { TicketsTopBar(onBack = onBack) },
@@ -96,9 +97,17 @@ fun TicketsScreen(
                     TicketTypeItem(
                         label = "Inteira",
                         price = "R$40,00",
-                        count = fullPriceCount,
-                        onIncrease = { if (fullPriceCount + halfPriceCount < selectedSeats.size) fullPriceCount++ },
-                        onDecrease = { if (fullPriceCount > 0) fullPriceCount-- }
+                        count = checkoutState.fullPriceCount,
+                        onIncrease = { 
+                            if (checkoutState.fullPriceCount + checkoutState.halfPriceCount < selectedSeats.size) {
+                                checkoutViewModel.setTicketCounts(checkoutState.fullPriceCount + 1, checkoutState.halfPriceCount)
+                            }
+                        },
+                        onDecrease = { 
+                            if (checkoutState.fullPriceCount > 0) {
+                                checkoutViewModel.setTicketCounts(checkoutState.fullPriceCount - 1, checkoutState.halfPriceCount)
+                            }
+                        }
                     )
                 }
 
@@ -106,17 +115,25 @@ fun TicketsScreen(
                     TicketTypeItem(
                         label = "Meia",
                         price = "R$20,00",
-                        count = halfPriceCount,
-                        onIncrease = { if (fullPriceCount + halfPriceCount < selectedSeats.size) halfPriceCount++ },
-                        onDecrease = { if (halfPriceCount > 0) halfPriceCount-- }
+                        count = checkoutState.halfPriceCount,
+                        onIncrease = { 
+                            if (checkoutState.fullPriceCount + checkoutState.halfPriceCount < selectedSeats.size) {
+                                checkoutViewModel.setTicketCounts(checkoutState.fullPriceCount, checkoutState.halfPriceCount + 1)
+                            }
+                        },
+                        onDecrease = { 
+                            if (checkoutState.halfPriceCount > 0) {
+                                checkoutViewModel.setTicketCounts(checkoutState.fullPriceCount, checkoutState.halfPriceCount - 1)
+                            }
+                        }
                     )
                 }
 
                 item {
                     Spacer(modifier = Modifier.height(32.dp))
                     Button(
-                        onClick = { onNext(fullPriceCount, halfPriceCount) },
-                        enabled = (fullPriceCount + halfPriceCount) == selectedSeats.size,
+                        onClick = onNext,
+                        enabled = (checkoutState.fullPriceCount + checkoutState.halfPriceCount) == selectedSeats.size && selectedSeats.isNotEmpty(),
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(48.dp),

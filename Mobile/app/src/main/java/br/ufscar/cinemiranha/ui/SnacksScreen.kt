@@ -25,6 +25,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.ufscar.cinemiranha.R
 import br.ufscar.cinemiranha.ui.components.Stepper
+import br.ufscar.cinemiranha.viewmodel.CheckoutViewModel
+import br.ufscar.cinemiranha.viewmodel.Snack
+import java.util.Locale
 
 private val SBg = Color(0xFF1F2024)
 private val SSurface = Color(0xFF2F3036)
@@ -34,9 +37,14 @@ private val SSecond = Color(0xFF8F9098)
 private val SDivider = Color(0xFF494A50)
 
 @Composable
-fun SnacksScreen(onBack: () -> Unit, onNext: () -> Unit) {
+fun SnacksScreen(
+    viewModel: CheckoutViewModel,
+    onBack: () -> Unit,
+    onNext: () -> Unit
+) {
     val categories = listOf("Pipoca", "Doces", "Bebidas", "Combos", "Combos de filmes", "Promoções")
     var selectedCategory by remember { mutableStateOf("Pipoca") }
+    val uiState by viewModel.uiState.collectAsState()
 
     Scaffold(
         topBar = { SnacksTopBar(onBack = onBack) },
@@ -85,28 +93,12 @@ fun SnacksScreen(onBack: () -> Unit, onNext: () -> Unit) {
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                item {
+                items(viewModel.availableSnacks) { snack ->
                     SnackItem(
-                        name = "Pipoca Salgada P",
-                        desc = "250g de pipoca salgada",
-                        price = "R$19,99",
-                        imageRes = R.drawable.logo // Placeholder
-                    )
-                }
-                item {
-                    SnackItem(
-                        name = "Pipoca Salgada M",
-                        desc = "400g de pipoca salgada",
-                        price = "R$29,99",
-                        imageRes = R.drawable.logo // Placeholder
-                    )
-                }
-                item {
-                    SnackItem(
-                        name = "Balde de pipoca salgada",
-                        desc = "500g de pipoca salgada",
-                        price = "R$59,99",
-                        imageRes = R.drawable.logo // Placeholder
+                        snack = snack,
+                        quantity = uiState.selectedSnacks.getOrDefault(snack.id, 0),
+                        onAdd = { viewModel.updateSnackQuantity(snack.id, 1) },
+                        onRemove = { viewModel.updateSnackQuantity(snack.id, -1) }
                     )
                 }
             }
@@ -127,7 +119,12 @@ fun SnacksScreen(onBack: () -> Unit, onNext: () -> Unit) {
 }
 
 @Composable
-private fun SnackItem(name: String, desc: String, price: String, imageRes: Int) {
+private fun SnackItem(
+    snack: Snack,
+    quantity: Int,
+    onAdd: () -> Unit,
+    onRemove: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -141,17 +138,17 @@ private fun SnackItem(name: String, desc: String, price: String, imageRes: Int) 
                 .weight(1f)
                 .padding(16.dp)
         ) {
-            Text(text = name, color = SPrimary, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-            Text(text = desc, color = SSecond, fontSize = 12.sp)
+            Text(text = snack.name, color = SPrimary, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            Text(text = snack.description, color = SSecond, fontSize = 12.sp)
             Spacer(modifier = Modifier.weight(1f))
-            Text(text = price, color = SPrimary, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            Text(text = "R$ ${String.format(Locale.getDefault(), "%.2f", snack.price)}", color = SPrimary, fontWeight = FontWeight.Bold, fontSize = 16.sp)
             
             Row(verticalAlignment = Alignment.CenterVertically) {
-                IconButton(onClick = {}, modifier = Modifier.size(24.dp)) {
+                IconButton(onClick = onRemove, modifier = Modifier.size(24.dp)) {
                     Icon(Icons.Default.RemoveCircleOutline, null, tint = SPrimary)
                 }
-                Text(text = "0", color = SPrimary, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 8.dp))
-                IconButton(onClick = {}, modifier = Modifier.size(24.dp)) {
+                Text(text = "$quantity", color = SPrimary, fontWeight = FontWeight.Bold, modifier = Modifier.padding(horizontal = 8.dp))
+                IconButton(onClick = onAdd, modifier = Modifier.size(24.dp)) {
                     Icon(Icons.Default.AddCircleOutline, null, tint = SPrimary)
                 }
             }
@@ -165,11 +162,11 @@ private fun SnackItem(name: String, desc: String, price: String, imageRes: Int) 
             contentAlignment = Alignment.Center
         ) {
             Image(
-                painter = painterResource(id = imageRes),
-                contentDescription = name,
+                painter = painterResource(id = snack.imageRes),
+                contentDescription = snack.name,
                 modifier = Modifier.size(80.dp),
                 contentScale = ContentScale.Fit,
-                colorFilter = ColorFilter.tint(SRed) // Using logo as placeholder
+                colorFilter = ColorFilter.tint(SRed)
             )
         }
     }
