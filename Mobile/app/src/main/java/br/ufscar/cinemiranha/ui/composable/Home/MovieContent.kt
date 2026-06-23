@@ -10,10 +10,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import br.ufscar.cinemiranha.R
 import br.ufscar.cinemiranha.model.MovieResponse
-import br.ufscar.cinemiranha.ui.screens.MovieSection
 
 @Composable
-private fun MovieContent(
+fun MovieContent(
     nowPlaying: List<MovieResponse>,
     comingSoon: List<MovieResponse>,
     onMovieClick: (Long) -> Unit

@@ -6,9 +6,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
 import br.ufscar.cinemiranha.ui.composable.*
+import br.ufscar.cinemiranha.ui.composable.MovieDetail.MovieDetail
+import br.ufscar.cinemiranha.ui.composable._shared.BottomBar
+import br.ufscar.cinemiranha.ui.composable._shared.TopBar
 import br.ufscar.cinemiranha.viewmodel.MovieDetailViewModel
 
 
@@ -18,8 +20,8 @@ fun MovieDetailScreen(movieId: Long, onBack: () -> Unit, onBuyTickets: (Long) ->
     val state by viewModel.uiState.collectAsState()
 
     Scaffold(
-        topBar    = { CineTopBar(onBack = onBack) },
-        bottomBar = { CineBottomBar() },
+        topBar    = { TopBar() },
+        bottomBar = { BottomBar() },
         containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         Box(

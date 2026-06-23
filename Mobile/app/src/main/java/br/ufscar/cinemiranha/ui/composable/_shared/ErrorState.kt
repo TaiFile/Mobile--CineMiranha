@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -21,11 +22,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.ufscar.cinemiranha.R
-import br.ufscar.cinemiranha.ui.screens.AccentRed
-import br.ufscar.cinemiranha.ui.screens.TextSecond
 
 @Composable
-private fun ErrorState(message: String, onRetry: () -> Unit) {
+fun ErrorState(message: String, onRetry: () -> Unit) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -33,7 +32,7 @@ private fun ErrorState(message: String, onRetry: () -> Unit) {
     ) {
         Text(
             text = message,
-            color = TextSecond,
+            color = MaterialTheme.colorScheme.onSecondary,
             fontSize = 14.sp,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(horizontal = 32.dp)
@@ -43,11 +42,11 @@ private fun ErrorState(message: String, onRetry: () -> Unit) {
             Icon(
                 imageVector = Icons.Default.Refresh,
                 contentDescription = null,
-                tint = AccentRed,
+                tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(18.dp)
             )
             Spacer(modifier = Modifier.width(6.dp))
-            Text(stringResource(R.string.retry), color = AccentRed)
+            Text(stringResource(R.string.retry), color = MaterialTheme.colorScheme.primary)
         }
     }
 }

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -17,19 +18,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.ufscar.cinemiranha.model.SessionResponse
-import br.ufscar.cinemiranha.ui.screens.SPrimary
-import br.ufscar.cinemiranha.ui.screens.SRed
 
 @Composable
-private fun RoomSection(roomName: String, sessions: List<SessionResponse>, onSessionSelected: (Long) -> Unit) {
+fun RoomSection(roomName: String, sessions: List<SessionResponse>, onSessionSelected: (Long) -> Unit) {
     Column(modifier = Modifier.padding(horizontal = 16.dp)) {
         Box(
             modifier = Modifier
                 .clip(RoundedCornerShape(4.dp))
-                .background(SRed)
+                .background(MaterialTheme.colorScheme.primary)
                 .padding(horizontal = 10.dp, vertical = 4.dp)
         ) {
-            Text(text = roomName, color = SPrimary, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+            Text(text = roomName, color = MaterialTheme.colorScheme.onPrimary, fontSize = 12.sp, fontWeight = FontWeight.Bold)
         }
 
         Spacer(modifier = Modifier.height(10.dp))

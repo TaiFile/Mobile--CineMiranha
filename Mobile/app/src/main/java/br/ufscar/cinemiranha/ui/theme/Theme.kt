@@ -15,14 +15,14 @@ private val AgeBadge    = Color(0xFFFF8C00)
 private val colorScheme = darkColorScheme(
     primary = AccentRed,
     onPrimary = TextPrimary,
+    secondary = TextSecond,
     background = Background,
     onBackground = TextPrimary,
     surface = Surface,
     onSurface = TextPrimary,
-    secondary = TextSecond,
     outline = Divider,
     surfaceContainer = Surface,
-    tertiary = AgeBadge
+    tertiary = AgeBadge,
 )
 
 @Composable

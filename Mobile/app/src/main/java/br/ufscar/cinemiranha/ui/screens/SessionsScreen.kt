@@ -11,9 +11,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import br.ufscar.cinemiranha.ui.composable.ErrorView
-import br.ufscar.cinemiranha.ui.composable.LoadingIndicator
+import br.ufscar.cinemiranha.ui.composable.Session.SessionsContent
 import br.ufscar.cinemiranha.ui.composable.Stepper
+import br.ufscar.cinemiranha.ui.composable._shared.BottomBar
+import br.ufscar.cinemiranha.ui.composable._shared.TopBar
 import br.ufscar.cinemiranha.viewmodel.SessionsViewModel
 
 @Composable
@@ -22,8 +23,8 @@ fun SessionsScreen(movieId: Long, onBack: () -> Unit, onSessionSelected: (Long) 
     val state by vm.uiState.collectAsState()
 
     Scaffold(
-        topBar    = { SessionsTopBar(onBack = onBack) },
-        bottomBar = { SessionsBottomBar() },
+        topBar    = { TopBar() },
+        bottomBar = { BottomBar() },
         containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         Column(

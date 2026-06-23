@@ -19,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -30,20 +31,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.os.LocaleListCompat
 import br.ufscar.cinemiranha.R
-import br.ufscar.cinemiranha.ui.screens.AccentRed
-import br.ufscar.cinemiranha.ui.screens.AppLogo
-import br.ufscar.cinemiranha.ui.screens.Surface
-import br.ufscar.cinemiranha.ui.screens.TextPrimary
 
 @Composable
-private fun TopBar() {
+fun TopBar() {
     val currentLocales = AppCompatDelegate.getApplicationLocales()
     val isPtBr = !currentLocales.isEmpty && currentLocales[0]?.language == "pt"
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Surface)
+            .background(MaterialTheme.colorScheme.surface)
             .windowInsetsPadding(WindowInsets.statusBars)
             .padding(horizontal = 16.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -55,7 +52,7 @@ private fun TopBar() {
             Icon(
                 imageVector = Icons.Default.Menu,
                 contentDescription = stringResource(R.string.cd_menu),
-                tint = TextPrimary,
+                tint = MaterialTheme.colorScheme.onPrimary,
                 modifier = Modifier.fillMaxSize()
             )
         }
@@ -68,7 +65,7 @@ private fun TopBar() {
             modifier = Modifier
                 .size(28.dp)
                 .clip(RoundedCornerShape(4.dp))
-                .background(AccentRed)
+                .background(MaterialTheme.colorScheme.primary)
                 .clickable {
                     val tag = if (isPtBr) "en" else "pt-BR"
                     AppCompatDelegate.setApplicationLocales(
@@ -79,7 +76,7 @@ private fun TopBar() {
         ) {
             Text(
                 text = if (isPtBr) "EN" else "PT",
-                color = TextPrimary,
+                color = MaterialTheme.colorScheme.onPrimary,
                 fontSize = 10.sp,
                 fontWeight = FontWeight.Bold
             )

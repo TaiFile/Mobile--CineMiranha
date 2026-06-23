@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,14 +19,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.ufscar.cinemiranha.model.SessionResponse
-import br.ufscar.cinemiranha.ui.screens.SPrimary
-import br.ufscar.cinemiranha.ui.screens.SRed
-import br.ufscar.cinemiranha.ui.screens.SSecond
-import br.ufscar.cinemiranha.ui.screens.SSurface
 
 
 @Composable
-private fun DatePicker(
+fun DatePicker(
     dates: List<String>,
     selectedDate: String?,
     sessions: List<SessionResponse>,
@@ -41,20 +38,20 @@ private fun DatePicker(
             Column(
                 modifier = Modifier
                     .clip(RoundedCornerShape(6.dp))
-                    .background(if (selected) SRed else SSurface)
+                    .background(if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.surface)
                     .clickable { onDateSelected(date) }
                     .padding(horizontal = 12.dp, vertical = 8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
                     text = weekDay,
-                    color = if (selected) SPrimary else SSecond,
+                    color = if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSecondary,
                     fontSize = 11.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
                     text = date,
-                    color = if (selected) SPrimary else SPrimary,
+                    color = MaterialTheme.colorScheme.onPrimary,
                     fontSize = 12.sp
                 )
             }

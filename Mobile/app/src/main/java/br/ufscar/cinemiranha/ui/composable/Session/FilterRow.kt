@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.dp
 import br.ufscar.cinemiranha.R
 
 @Composable
-private fun FilterRow(
+fun FilterRow(
     subtitleOptions: List<String>,
     formatOptions: List<String>,
     selectedSubtitle: String?,

@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,12 +30,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import br.ufscar.cinemiranha.R
 import br.ufscar.cinemiranha.model.MovieResponse
-import br.ufscar.cinemiranha.ui.screens.Background
-import br.ufscar.cinemiranha.ui.screens.Surface
 import coil.compose.AsyncImage
 
 @Composable
-private fun HeroSection(movie: MovieResponse) {
+fun HeroSection(movie: MovieResponse) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -52,7 +51,7 @@ private fun HeroSection(movie: MovieResponse) {
                 .fillMaxSize()
                 .background(
                     Brush.verticalGradient(
-                        colors = listOf(Color.Transparent, Background),
+                        colors = listOf(Color.Transparent, MaterialTheme.colorScheme.background),
                         startY = 100f
                     )
                 )
@@ -75,7 +74,7 @@ private fun HeroSection(movie: MovieResponse) {
                 Icon(
                     imageVector = Icons.Default.PlayArrow,
                     contentDescription = stringResource(R.string.cd_trailer),
-                    tint = Background,
+                    tint = MaterialTheme.colorScheme.background,
                     modifier = Modifier.size(32.dp)
                 )
             }
@@ -93,7 +92,7 @@ private fun HeroSection(movie: MovieResponse) {
                     .width(100.dp)
                     .height(145.dp)
                     .clip(RoundedCornerShape(6.dp))
-                    .background(Surface),
+                    .background(MaterialTheme.colorScheme.surface),
                 contentScale = ContentScale.Crop
             )
         }

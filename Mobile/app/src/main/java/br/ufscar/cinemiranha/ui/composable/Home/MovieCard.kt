@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,21 +23,17 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.ufscar.cinemiranha.model.MovieResponse
-import br.ufscar.cinemiranha.ui.screens.AgeBadgeBox
-import br.ufscar.cinemiranha.ui.screens.Surface
-import br.ufscar.cinemiranha.ui.screens.TextPrimary
-import br.ufscar.cinemiranha.ui.screens.TextSecond
 import coil.compose.AsyncImage
 
 @Composable
-private fun MovieCard(movie: MovieResponse, showDuration: Boolean, onClick: () -> Unit) {
+fun MovieCard(movie: MovieResponse, showDuration: Boolean, onClick: () -> Unit) {
     Column(modifier = Modifier.width(128.dp).clickable { onClick() }) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(185.dp)
                 .clip(RoundedCornerShape(6.dp))
-                .background(Surface)
+                .background(MaterialTheme.colorScheme.surface)
         ) {
             AsyncImage(
                 model = movie.coverUrl,
@@ -58,7 +55,7 @@ private fun MovieCard(movie: MovieResponse, showDuration: Boolean, onClick: () -
 
         Text(
             text = movie.title,
-            color = TextPrimary,
+            color = MaterialTheme.colorScheme.onPrimary,
             fontSize = 12.sp,
             fontWeight = FontWeight.SemiBold,
             maxLines = 2,
@@ -70,7 +67,7 @@ private fun MovieCard(movie: MovieResponse, showDuration: Boolean, onClick: () -
 
         val subtitle = if (showDuration) movie.durationLabel() else movie.firstSessionDate()
         subtitle?.let {
-            Text(text = it, color = TextSecond, fontSize = 11.sp)
+            Text(text = it, color = MaterialTheme.colorScheme.onSecondary, fontSize = 11.sp)
         }
     }
 }
