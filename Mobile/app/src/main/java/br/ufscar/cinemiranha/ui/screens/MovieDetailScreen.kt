@@ -11,11 +11,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import br.ufscar.cinemiranha.ui.composable.*
 import br.ufscar.cinemiranha.viewmodel.MovieDetailViewModel
 
-private val Background  = Color(0xFF1F2024)
-private val Surface     = Color(0xFF2F3036)
-private val TextPrimary = Color(0xFFFAFAFA)
-private val TextSecond  = Color(0xFF8F9098)
-private val Divider     = Color(0xFF494A50)
 
 @Composable
 fun MovieDetailScreen(movieId: Long, onBack: () -> Unit, onBuyTickets: (Long) -> Unit = {}) {
@@ -25,7 +20,7 @@ fun MovieDetailScreen(movieId: Long, onBack: () -> Unit, onBuyTickets: (Long) ->
     Scaffold(
         topBar    = { CineTopBar(onBack = onBack) },
         bottomBar = { CineBottomBar() },
-        containerColor = Background
+        containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         Box(
             modifier = Modifier

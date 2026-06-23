@@ -4,15 +4,25 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+private val Background  = Color(0xFF1F2024)
+private val Surface     = Color(0xFF2F3036)
+private val AccentRed   = Color(0xFFBF0903)
+private val TextPrimary = Color(0xFFFAFAFA)
+private val TextSecond  = Color(0xFF8F9098)
+private val Divider     = Color(0xFF494A50)
+private val AgeBadge    = Color(0xFFFF8C00)
 
 private val colorScheme = darkColorScheme(
-    background       = Color(0xFF1F2024),
-    surface          = Color(0xFF1F2024),
-    surfaceContainer = Color(0xFF1F2024),
-    primary          = Color(0xFFBF0903),
-    onPrimary        = Color(0xFFFAFAFA),
-    onBackground     = Color(0xFFFAFAFA),
-    onSurface        = Color(0xFFFAFAFA),
+    primary = AccentRed,
+    onPrimary = TextPrimary,
+    background = Background,
+    onBackground = TextPrimary,
+    surface = Surface,
+    onSurface = TextPrimary,
+    secondary = TextSecond,
+    outline = Divider,
+    surfaceContainer = Surface,
+    tertiary = AgeBadge
 )
 
 @Composable
