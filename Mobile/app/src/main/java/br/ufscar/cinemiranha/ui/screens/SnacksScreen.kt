@@ -1,4 +1,4 @@
-package br.ufscar.cinemiranha.ui
+package br.ufscar.cinemiranha.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -22,10 +22,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.ufscar.cinemiranha.R
-import br.ufscar.cinemiranha.ui.components.Stepper
+import br.ufscar.cinemiranha.ui.composable.Stepper
 import br.ufscar.cinemiranha.viewmodel.CheckoutViewModel
 import br.ufscar.cinemiranha.viewmodel.Snack
 import java.util.Locale
@@ -76,7 +77,7 @@ fun SnacksScreen(
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(16.dp).fillMaxWidth(),
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                textAlign = TextAlign.Center
             )
 
             LazyRow(

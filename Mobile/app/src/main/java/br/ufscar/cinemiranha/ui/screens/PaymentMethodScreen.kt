@@ -1,4 +1,4 @@
-package br.ufscar.cinemiranha.ui
+package br.ufscar.cinemiranha.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -7,44 +7,43 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.CreditCard
+import androidx.compose.material.icons.filled.Pix
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.ufscar.cinemiranha.R
-import br.ufscar.cinemiranha.ui.components.Stepper
+import br.ufscar.cinemiranha.ui.composable.Stepper
+import br.ufscar.cinemiranha.viewmodel.CheckoutViewModel
 
 private val SBg = Color(0xFF1F2024)
 private val SSurface = Color(0xFF2F3036)
 private val SRed = Color(0xFFBF0903)
 private val SPrimary = Color(0xFFFAFAFA)
-private val SSecond = Color(0xFF8F9098)
 
 @Composable
-fun CardDetailsScreen(
-    ticketCount: Int,
-    ticketTotal: Float,
-    snackTotal: Float,
+fun PaymentMethodScreen(
+    checkoutViewModel: CheckoutViewModel,
     onBack: () -> Unit,
-    onConfirm: () -> Unit
+    onSelectMethod: (String) -> Unit
 ) {
-    var name by remember { mutableStateOf("") }
-    var cpf by remember { mutableStateOf("") }
-    var cardNumber by remember { mutableStateOf("") }
-    var expiry by remember { mutableStateOf("") }
-    var cvv by remember { mutableStateOf("") }
+    val uiState by checkoutViewModel.uiState.collectAsState()
 
     Scaffold(
-        topBar = { CardTopBar(onBack = onBack) },
-        bottomBar = { CardBottomBar() },
+        topBar = { PaymentTopBar(onBack = onBack) },
+        bottomBar = { PaymentBottomBar() },
         containerColor = SBg
     ) { padding ->
         Column(
@@ -52,7 +51,7 @@ fun CardDetailsScreen(
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            Stepper(currentStep = 6)
+            Stepper(currentStep = 5)
 
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
@@ -61,39 +60,28 @@ fun CardDetailsScreen(
             ) {
                 item {
                     Text(
-                        text = stringResource(R.string.enter_card_details),
+                        text = stringResource(R.string.choose_payment_method),
                         color = SPrimary,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.fillMaxWidth(),
-                        textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                        textAlign = TextAlign.Center
+                    )
+                }
+
+                item {
+                    OrderTotalCard(
+                        ticketCount = uiState.fullPriceCount + uiState.halfPriceCount,
+                        ticketTotal = checkoutViewModel.getTotalTicketPrice(),
+                        snackTotal = checkoutViewModel.getTotalSnackPrice()
                     )
                 }
 
                 item {
                     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                        CardTextField(value = name, onValueChange = { name = it }, label = stringResource(R.string.card_holder_name))
-                        CardTextField(value = cpf, onValueChange = { cpf = it }, label = stringResource(R.string.card_holder_cpf))
-                        CardTextField(value = cardNumber, onValueChange = { cardNumber = it }, label = stringResource(R.string.card_number))
-                        CardTextField(value = expiry, onValueChange = { expiry = it }, label = stringResource(R.string.card_expiry))
-                        CardTextField(value = cvv, onValueChange = { cvv = it }, label = stringResource(R.string.card_cvv))
-                    }
-                }
-
-                item {
-                    OrderTotalCard(ticketCount = ticketCount, ticketTotal = ticketTotal, snackTotal = snackTotal)
-                }
-
-                item {
-                    Button(
-                        onClick = onConfirm,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(48.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = SSecond),
-                        shape = RoundedCornerShape(8.dp)
-                    ) {
-                        Text(stringResource(R.string.btn_confirm_purchase), color = SBg, fontWeight = FontWeight.Bold)
+                        PaymentMethodButton(stringResource(R.string.payment_credit_card), Icons.Default.CreditCard) { onSelectMethod("CREDIT") }
+                        PaymentMethodButton(stringResource(R.string.payment_debit_card), Icons.Default.CreditCard) { onSelectMethod("DEBIT") }
+                        PaymentMethodButton(stringResource(R.string.payment_pix), Icons.Default.Pix) { onSelectMethod("PIX") }
                     }
                 }
             }
@@ -102,30 +90,29 @@ fun CardDetailsScreen(
 }
 
 @Composable
-private fun CardTextField(value: String, onValueChange: (String) -> Unit, label: String) {
-    TextField(
-        value = value,
-        onValueChange = onValueChange,
+private fun PaymentMethodButton(label: String, icon: ImageVector, onClick: () -> Unit) {
+    Button(
+        onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(8.dp)),
-        placeholder = { Text(label, color = SSecond) },
-        colors = TextFieldDefaults.colors(
-            focusedContainerColor = SSurface,
-            unfocusedContainerColor = SSurface,
-            disabledContainerColor = SSurface,
-            cursorColor = SPrimary,
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            focusedTextColor = SPrimary,
-            unfocusedTextColor = SPrimary
-        ),
-        singleLine = true
-    )
+            .height(56.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = SSurface),
+        shape = RoundedCornerShape(8.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(icon, contentDescription = null, tint = SPrimary)
+            Spacer(modifier = Modifier.width(16.dp))
+            Text(text = label, color = SPrimary, fontSize = 16.sp, fontWeight = FontWeight.Medium)
+        }
+    }
 }
 
 @Composable
-private fun CardTopBar(onBack: () -> Unit) {
+private fun PaymentTopBar(onBack: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -150,7 +137,7 @@ private fun CardTopBar(onBack: () -> Unit) {
 }
 
 @Composable
-private fun CardBottomBar() {
+private fun PaymentBottomBar() {
     Box(
         modifier = Modifier
             .fillMaxWidth()

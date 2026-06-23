@@ -1,4 +1,4 @@
-package br.ufscar.cinemiranha.ui
+package br.ufscar.cinemiranha.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -6,6 +6,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -20,13 +21,14 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import br.ufscar.cinemiranha.R
 import br.ufscar.cinemiranha.model.MovieResponse
 import br.ufscar.cinemiranha.model.SessionResponse
-import br.ufscar.cinemiranha.ui.components.Stepper
+import br.ufscar.cinemiranha.ui.composable.Stepper
 import br.ufscar.cinemiranha.viewmodel.SessionsViewModel
 import coil.compose.AsyncImage
 
@@ -68,7 +70,7 @@ fun SeatsScreen(movieId: Long, sessionId: Long, onBack: () -> Unit, onSeatsSelec
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(16.dp).fillMaxWidth(),
-                        textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                        textAlign = TextAlign.Center
                     )
                 }
 
@@ -273,7 +275,7 @@ private fun SeatsBottomBar(selectedCount: Int, onConfirm: () -> Unit) {
             Box(
                 modifier = Modifier
                     .size(40.dp)
-                    .clip(androidx.compose.foundation.shape.CircleShape)
+                    .clip(CircleShape)
                     .background(SDivider),
                 contentAlignment = Alignment.Center
             ) {

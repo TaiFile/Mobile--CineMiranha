@@ -10,16 +10,16 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import br.ufscar.cinemiranha.ui.HomeScreen
-import br.ufscar.cinemiranha.ui.MovieDetailScreen
-import br.ufscar.cinemiranha.ui.SessionsScreen
-import br.ufscar.cinemiranha.ui.SeatsScreen
-import br.ufscar.cinemiranha.ui.TicketsScreen
-import br.ufscar.cinemiranha.ui.SnacksScreen
-import br.ufscar.cinemiranha.ui.OrderSummaryScreen
-import br.ufscar.cinemiranha.ui.PaymentMethodScreen
-import br.ufscar.cinemiranha.ui.CardDetailsScreen
-import br.ufscar.cinemiranha.ui.SuccessScreen
+import br.ufscar.cinemiranha.ui.screens.HomeScreen
+import br.ufscar.cinemiranha.ui.screens.MovieDetailScreen
+import br.ufscar.cinemiranha.ui.screens.SessionsScreen
+import br.ufscar.cinemiranha.ui.screens.SeatsScreen
+import br.ufscar.cinemiranha.ui.screens.TicketsScreen
+import br.ufscar.cinemiranha.ui.screens.SnacksScreen
+import br.ufscar.cinemiranha.ui.screens.OrderSummaryScreen
+import br.ufscar.cinemiranha.ui.screens.PaymentMethodScreen
+import br.ufscar.cinemiranha.ui.screens.CardDetailsScreen
+import br.ufscar.cinemiranha.ui.screens.SuccessScreen
 import br.ufscar.cinemiranha.ui.theme.CineMiranhaTheme
 import br.ufscar.cinemiranha.viewmodel.CheckoutViewModel
 
