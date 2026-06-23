@@ -14,6 +14,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import br.ufscar.cinemiranha.ui.composable.Session.SessionsContent
 import br.ufscar.cinemiranha.ui.composable.Stepper
 import br.ufscar.cinemiranha.ui.composable._shared.BottomBar
+import br.ufscar.cinemiranha.ui.composable._shared.ErrorState
+import br.ufscar.cinemiranha.ui.composable._shared.LoadingState
 import br.ufscar.cinemiranha.ui.composable._shared.TopBar
 import br.ufscar.cinemiranha.viewmodel.SessionsViewModel
 
@@ -38,8 +40,8 @@ fun SessionsScreen(movieId: Long, onBack: () -> Unit, onSessionSelected: (Long) 
                 modifier = Modifier.weight(1f)
             ) {
                 when {
-                    state.isLoading -> LoadingIndicator()
-                    state.errorMessage != null -> ErrorView(
+                    state.isLoading -> LoadingState()
+                    state.errorMessage != null -> ErrorState(
                         message = state.errorMessage!!,
                         onRetry = { vm.load() }
                     )

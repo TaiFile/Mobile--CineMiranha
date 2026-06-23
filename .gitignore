@@ -18,3 +18,4 @@ Mobile/.externalNativeBuild/
 Mobile/.cxx/
 *.jks
 *.keystore
+Mobile/.env

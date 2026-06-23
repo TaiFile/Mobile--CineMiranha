@@ -7,12 +7,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import br.ufscar.cinemiranha.ui.composable.*
 import br.ufscar.cinemiranha.ui.composable.MovieDetail.MovieDetail
 import br.ufscar.cinemiranha.ui.composable._shared.BottomBar
+import br.ufscar.cinemiranha.ui.composable._shared.ErrorState
+import br.ufscar.cinemiranha.ui.composable._shared.LoadingState
 import br.ufscar.cinemiranha.ui.composable._shared.TopBar
 import br.ufscar.cinemiranha.viewmodel.MovieDetailViewModel
-
 
 @Composable
 fun MovieDetailScreen(movieId: Long, onBack: () -> Unit, onBuyTickets: (Long) -> Unit = {}) {
@@ -30,8 +30,8 @@ fun MovieDetailScreen(movieId: Long, onBack: () -> Unit, onBuyTickets: (Long) ->
                 .padding(padding)
         ) {
             when {
-                state.isLoading -> LoadingIndicator()
-                state.errorMessage != null -> ErrorView(
+                state.isLoading -> LoadingState()
+                state.errorMessage != null -> ErrorState(
                     message = state.errorMessage!!,
                     onRetry = { viewModel.loadMovie() }
                 )

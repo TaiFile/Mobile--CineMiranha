@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import br.ufscar.cinemiranha.model.MovieResponse
+import br.ufscar.cinemiranha.ui.composable.Home.AgeBadgeBox
 import br.ufscar.cinemiranha.ui.theme.Dimens
 
 @Composable
@@ -25,7 +26,7 @@ fun InfoRow(movie: MovieResponse) {
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             movie.ageRatingLabel()?.let { label ->
-                AgeBadge(label = label)
+                AgeBadgeBox(label = label)
                 Spacer(modifier = Modifier.width(Dimens.SpaceS))
             }
             movie.durationLabel()?.let { duration ->

@@ -18,10 +18,15 @@ fun AgeBadgeBox(label: String, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .clip(MaterialTheme.shapes.extraSmall)
-            .background(AgeBadge)
+            .background(MaterialTheme.colorScheme.tertiary)
             .padding(horizontal = 5.dp, vertical = 2.dp),
         contentAlignment = Alignment.Center
     ) {
-        Text(text = label, color = MaterialTheme.colorScheme.onPrimary, fontSize = 9.sp, fontWeight = FontWeight.Bold)
+        Text(
+            text = label,
+            color = MaterialTheme.colorScheme.onPrimary,
+            fontSize = 9.sp,
+            fontWeight = FontWeight.Bold
+        )
     }
 }
