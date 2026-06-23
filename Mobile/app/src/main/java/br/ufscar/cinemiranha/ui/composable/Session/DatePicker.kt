@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,9 +15,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.ufscar.cinemiranha.model.SessionResponse
+import br.ufscar.cinemiranha.ui.theme.Dimens
 
 
 @Composable
@@ -29,18 +28,18 @@ fun DatePicker(
     onDateSelected: (String?) -> Unit
 ) {
     LazyRow(
-        contentPadding = PaddingValues(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        contentPadding = PaddingValues(horizontal = Dimens.SpaceL),
+        horizontalArrangement = Arrangement.spacedBy(Dimens.SpaceS)
     ) {
         items(dates) { date ->
             val weekDay = sessions.firstOrNull { it.dateDayLabel() == date }?.weekDayLabel() ?: ""
             val selected = date == selectedDate
             Column(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(6.dp))
+                    .clip(MaterialTheme.shapes.small)
                     .background(if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.surface)
                     .clickable { onDateSelected(date) }
-                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                    .padding(horizontal = Dimens.SpaceM, vertical = Dimens.SpaceS),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
@@ -52,7 +51,7 @@ fun DatePicker(
                 Text(
                     text = date,
                     color = MaterialTheme.colorScheme.onPrimary,
-                    fontSize = 12.sp
+                    style = MaterialTheme.typography.bodySmall
                 )
             }
         }

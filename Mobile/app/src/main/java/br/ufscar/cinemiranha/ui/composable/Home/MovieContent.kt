@@ -10,6 +10,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import br.ufscar.cinemiranha.R
 import br.ufscar.cinemiranha.model.MovieResponse
+import br.ufscar.cinemiranha.ui.theme.Dimens
 
 @Composable
 fun MovieContent(
@@ -17,7 +18,7 @@ fun MovieContent(
     comingSoon: List<MovieResponse>,
     onMovieClick: (Long) -> Unit
 ) {
-    LazyColumn(contentPadding = PaddingValues(vertical = 16.dp)) {
+    LazyColumn(contentPadding = PaddingValues(vertical = Dimens.SpaceL)) {
         item {
             MovieSection(
                 title = stringResource(R.string.now_playing),

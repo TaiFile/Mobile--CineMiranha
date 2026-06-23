@@ -16,11 +16,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import br.ufscar.cinemiranha.R
 import br.ufscar.cinemiranha.model.MovieResponse
+import br.ufscar.cinemiranha.ui.theme.Dimens
 
 @Composable
 fun MovieSection(
@@ -33,25 +31,25 @@ fun MovieSection(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = Dimens.SpaceL),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = title, color = MaterialTheme.colorScheme.onPrimary, fontSize = 17.sp, fontWeight = FontWeight.Bold)
-            Text(text = stringResource(R.string.see_more), color = MaterialTheme.colorScheme.primary, fontSize = 13.sp)
+            Text(text = title, color = MaterialTheme.colorScheme.onPrimary, style = MaterialTheme.typography.titleMedium)
+            Text(text = stringResource(R.string.see_more), color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.bodyMedium)
         }
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(Dimens.SpaceM))
         if (movies.isEmpty()) {
             Text(
                 text = stringResource(R.string.no_movies),
                 color = MaterialTheme.colorScheme.onSecondary,
-                fontSize = 13.sp,
-                modifier = Modifier.padding(horizontal = 16.dp)
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(horizontal = Dimens.SpaceL)
             )
         } else {
             LazyRow(
-                contentPadding = PaddingValues(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                contentPadding = PaddingValues(horizontal = Dimens.SpaceL),
+                horizontalArrangement = Arrangement.spacedBy(Dimens.SpaceM)
             ) {
                 items(movies) { movie ->
                     MovieCard(

@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.DropdownMenu
@@ -26,8 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import br.ufscar.cinemiranha.R
+import br.ufscar.cinemiranha.ui.theme.Dimens
 
 @Composable
 fun FilterDropdown(
@@ -39,14 +38,14 @@ fun FilterDropdown(
     Box {
         Row(
             modifier = Modifier
-                .clip(RoundedCornerShape(6.dp))
+                .clip(MaterialTheme.shapes.small)
                 .background(MaterialTheme.colorScheme.surface)
                 .clickable { expanded = true }
                 .padding(horizontal = 10.dp, vertical = 7.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = label, color = MaterialTheme.colorScheme.onPrimary, fontSize = 13.sp)
-            Spacer(modifier = Modifier.width(4.dp))
+            Text(text = label, color = MaterialTheme.colorScheme.onPrimary, style = MaterialTheme.typography.bodyMedium)
+            Spacer(modifier = Modifier.width(Dimens.SpaceXS))
             Icon(
                 imageVector = Icons.Default.ArrowDropDown,
                 contentDescription = null,
@@ -65,7 +64,7 @@ fun FilterDropdown(
                         Text(
                             text = opt ?: stringResource(R.string.filter_all),
                             color = MaterialTheme.colorScheme.onPrimary,
-                            fontSize = 13.sp
+                            style = MaterialTheme.typography.bodyMedium
                         )
                     },
                     onClick = {

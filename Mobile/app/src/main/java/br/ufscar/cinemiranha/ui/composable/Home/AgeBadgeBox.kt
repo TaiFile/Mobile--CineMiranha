@@ -3,7 +3,6 @@ package br.ufscar.cinemiranha.ui.composable.Home
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,7 +17,7 @@ import androidx.compose.ui.unit.sp
 fun AgeBadgeBox(label: String, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(3.dp))
+            .clip(MaterialTheme.shapes.extraSmall)
             .background(AgeBadge)
             .padding(horizontal = 5.dp, vertical = 2.dp),
         contentAlignment = Alignment.Center

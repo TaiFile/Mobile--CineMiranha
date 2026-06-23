@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.os.LocaleListCompat
 import br.ufscar.cinemiranha.R
+import br.ufscar.cinemiranha.ui.theme.Dimens
 
 @Composable
 fun TopBar() {
@@ -42,7 +43,7 @@ fun TopBar() {
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.surface)
             .windowInsetsPadding(WindowInsets.statusBars)
-            .padding(horizontal = 16.dp, vertical = 16.dp),
+            .padding(horizontal = Dimens.SpaceL, vertical = Dimens.SpaceL),
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(

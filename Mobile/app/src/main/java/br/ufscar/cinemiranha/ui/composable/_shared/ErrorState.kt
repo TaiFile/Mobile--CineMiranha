@@ -20,8 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import br.ufscar.cinemiranha.R
+import br.ufscar.cinemiranha.ui.theme.Dimens
 
 @Composable
 fun ErrorState(message: String, onRetry: () -> Unit) {
@@ -33,11 +33,11 @@ fun ErrorState(message: String, onRetry: () -> Unit) {
         Text(
             text = message,
             color = MaterialTheme.colorScheme.onSecondary,
-            fontSize = 14.sp,
+            style = MaterialTheme.typography.bodyLarge,
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(horizontal = 32.dp)
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(Dimens.SpaceL))
         TextButton(onClick = onRetry) {
             Icon(
                 imageVector = Icons.Default.Refresh,

@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import br.ufscar.cinemiranha.R
+import br.ufscar.cinemiranha.ui.theme.Dimens
 
 @Composable
 fun FilterRow(
@@ -22,7 +23,7 @@ fun FilterRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = Dimens.SpaceL),
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         FilterDropdown(

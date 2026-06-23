@@ -17,6 +17,8 @@ import androidx.compose.ui.unit.sp
 import br.ufscar.cinemiranha.R
 import br.ufscar.cinemiranha.model.MovieResponse
 import br.ufscar.cinemiranha.model.SessionResponse
+import br.ufscar.cinemiranha.ui.theme.Dimens
+
 @Composable
 fun SessionsContent(
     movie: MovieResponse?,
@@ -45,7 +47,7 @@ fun SessionsContent(
     val formatOptions   = sessions.map { it.formatLabel() }.distinct().sorted()
 
     LazyColumn(
-        contentPadding = PaddingValues(bottom = 16.dp)
+        contentPadding = PaddingValues(bottom = Dimens.SpaceL)
     ) {
         item {
             Text(
@@ -53,7 +55,7 @@ fun SessionsContent(
                 color = MaterialTheme.colorScheme.onPrimary,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp)
+                modifier = Modifier.padding(horizontal = Dimens.SpaceL, vertical = 14.dp)
             )
         }
 
@@ -61,7 +63,7 @@ fun SessionsContent(
             item { MovieRow(movie) }
         }
 
-        item { Spacer(modifier = Modifier.height(16.dp)) }
+        item { Spacer(modifier = Modifier.height(Dimens.SpaceL)) }
 
         item {
             DatePicker(
@@ -72,13 +74,13 @@ fun SessionsContent(
             )
         }
 
-        item { Spacer(modifier = Modifier.height(12.dp)) }
+        item { Spacer(modifier = Modifier.height(Dimens.SpaceM)) }
 
         item {
-            HorizontalDivider(color = MaterialTheme.colorScheme.outline, modifier = Modifier.padding(horizontal = 16.dp))
+            HorizontalDivider(color = MaterialTheme.colorScheme.outline, modifier = Modifier.padding(horizontal = Dimens.SpaceL))
         }
 
-        item { Spacer(modifier = Modifier.height(12.dp)) }
+        item { Spacer(modifier = Modifier.height(Dimens.SpaceM)) }
 
         item {
             FilterRow(
@@ -91,22 +93,22 @@ fun SessionsContent(
             )
         }
 
-        item { Spacer(modifier = Modifier.height(16.dp)) }
+        item { Spacer(modifier = Modifier.height(Dimens.SpaceL)) }
 
         if (byRoom.isEmpty()) {
             item {
                 Text(
                     text = stringResource(R.string.no_sessions),
                     color = MaterialTheme.colorScheme.onSecondary,
-                    fontSize = 13.sp,
-                    modifier = Modifier.padding(horizontal = 16.dp)
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(horizontal = Dimens.SpaceL)
                 )
             }
         } else {
             byRoom.forEach { (roomName, roomSessions) ->
                 item {
                     RoomSection(roomName = roomName, sessions = roomSessions, onSessionSelected = onSessionSelected)
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(Dimens.SpaceL))
                 }
             }
         }

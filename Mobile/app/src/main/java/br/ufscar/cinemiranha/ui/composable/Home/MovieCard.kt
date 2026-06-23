@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,7 +31,7 @@ fun MovieCard(movie: MovieResponse, showDuration: Boolean, onClick: () -> Unit) 
             modifier = Modifier
                 .fillMaxWidth()
                 .height(185.dp)
-                .clip(RoundedCornerShape(6.dp))
+                .clip(MaterialTheme.shapes.small)
                 .background(MaterialTheme.colorScheme.surface)
         ) {
             AsyncImage(
@@ -67,7 +66,7 @@ fun MovieCard(movie: MovieResponse, showDuration: Boolean, onClick: () -> Unit) 
 
         val subtitle = if (showDuration) movie.durationLabel() else movie.firstSessionDate()
         subtitle?.let {
-            Text(text = it, color = MaterialTheme.colorScheme.onSecondary, fontSize = 11.sp)
+            Text(text = it, color = MaterialTheme.colorScheme.onSecondary, style = MaterialTheme.typography.labelLarge)
         }
     }
 }

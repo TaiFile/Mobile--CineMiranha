@@ -18,10 +18,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.ufscar.cinemiranha.model.SessionResponse
+import br.ufscar.cinemiranha.ui.theme.Dimens
 
 @Composable
 fun RoomSection(roomName: String, sessions: List<SessionResponse>, onSessionSelected: (Long) -> Unit) {
-    Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+    Column(modifier = Modifier.padding(horizontal = Dimens.SpaceL)) {
         Box(
             modifier = Modifier
                 .clip(RoundedCornerShape(4.dp))
@@ -37,7 +38,7 @@ fun RoomSection(roomName: String, sessions: List<SessionResponse>, onSessionSele
         val rows = (sessions.size + columns - 1) / columns
 
         repeat(rows) { rowIdx ->
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(Dimens.SpaceS)) {
                 repeat(columns) { colIdx ->
                     val idx = rowIdx * columns + colIdx
                     if (idx < sessions.size) {
@@ -51,7 +52,7 @@ fun RoomSection(roomName: String, sessions: List<SessionResponse>, onSessionSele
                     }
                 }
             }
-            if (rowIdx < rows - 1) Spacer(modifier = Modifier.height(8.dp))
+            if (rowIdx < rows - 1) Spacer(modifier = Modifier.height(Dimens.SpaceS))
         }
     }
 }

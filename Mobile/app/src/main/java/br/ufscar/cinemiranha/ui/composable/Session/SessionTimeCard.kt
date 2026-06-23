@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,29 +16,27 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import br.ufscar.cinemiranha.model.SessionResponse
+import br.ufscar.cinemiranha.ui.theme.Dimens
 
 @Composable
 fun SessionTimeCard(session: SessionResponse, modifier: Modifier = Modifier, onClick: () -> Unit) {
     Column(
         modifier = modifier
-            .clip(RoundedCornerShape(6.dp))
+            .clip(MaterialTheme.shapes.small)
             .background(Color.White)
             .clickable(onClick = onClick)
-            .padding(vertical = 8.dp),
+            .padding(vertical = Dimens.SpaceS),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = session.timeLabel(),
             color = MaterialTheme.colorScheme.onBackground,
-            fontSize = 15.sp,
-            fontWeight = FontWeight.Bold
+            style = MaterialTheme.typography.titleSmall
         )
-        Spacer(modifier = Modifier.height(4.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+        Spacer(modifier = Modifier.height(Dimens.SpaceXS))
+        Row(horizontalArrangement = Arrangement.spacedBy(Dimens.SpaceXS)) {
             FormatBadge(session.formatLabel())
             SubtitleBadge(session.subtitleLabel())
         }
@@ -50,11 +47,11 @@ fun SessionTimeCard(session: SessionResponse, modifier: Modifier = Modifier, onC
 fun FormatBadge(label: String) {
     Box(
         modifier = Modifier
-            .clip(RoundedCornerShape(3.dp))
+            .clip(MaterialTheme.shapes.extraSmall)
             .background(color = MaterialTheme.colorScheme.outline)
             .padding(horizontal = 5.dp, vertical = 2.dp)
     ) {
-        Text(text = label, color = MaterialTheme.colorScheme.onPrimary, fontSize = 10.sp)
+        Text(text = label, color = MaterialTheme.colorScheme.onPrimary, style = MaterialTheme.typography.labelSmall)
     }
 }
 
@@ -62,10 +59,10 @@ fun FormatBadge(label: String) {
 fun SubtitleBadge(label: String) {
     Box(
         modifier = Modifier
-            .clip(RoundedCornerShape(3.dp))
+            .clip(MaterialTheme.shapes.extraSmall)
             .background(MaterialTheme.colorScheme.outline)
             .padding(horizontal = 5.dp, vertical = 2.dp)
     ) {
-        Text(text = label, color = MaterialTheme.colorScheme.onPrimary, fontSize = 10.sp)
+        Text(text = label, color = MaterialTheme.colorScheme.onPrimary, style = MaterialTheme.typography.labelSmall)
     }
 }

@@ -27,17 +27,11 @@ import br.ufscar.cinemiranha.R
 import br.ufscar.cinemiranha.model.MovieResponse
 import br.ufscar.cinemiranha.model.SessionResponse
 import br.ufscar.cinemiranha.ui.composable.Stepper
+import br.ufscar.cinemiranha.ui.theme.Dimens
 import br.ufscar.cinemiranha.viewmodel.CheckoutViewModel
 import br.ufscar.cinemiranha.viewmodel.SessionsViewModel
 import coil.compose.AsyncImage
 import java.util.Locale
-
-private val SBg = Color(0xFF1F2024)
-private val SSurface = Color(0xFF2F3036)
-private val SRed = Color(0xFFBF0903)
-private val SPrimary = Color(0xFFFAFAFA)
-private val SSecond = Color(0xFF8F9098)
-private val SDivider = Color(0xFF494A50)
 
 @Composable
 fun OrderSummaryScreen(
@@ -55,7 +49,7 @@ fun OrderSummaryScreen(
     Scaffold(
         topBar = { SummaryTopBar(onBack = onBack) },
         bottomBar = { SummaryBottomBar() },
-        containerColor = SBg
+        containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         Column(
             modifier = Modifier
@@ -66,13 +60,13 @@ fun OrderSummaryScreen(
 
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                contentPadding = PaddingValues(Dimens.SpaceL),
+                verticalArrangement = Arrangement.spacedBy(Dimens.SpaceL)
             ) {
                 item {
                     Text(
                         text = stringResource(R.string.confirm_order),
-                        color = SPrimary,
+                        color = MaterialTheme.colorScheme.onBackground,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.fillMaxWidth(),
@@ -86,22 +80,22 @@ fun OrderSummaryScreen(
                     }
 
                     item {
-                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                            HorizontalDivider(color = SDivider)
+                        Column(verticalArrangement = Arrangement.spacedBy(Dimens.SpaceS)) {
+                            HorizontalDivider(color = MaterialTheme.colorScheme.outline)
                             SummaryInfoRow(stringResource(R.string.summary_location), stringResource(R.string.summary_location_value))
-                            HorizontalDivider(color = SDivider)
+                            HorizontalDivider(color = MaterialTheme.colorScheme.outline)
                             SummaryInfoRow(stringResource(R.string.summary_date_time), "${session.dateDayLabel()}  ${session.timeLabel()}")
-                            HorizontalDivider(color = SDivider)
-                            
+                            HorizontalDivider(color = MaterialTheme.colorScheme.outline)
+
                             val ticketTypeDesc = buildString {
                                 if (checkoutState.fullPriceCount > 0) append("${checkoutState.fullPriceCount} ${stringResource(R.string.ticket_full)}")
                                 if (checkoutState.fullPriceCount > 0 && checkoutState.halfPriceCount > 0) append(", ")
                                 if (checkoutState.halfPriceCount > 0) append("${checkoutState.halfPriceCount} ${stringResource(R.string.ticket_half)}")
                             }
                             SummaryInfoRow(stringResource(R.string.summary_seats), "${checkoutState.selectedSeats.joinToString(", ")} ($ticketTypeDesc)")
-                            
-                            HorizontalDivider(color = SDivider)
-                            
+
+                            HorizontalDivider(color = MaterialTheme.colorScheme.outline)
+
                             val snacksSummary = if (checkoutState.selectedSnacks.isEmpty()) {
                                 "---"
                             } else {
@@ -110,7 +104,7 @@ fun OrderSummaryScreen(
                                 }.joinToString(", ")
                             }
                             SummaryInfoRow(stringResource(R.string.summary_snackbar), snacksSummary)
-                            HorizontalDivider(color = SDivider)
+                            HorizontalDivider(color = MaterialTheme.colorScheme.outline)
                         }
                     }
                 }
@@ -120,9 +114,9 @@ fun OrderSummaryScreen(
                         Button(
                             onClick = onBack,
                             colors = ButtonDefaults.buttonColors(containerColor = Color.White),
-                            shape = RoundedCornerShape(8.dp)
+                            shape = MaterialTheme.shapes.medium
                         ) {
-                            Text(stringResource(R.string.btn_edit_order), color = SBg)
+                            Text(stringResource(R.string.btn_edit_order), color = MaterialTheme.colorScheme.background)
                         }
                     }
                 }
@@ -140,11 +134,11 @@ fun OrderSummaryScreen(
                         onClick = onNext,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(48.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = SSecond),
-                        shape = RoundedCornerShape(8.dp)
+                            .height(Dimens.ButtonHeight),
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary),
+                        shape = MaterialTheme.shapes.medium
                     ) {
-                        Text(stringResource(R.string.btn_next), color = SBg, fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.btn_next), color = MaterialTheme.colorScheme.background, fontWeight = FontWeight.Bold)
                     }
                 }
             }
@@ -157,20 +151,20 @@ fun OrderTotalCard(ticketCount: Int, ticketTotal: Float, snackTotal: Float) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(8.dp))
+            .clip(MaterialTheme.shapes.medium)
             .background(Color.White)
-            .padding(16.dp)
+            .padding(Dimens.SpaceL)
     ) {
         Text(stringResource(R.string.order_summary_title), color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(Dimens.SpaceS))
         HorizontalDivider(color = Color.Black.copy(alpha = 0.1f))
-        
+
         SummaryPriceRow(stringResource(R.string.summary_tickets_count, ticketCount), "R$ ${String.format(Locale.getDefault(), "%.2f", ticketTotal)}")
         SummaryPriceRow(stringResource(R.string.summary_snackbar_label), "R$ ${String.format(Locale.getDefault(), "%.2f", snackTotal)}")
         SummaryPriceRow(stringResource(R.string.summary_discount), "R$ 0,00")
-        
-        HorizontalDivider(color = Color.Black.copy(alpha = 0.5f), modifier = Modifier.padding(vertical = 8.dp))
-        
+
+        HorizontalDivider(color = Color.Black.copy(alpha = 0.5f), modifier = Modifier.padding(vertical = Dimens.SpaceS))
+
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Text(stringResource(R.string.summary_total), color = Color.Black, fontWeight = FontWeight.Bold)
             Text("R$ ${String.format(Locale.getDefault(), "%.2f", ticketTotal + snackTotal)}", color = Color.Black, fontWeight = FontWeight.Bold)
@@ -183,20 +177,20 @@ private fun SummaryPriceRow(label: String, price: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
+            .padding(vertical = Dimens.SpaceS),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text = label, color = SSecond, fontSize = 14.sp)
-        Text(text = price, color = Color.Black, fontSize = 14.sp)
+        Text(text = label, color = MaterialTheme.colorScheme.secondary, style = MaterialTheme.typography.bodyLarge)
+        Text(text = price, color = Color.Black, style = MaterialTheme.typography.bodyLarge)
     }
 }
 
 @Composable
 private fun SummaryInfoRow(label: String, value: String) {
     Row(modifier = Modifier.fillMaxWidth()) {
-        Text(text = label, color = SPrimary, fontWeight = FontWeight.Bold, fontSize = 14.sp, modifier = Modifier.width(100.dp))
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(text = value, color = SSecond, fontSize = 14.sp, modifier = Modifier.weight(1f))
+        Text(text = label, color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.width(100.dp))
+        Spacer(modifier = Modifier.width(Dimens.SpaceS))
+        Text(text = value, color = MaterialTheme.colorScheme.secondary, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
     }
 }
 
@@ -213,29 +207,28 @@ private fun SummaryMovieInfo(movie: MovieResponse, session: SessionResponse) {
                 .width(56.dp)
                 .height(80.dp)
                 .clip(RoundedCornerShape(4.dp))
-                .background(SSurface),
+                .background(MaterialTheme.colorScheme.surface),
             contentScale = ContentScale.Crop
         )
-        Spacer(modifier = Modifier.width(12.dp))
+        Spacer(modifier = Modifier.width(Dimens.SpaceM))
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = movie.title.uppercase(),
-                color = SPrimary,
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Bold
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.titleSmall
             )
             Text(
                 text = stringResource(R.string.movie_duration, (movie.durationInSeconds?.let { it / 60 } ?: 0)),
-                color = SSecond,
-                fontSize = 12.sp
+                color = MaterialTheme.colorScheme.secondary,
+                style = MaterialTheme.typography.bodySmall
             )
             Text(
                 text = "${session.formatLabel()}  ${session.subtitleLabel()}",
-                color = SSecond,
-                fontSize = 12.sp
+                color = MaterialTheme.colorScheme.secondary,
+                style = MaterialTheme.typography.bodySmall
             )
         }
-        Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.cd_remove), tint = SSecond)
+        Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.cd_remove), tint = MaterialTheme.colorScheme.secondary)
     }
 }
 
@@ -244,23 +237,23 @@ private fun SummaryTopBar(onBack: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(SSurface)
+            .background(MaterialTheme.colorScheme.surface)
             .windowInsetsPadding(WindowInsets.statusBars)
-            .padding(horizontal = 8.dp, vertical = 12.dp),
+            .padding(horizontal = Dimens.SpaceS, vertical = Dimens.SpaceM),
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(onClick = onBack) {
-            Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.cd_back), tint = SPrimary)
+            Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.cd_back), tint = MaterialTheme.colorScheme.onBackground)
         }
         Spacer(modifier = Modifier.weight(1f))
         Image(
             painter = painterResource(id = R.drawable.logo),
             contentDescription = stringResource(R.string.cd_logo),
             modifier = Modifier.height(36.dp),
-            colorFilter = ColorFilter.tint(SRed)
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
         )
         Spacer(modifier = Modifier.weight(1f))
-        Spacer(modifier = Modifier.size(48.dp))
+        Spacer(modifier = Modifier.size(Dimens.ButtonHeight))
     }
 }
 
@@ -269,7 +262,7 @@ private fun SummaryBottomBar() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(SSurface)
+            .background(MaterialTheme.colorScheme.surface)
             .windowInsetsPadding(WindowInsets.navigationBars)
             .padding(vertical = 14.dp),
         contentAlignment = Alignment.Center
@@ -278,7 +271,7 @@ private fun SummaryBottomBar() {
             painter = painterResource(id = R.drawable.logo),
             contentDescription = stringResource(R.string.cd_logo),
             modifier = Modifier.height(30.dp),
-            colorFilter = ColorFilter.tint(SRed)
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
         )
     }
 }

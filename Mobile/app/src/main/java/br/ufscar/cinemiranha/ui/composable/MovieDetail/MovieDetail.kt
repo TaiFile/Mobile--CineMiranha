@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -21,24 +20,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.ufscar.cinemiranha.R
 import br.ufscar.cinemiranha.model.MovieResponse
+import br.ufscar.cinemiranha.ui.theme.Dimens
 
 @Composable
 fun MovieDetail(movie: MovieResponse, onBuyTickets: () -> Unit = {}) {
     LazyColumn(modifier = Modifier.fillMaxSize()) {
         item { HeroSection(movie) }
         item {
-            Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-                Spacer(modifier = Modifier.height(16.dp))
+            Column(modifier = Modifier.padding(horizontal = Dimens.SpaceL)) {
+                Spacer(modifier = Modifier.height(Dimens.SpaceL))
 
                 Text(
                     text = movie.title.uppercase(),
                     color = MaterialTheme.colorScheme.onPrimary,
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.titleLarge,
                     lineHeight = 28.sp
                 )
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(Dimens.SpaceM))
                 HorizontalDivider(color = MaterialTheme.colorScheme.outline)
                 Spacer(modifier = Modifier.height(10.dp))
 
@@ -46,7 +45,7 @@ fun MovieDetail(movie: MovieResponse, onBuyTickets: () -> Unit = {}) {
 
                 Spacer(modifier = Modifier.height(10.dp))
                 HorizontalDivider(color = MaterialTheme.colorScheme.outline)
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(Dimens.SpaceL))
 
                 if (!movie.synopsis.isNullOrBlank()) {
                     Text(text = stringResource(R.string.synopsis), color = MaterialTheme.colorScheme.onPrimary, fontSize = 14.sp, fontWeight = FontWeight.Bold)
@@ -54,10 +53,10 @@ fun MovieDetail(movie: MovieResponse, onBuyTickets: () -> Unit = {}) {
                     Text(
                         text = movie.synopsis,
                         color = MaterialTheme.colorScheme.onSecondary,
-                        fontSize = 13.sp,
+                        style = MaterialTheme.typography.bodyMedium,
                         lineHeight = 20.sp
                     )
-                    Spacer(modifier = Modifier.height(24.dp))
+                    Spacer(modifier = Modifier.height(Dimens.SpaceXL))
                 }
 
                 Button(
@@ -65,7 +64,7 @@ fun MovieDetail(movie: MovieResponse, onBuyTickets: () -> Unit = {}) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(50.dp),
-                    shape = RoundedCornerShape(8.dp),
+                    shape = MaterialTheme.shapes.medium,
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surface)
                 ) {
                     Text(
@@ -77,7 +76,7 @@ fun MovieDetail(movie: MovieResponse, onBuyTickets: () -> Unit = {}) {
                     )
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(Dimens.SpaceL))
             }
         }
     }

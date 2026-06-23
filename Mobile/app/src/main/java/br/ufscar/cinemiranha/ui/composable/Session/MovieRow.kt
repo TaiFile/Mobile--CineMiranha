@@ -15,11 +15,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.ufscar.cinemiranha.model.MovieResponse
+import br.ufscar.cinemiranha.ui.theme.Dimens
 import coil.compose.AsyncImage
 
 @Composable
@@ -27,7 +27,7 @@ fun MovieRow(movie: MovieResponse) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp),
+            .padding(horizontal = Dimens.SpaceL),
         verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
@@ -40,12 +40,11 @@ fun MovieRow(movie: MovieResponse) {
                 .background(MaterialTheme.colorScheme.surface),
             contentScale = ContentScale.Crop
         )
-        Spacer(modifier = Modifier.width(12.dp))
+        Spacer(modifier = Modifier.width(Dimens.SpaceM))
         Text(
             text = movie.title.uppercase(),
             color = MaterialTheme.colorScheme.onPrimary,
-            fontSize = 15.sp,
-            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.titleSmall,
             lineHeight = 20.sp,
             maxLines = 3,
             overflow = TextOverflow.Ellipsis
