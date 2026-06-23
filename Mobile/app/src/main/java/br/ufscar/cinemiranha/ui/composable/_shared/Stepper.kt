@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import br.ufscar.cinemiranha.ui.theme.Dimens
 
 @Composable
-fun Stepper(currentStep: Int, totalSteps: Int = 8) {
+fun Stepper(currentStep: Int, totalSteps: Int = 5) {
     Row(
         modifier = Modifier
             .fillMaxWidth()

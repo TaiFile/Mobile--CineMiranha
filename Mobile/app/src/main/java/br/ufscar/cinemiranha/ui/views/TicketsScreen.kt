@@ -29,15 +29,17 @@ import br.ufscar.cinemiranha.model.dto.MovieResponse
 import br.ufscar.cinemiranha.model.dto.SessionResponse
 import br.ufscar.cinemiranha.ui.composable._shared.Stepper
 import br.ufscar.cinemiranha.ui.theme.Dimens
-import br.ufscar.cinemiranha.viewmodel.CheckoutViewModel
+import br.ufscar.cinemiranha.viewmodel.SeatsViewModel
 import br.ufscar.cinemiranha.viewmodel.SessionsViewModel
+import br.ufscar.cinemiranha.viewmodel.TicketsViewModel
 import coil.compose.AsyncImage
 
 @Composable
 fun TicketsScreen(
     movieId: Long,
     sessionId: Long,
-    checkoutViewModel: CheckoutViewModel,
+    seatsViewModel: SeatsViewModel,
+    ticketsViewModel: TicketsViewModel,
     onBack: () -> Unit,
     onNext: () -> Unit
 ) {
@@ -45,8 +47,10 @@ fun TicketsScreen(
     val state = vm.uiState
     val session = state.sessions.find { it.id == sessionId }
 
-    val checkoutState by checkoutViewModel.uiState.collectAsState()
-    val selectedSeats = checkoutState.selectedSeats
+    val seatsState by seatsViewModel.uiState.collectAsState()
+    val selectedSeats = seatsState.selectedSeats
+
+    val ticketsState by ticketsViewModel.uiState.collectAsState()
 
     Scaffold(
         topBar = { TicketsTopBar(onBack = onBack) },
@@ -92,15 +96,15 @@ fun TicketsScreen(
                     TicketTypeItem(
                         label = stringResource(R.string.ticket_full),
                         price = "R$40,00",
-                        count = checkoutState.fullPriceCount,
+                        count = ticketsState.fullPriceCount,
                         onIncrease = {
-                            if (checkoutState.fullPriceCount + checkoutState.halfPriceCount < selectedSeats.size) {
-                                checkoutViewModel.setTicketCounts(checkoutState.fullPriceCount + 1, checkoutState.halfPriceCount)
+                            if (ticketsState.fullPriceCount + ticketsState.halfPriceCount < selectedSeats.size) {
+                                ticketsViewModel.setTicketCounts(ticketsState.fullPriceCount + 1, ticketsState.halfPriceCount)
                             }
                         },
                         onDecrease = {
-                            if (checkoutState.fullPriceCount > 0) {
-                                checkoutViewModel.setTicketCounts(checkoutState.fullPriceCount - 1, checkoutState.halfPriceCount)
+                            if (ticketsState.fullPriceCount > 0) {
+                                ticketsViewModel.setTicketCounts(ticketsState.fullPriceCount - 1, ticketsState.halfPriceCount)
                             }
                         }
                     )
@@ -110,15 +114,15 @@ fun TicketsScreen(
                     TicketTypeItem(
                         label = stringResource(R.string.ticket_half),
                         price = "R$20,00",
-                        count = checkoutState.halfPriceCount,
+                        count = ticketsState.halfPriceCount,
                         onIncrease = {
-                            if (checkoutState.fullPriceCount + checkoutState.halfPriceCount < selectedSeats.size) {
-                                checkoutViewModel.setTicketCounts(checkoutState.fullPriceCount, checkoutState.halfPriceCount + 1)
+                            if (ticketsState.fullPriceCount + ticketsState.halfPriceCount < selectedSeats.size) {
+                                ticketsViewModel.setTicketCounts(ticketsState.fullPriceCount, ticketsState.halfPriceCount + 1)
                             }
                         },
                         onDecrease = {
-                            if (checkoutState.halfPriceCount > 0) {
-                                checkoutViewModel.setTicketCounts(checkoutState.fullPriceCount, checkoutState.halfPriceCount - 1)
+                            if (ticketsState.halfPriceCount > 0) {
+                                ticketsViewModel.setTicketCounts(ticketsState.fullPriceCount, ticketsState.halfPriceCount - 1)
                             }
                         }
                     )
@@ -128,7 +132,7 @@ fun TicketsScreen(
                     Spacer(modifier = Modifier.height(Dimens.SpaceXXL))
                     Button(
                         onClick = onNext,
-                        enabled = (checkoutState.fullPriceCount + checkoutState.halfPriceCount) == selectedSeats.size && selectedSeats.isNotEmpty(),
+                        enabled = (ticketsState.fullPriceCount + ticketsState.halfPriceCount) == selectedSeats.size && selectedSeats.isNotEmpty(),
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(Dimens.ButtonHeight),

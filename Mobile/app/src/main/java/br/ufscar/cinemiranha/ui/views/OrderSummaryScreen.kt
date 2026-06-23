@@ -1,4 +1,4 @@
-package br.ufscar.cinemiranha.ui.views
+package br.ufscar.cinemiranha.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -28,8 +28,10 @@ import br.ufscar.cinemiranha.model.dto.MovieResponse
 import br.ufscar.cinemiranha.model.dto.SessionResponse
 import br.ufscar.cinemiranha.ui.composable._shared.Stepper
 import br.ufscar.cinemiranha.ui.theme.Dimens
-import br.ufscar.cinemiranha.viewmodel.CheckoutViewModel
+import br.ufscar.cinemiranha.viewmodel.SeatsViewModel
 import br.ufscar.cinemiranha.viewmodel.SessionsViewModel
+import br.ufscar.cinemiranha.viewmodel.SnacksViewModel
+import br.ufscar.cinemiranha.viewmodel.TicketsViewModel
 import coil.compose.AsyncImage
 import java.util.Locale
 
@@ -37,14 +39,19 @@ import java.util.Locale
 fun OrderSummaryScreen(
     movieId: Long,
     sessionId: Long,
-    checkoutViewModel: CheckoutViewModel,
+    seatsViewModel: SeatsViewModel,
+    ticketsViewModel: TicketsViewModel,
+    snacksViewModel: SnacksViewModel,
     onBack: () -> Unit,
     onNext: () -> Unit
 ) {
-    val vm: SessionsViewModel = viewModel(factory = SessionsViewModel.factory(movieId))
-    val state = vm.uiState
-    val session = state.sessions.find { it.id == sessionId }
-    val checkoutState by checkoutViewModel.uiState.collectAsState()
+    val sessionsVm: SessionsViewModel = viewModel(factory = SessionsViewModel.factory(movieId))
+    val sessionsState by sessionsVm.uiState.collectAsState()
+    val session = sessionsState.sessions.find { it.id == sessionId }
+
+    val seatsState by seatsViewModel.uiState.collectAsState()
+    val ticketsState by ticketsViewModel.uiState.collectAsState()
+    val snacksState by snacksViewModel.uiState.collectAsState()
 
     Scaffold(
         topBar = { SummaryTopBar(onBack = onBack) },
@@ -74,9 +81,9 @@ fun OrderSummaryScreen(
                     )
                 }
 
-                if (state.movie != null && session != null) {
+                if (sessionsState.movie != null && session != null) {
                     item {
-                        SummaryMovieInfo(state.movie!!, session)
+                        SummaryMovieInfo(sessionsState.movie!!, session)
                     }
 
                     item {
@@ -88,19 +95,19 @@ fun OrderSummaryScreen(
                             HorizontalDivider(color = MaterialTheme.colorScheme.outline)
 
                             val ticketTypeDesc = buildString {
-                                if (checkoutState.fullPriceCount > 0) append("${checkoutState.fullPriceCount} ${stringResource(R.string.ticket_full)}")
-                                if (checkoutState.fullPriceCount > 0 && checkoutState.halfPriceCount > 0) append(", ")
-                                if (checkoutState.halfPriceCount > 0) append("${checkoutState.halfPriceCount} ${stringResource(R.string.ticket_half)}")
+                                if (ticketsState.fullPriceCount > 0) append("${ticketsState.fullPriceCount} ${stringResource(R.string.ticket_full)}")
+                                if (ticketsState.fullPriceCount > 0 && ticketsState.halfPriceCount > 0) append(", ")
+                                if (ticketsState.halfPriceCount > 0) append("${ticketsState.halfPriceCount} ${stringResource(R.string.ticket_half)}")
                             }
-                            SummaryInfoRow(stringResource(R.string.summary_seats), "${checkoutState.selectedSeats.joinToString(", ")} ($ticketTypeDesc)")
+                            SummaryInfoRow(stringResource(R.string.summary_seats), "${seatsState.selectedSeats.joinToString(", ")} ($ticketTypeDesc)")
 
                             HorizontalDivider(color = MaterialTheme.colorScheme.outline)
 
-                            val snacksSummary = if (checkoutState.selectedSnacks.isEmpty()) {
+                            val snacksSummary = if (snacksState.selectedSnacks.isEmpty()) {
                                 "---"
                             } else {
-                                checkoutState.selectedSnacks.mapNotNull { (id, qty) ->
-                                    checkoutViewModel.availableSnacks.find { it.id == id }?.let { "${qty}x ${it.name}" }
+                                snacksState.selectedSnacks.mapNotNull { (id, qty) ->
+                                    snacksViewModel.availableSnacks.find { it.id == id }?.let { "${qty}x ${it.name}" }
                                 }.joinToString(", ")
                             }
                             SummaryInfoRow(stringResource(R.string.summary_snackbar), snacksSummary)
@@ -123,9 +130,9 @@ fun OrderSummaryScreen(
 
                 item {
                     OrderTotalCard(
-                        ticketCount = checkoutState.fullPriceCount + checkoutState.halfPriceCount,
-                        ticketTotal = checkoutViewModel.getTotalTicketPrice(),
-                        snackTotal = checkoutViewModel.getTotalSnackPrice()
+                        ticketCount = ticketsState.fullPriceCount + ticketsState.halfPriceCount,
+                        ticketTotal = ticketsViewModel.getTotalPrice(),
+                        snackTotal = snacksViewModel.getTotalSnackPrice()
                     )
                 }
 
@@ -138,7 +145,7 @@ fun OrderSummaryScreen(
                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary),
                         shape = MaterialTheme.shapes.medium
                     ) {
-                        Text(stringResource(R.string.btn_next), color = MaterialTheme.colorScheme.background, fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.btn_confirm_purchase), color = MaterialTheme.colorScheme.background, fontWeight = FontWeight.Bold)
                     }
                 }
             }

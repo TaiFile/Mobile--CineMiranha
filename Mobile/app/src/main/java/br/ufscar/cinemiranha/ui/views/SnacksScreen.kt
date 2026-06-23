@@ -26,14 +26,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.ufscar.cinemiranha.R
 import br.ufscar.cinemiranha.ui.composable._shared.Stepper
+import br.ufscar.cinemiranha.model.Snack
 import br.ufscar.cinemiranha.ui.theme.Dimens
-import br.ufscar.cinemiranha.viewmodel.CheckoutViewModel
-import br.ufscar.cinemiranha.viewmodel.Snack
+import br.ufscar.cinemiranha.viewmodel.SnacksViewModel
 import java.util.Locale
 
 @Composable
 fun SnacksScreen(
-    viewModel: CheckoutViewModel,
+    snacksViewModel: SnacksViewModel,
     onBack: () -> Unit,
     onNext: () -> Unit
 ) {
@@ -50,7 +50,7 @@ fun SnacksScreen(
         selectedCategory = categories[0]
     }
 
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by snacksViewModel.uiState.collectAsState()
 
     Scaffold(
         topBar = { SnacksTopBar(onBack = onBack) },
@@ -99,12 +99,12 @@ fun SnacksScreen(
                 contentPadding = PaddingValues(Dimens.SpaceL),
                 verticalArrangement = Arrangement.spacedBy(Dimens.SpaceL)
             ) {
-                items(viewModel.availableSnacks) { snack ->
+                items(snacksViewModel.availableSnacks) { snack ->
                     SnackItem(
                         snack = snack,
                         quantity = uiState.selectedSnacks.getOrDefault(snack.id, 0),
-                        onAdd = { viewModel.updateSnackQuantity(snack.id, 1) },
-                        onRemove = { viewModel.updateSnackQuantity(snack.id, -1) }
+                        onAdd = { snacksViewModel.updateSnackQuantity(snack.id, 1) },
+                        onRemove = { snacksViewModel.updateSnackQuantity(snack.id, -1) }
                     )
                 }
             }

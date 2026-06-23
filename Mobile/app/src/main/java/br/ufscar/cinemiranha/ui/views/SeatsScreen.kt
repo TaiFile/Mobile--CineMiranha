@@ -31,19 +31,27 @@ import br.ufscar.cinemiranha.model.dto.SessionResponse
 import br.ufscar.cinemiranha.ui.composable._shared.Stepper
 import br.ufscar.cinemiranha.viewmodel.SessionsViewModel
 import br.ufscar.cinemiranha.ui.theme.Dimens
+import br.ufscar.cinemiranha.viewmodel.SeatsViewModel
 import coil.compose.AsyncImage
 
 @Composable
-fun SeatsScreen(movieId: Long, sessionId: Long, onBack: () -> Unit, onSeatsSelected: (List<String>) -> Unit) {
+fun SeatsScreen(
+    movieId: Long,
+    sessionId: Long,
+    seatsViewModel: SeatsViewModel,
+    onBack: () -> Unit,
+    onNext: () -> Unit
+) {
     val vm: SessionsViewModel = viewModel(factory = SessionsViewModel.factory(movieId))
     val state  = vm.uiState
     val session = state.sessions.find { it.id == sessionId }
 
-    var selectedSeats by remember { mutableStateOf(setOf<String>()) }
+    val seatsState by seatsViewModel.uiState.collectAsState()
+    val selectedSeats = seatsState.selectedSeats
 
     Scaffold(
         topBar = { SeatsTopBar(onBack = onBack) },
-        bottomBar = { SeatsBottomBar(selectedSeats.size, onConfirm = { onSeatsSelected(selectedSeats.toList()) }) },
+        bottomBar = { SeatsBottomBar(selectedSeats.size, onConfirm = onNext) },
         containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         Column(
@@ -87,13 +95,13 @@ fun SeatsScreen(movieId: Long, sessionId: Long, onBack: () -> Unit, onSeatsSelec
 
                         Spacer(modifier = Modifier.height(Dimens.SpaceXL))
 
-                        // Mock grid of seats
-                        SeatGrid(selectedSeats) { seat ->
-                            if (selectedSeats.contains(seat)) {
-                                selectedSeats = selectedSeats - seat
+                        SeatGrid(selectedSeats.toSet()) { seat ->
+                            val newSeats = if (selectedSeats.contains(seat)) {
+                                selectedSeats - seat
                             } else {
-                                selectedSeats = selectedSeats + seat
+                                selectedSeats + seat
                             }
+                            seatsViewModel.setSelectedSeats(newSeats)
                         }
 
                         Spacer(modifier = Modifier.height(Dimens.SpaceXL))
@@ -150,7 +158,6 @@ private fun SeatGrid(selectedSeats: Set<String>, onSeatToggle: (String) -> Unit)
         }
 
         Spacer(modifier = Modifier.height(Dimens.SpaceL))
-        // Screen indicator
         Box(
             modifier = Modifier
                 .fillMaxWidth(0.8f)
