@@ -16,12 +16,14 @@ public class Session {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column
     private Format format;
 
     @Column
     private LocalDateTime date;
 
+    @Enumerated(EnumType.STRING)
     @Column
     private Subtitle subtitle;
 

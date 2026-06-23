@@ -37,14 +37,14 @@ fun DatePicker(
             Column(
                 modifier = Modifier
                     .clip(MaterialTheme.shapes.small)
-                    .background(if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.surface)
+                    .background(if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface)
                     .clickable { onDateSelected(date) }
                     .padding(horizontal = Dimens.SpaceM, vertical = Dimens.SpaceS),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
                     text = weekDay,
-                    color = if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSecondary,
+                    color = if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.secondary,
                     fontSize = 11.sp,
                     fontWeight = FontWeight.Bold
                 )

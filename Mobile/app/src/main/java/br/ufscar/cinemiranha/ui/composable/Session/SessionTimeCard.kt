@@ -32,7 +32,7 @@ fun SessionTimeCard(session: SessionResponse, modifier: Modifier = Modifier, onC
     ) {
         Text(
             text = session.timeLabel(),
-            color = MaterialTheme.colorScheme.onBackground,
+            color = MaterialTheme.colorScheme.primary,
             style = MaterialTheme.typography.titleSmall
         )
         Spacer(modifier = Modifier.height(Dimens.SpaceXS))
@@ -51,7 +51,8 @@ fun FormatBadge(label: String) {
             .background(color = MaterialTheme.colorScheme.outline)
             .padding(horizontal = 5.dp, vertical = 2.dp)
     ) {
-        Text(text = label, color = MaterialTheme.colorScheme.onPrimary, style = MaterialTheme.typography.labelSmall)
+        Text(text = label, color = MaterialTheme.colorScheme.onPrimary,
+            style = MaterialTheme.typography.labelSmall)
     }
 }
 

@@ -52,7 +52,7 @@ fun MovieDetail(movie: MovieResponse, onBuyTickets: () -> Unit = {}) {
                     Spacer(modifier = Modifier.height(6.dp))
                     Text(
                         text = movie.synopsis,
-                        color = MaterialTheme.colorScheme.onSecondary,
+                        color = MaterialTheme.colorScheme.onPrimary,
                         style = MaterialTheme.typography.bodyMedium,
                         lineHeight = 20.sp
                     )

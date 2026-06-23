@@ -46,41 +46,9 @@ fun TopBar() {
             .padding(horizontal = Dimens.SpaceL, vertical = Dimens.SpaceL),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        IconButton(
-            onClick = {},
-            modifier = Modifier.size(28.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Default.Menu,
-                contentDescription = stringResource(R.string.cd_menu),
-                tint = MaterialTheme.colorScheme.onPrimary,
-                modifier = Modifier.fillMaxSize()
-            )
-        }
 
         Spacer(modifier = Modifier.weight(1f))
         AppLogo(modifier = Modifier.height(40.dp))
         Spacer(modifier = Modifier.weight(1f))
-
-        Box(
-            modifier = Modifier
-                .size(28.dp)
-                .clip(RoundedCornerShape(4.dp))
-                .background(MaterialTheme.colorScheme.primary)
-                .clickable {
-                    val tag = if (isPtBr) "en" else "pt-BR"
-                    AppCompatDelegate.setApplicationLocales(
-                        LocaleListCompat.forLanguageTags(tag)
-                    )
-                },
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = if (isPtBr) "EN" else "PT",
-                color = MaterialTheme.colorScheme.onPrimary,
-                fontSize = 10.sp,
-                fontWeight = FontWeight.Bold
-            )
-        }
     }
 }

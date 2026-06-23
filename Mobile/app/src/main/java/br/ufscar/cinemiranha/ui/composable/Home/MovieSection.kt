@@ -35,8 +35,10 @@ fun MovieSection(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = title, color = MaterialTheme.colorScheme.onPrimary, style = MaterialTheme.typography.titleMedium)
-            Text(text = stringResource(R.string.see_more), color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.bodyMedium)
+            Text(text = title, color = MaterialTheme.colorScheme.onPrimary,
+                style = MaterialTheme.typography.titleMedium)
+            Text(text = stringResource(R.string.see_more),
+                color = MaterialTheme.colorScheme.primary, style = MaterialTheme.typography.bodyMedium)
         }
         Spacer(modifier = Modifier.height(Dimens.SpaceM))
         if (movies.isEmpty()) {

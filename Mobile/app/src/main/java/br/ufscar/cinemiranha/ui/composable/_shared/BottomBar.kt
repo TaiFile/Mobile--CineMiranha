@@ -24,6 +24,6 @@ fun BottomBar() {
             .padding(vertical = 14.dp),
         contentAlignment = Alignment.Center
     ) {
-        AppLogo(modifier = Modifier.height(50.dp))
+        AppLogo(modifier = Modifier.height(40.dp))
     }
 }

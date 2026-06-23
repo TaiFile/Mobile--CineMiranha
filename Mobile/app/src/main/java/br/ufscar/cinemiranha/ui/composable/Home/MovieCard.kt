@@ -66,7 +66,8 @@ fun MovieCard(movie: MovieResponse, showDuration: Boolean, onClick: () -> Unit) 
 
         val subtitle = if (showDuration) movie.durationLabel() else movie.firstSessionDate()
         subtitle?.let {
-            Text(text = it, color = MaterialTheme.colorScheme.onSecondary, style = MaterialTheme.typography.labelLarge)
+            Text(text = it, color = MaterialTheme.colorScheme.secondary,
+                style = MaterialTheme.typography.labelLarge)
         }
     }
 }

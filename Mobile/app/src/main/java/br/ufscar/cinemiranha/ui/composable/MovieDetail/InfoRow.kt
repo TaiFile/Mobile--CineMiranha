@@ -22,7 +22,8 @@ fun InfoRow(movie: MovieResponse) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         val genres = movie.genreNames?.joinToString(", ") ?: ""
-        Text(text = genres, color = MaterialTheme.colorScheme.onSecondary, style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
+        Text(text = genres, color = MaterialTheme.colorScheme.onPrimary,
+            style = MaterialTheme.typography.bodyMedium, modifier = Modifier.weight(1f))
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             movie.ageRatingLabel()?.let { label ->
@@ -30,7 +31,7 @@ fun InfoRow(movie: MovieResponse) {
                 Spacer(modifier = Modifier.width(Dimens.SpaceS))
             }
             movie.durationLabel()?.let { duration ->
-                Text(text = duration, color = MaterialTheme.colorScheme.onSecondary, style = MaterialTheme.typography.bodyMedium)
+                Text(text = duration, color = MaterialTheme.colorScheme.onPrimary, style = MaterialTheme.typography.bodyMedium)
             }
         }
     }
