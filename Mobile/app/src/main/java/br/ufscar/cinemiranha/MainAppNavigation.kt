@@ -60,14 +60,12 @@ fun MainAppNavigation(navController: NavHostController) {
                 sessions           = vm.uiState.sessions,
                 selectedDate       = vm.uiState.selectedDate,
                 selectedSubtitle   = vm.uiState.selectedSubtitle,
-                selectedFormat     = vm.uiState.selectedFormat,
                 onSessionSelected  = { sessionId ->
                     checkoutViewModel.resetCheckout()
                     navController.navigate("seats/$movieId/$sessionId")
                 },
                 onDateSelected     = { vm.selectDate(it) },
                 onSubtitleSelected = { vm.selectSubtitle(it) },
-                onFormatSelected   = { vm.selectFormat(it) },
                 onRetry            = { vm.load() }
             )
         }

@@ -37,8 +37,17 @@ fun DatePicker(
             Column(
                 modifier = Modifier
                     .clip(MaterialTheme.shapes.small)
-                    .background(if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface)
-                    .clickable { onDateSelected(date) }
+                    .background(
+                        if (selected)
+                        MaterialTheme.colorScheme.primary
+                    else
+                        MaterialTheme.colorScheme.surface)
+                    .clickable { onDateSelected(
+                        if (selected)
+                            null
+                        else
+                            date)
+                    }
                     .padding(horizontal = Dimens.SpaceM, vertical = Dimens.SpaceS),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {

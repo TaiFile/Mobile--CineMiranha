@@ -19,8 +19,7 @@ data class SessionsUiState(
     val isLoading: Boolean = true,
     val errorMessage: String? = null,
     val selectedDate: String? = null,
-    val selectedSubtitle: String? = null,
-    val selectedFormat: String? = null
+    val selectedSubtitle: String? = null
 )
 
 class SessionsViewModel(
@@ -62,10 +61,6 @@ class SessionsViewModel(
 
     fun selectSubtitle(subtitle: String?) {
         uiState = uiState.copy(selectedSubtitle = subtitle)
-    }
-
-    fun selectFormat(format: String?) {
-        uiState = uiState.copy(selectedFormat = format)
     }
 
     companion object {

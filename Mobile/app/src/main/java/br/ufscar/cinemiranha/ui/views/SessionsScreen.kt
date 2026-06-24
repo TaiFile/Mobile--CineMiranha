@@ -25,11 +25,9 @@ fun SessionsScreen(
     sessions: List<SessionResponse>,
     selectedDate: String?,
     selectedSubtitle: String?,
-    selectedFormat: String?,
     onSessionSelected: (Long) -> Unit,
     onDateSelected: (String?) -> Unit,
     onSubtitleSelected: (String?) -> Unit,
-    onFormatSelected: (String?) -> Unit,
     onRetry: () -> Unit
 ) {
     Scaffold(
@@ -53,10 +51,8 @@ fun SessionsScreen(
                         sessions           = sessions,
                         selectedDate       = selectedDate,
                         selectedSubtitle   = selectedSubtitle,
-                        selectedFormat     = selectedFormat,
                         onDateSelected     = onDateSelected,
                         onSubtitleSelected = onSubtitleSelected,
-                        onFormatSelected   = onFormatSelected,
                         onSessionSelected  = onSessionSelected
                     )
                 }
