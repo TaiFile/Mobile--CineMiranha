@@ -6,8 +6,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import br.ufscar.cinemiranha.model.MovieResponse
-import br.ufscar.cinemiranha.model.SessionResponse
+import br.ufscar.cinemiranha.model.dto.MovieResponse
+import br.ufscar.cinemiranha.model.dto.SessionResponse
 import br.ufscar.cinemiranha.network.RetrofitClient
 import br.ufscar.cinemiranha.repository.MovieRepository
 import br.ufscar.cinemiranha.repository.SessionRepository
@@ -19,8 +19,7 @@ data class SessionsUiState(
     val isLoading: Boolean = true,
     val errorMessage: String? = null,
     val selectedDate: String? = null,
-    val selectedSubtitle: String? = null,
-    val selectedFormat: String? = null
+    val selectedSubtitle: String? = null
 )
 
 class SessionsViewModel(
@@ -42,12 +41,10 @@ class SessionsViewModel(
             try {
                 val movie = movieRepository.getMovie(movieId)
                 val sessions = sessionRepository.getSessions(movieId)
-                val firstDate = sessions.map { it.dateDayLabel() }.distinct().firstOrNull()
                 uiState = SessionsUiState(
                     movie = movie,
                     sessions = sessions,
-                    isLoading = false,
-                    selectedDate = firstDate
+                    isLoading = false
                 )
             } catch (e: Exception) {
                 uiState = SessionsUiState(
@@ -64,10 +61,6 @@ class SessionsViewModel(
 
     fun selectSubtitle(subtitle: String?) {
         uiState = uiState.copy(selectedSubtitle = subtitle)
-    }
-
-    fun selectFormat(format: String?) {
-        uiState = uiState.copy(selectedFormat = format)
     }
 
     companion object {

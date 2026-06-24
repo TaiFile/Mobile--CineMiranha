@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import br.ufscar.cinemiranha.R
-import br.ufscar.cinemiranha.model.MovieResponse
+import br.ufscar.cinemiranha.model.dto.MovieResponse
 import br.ufscar.cinemiranha.ui.theme.Dimens
 
 @Composable

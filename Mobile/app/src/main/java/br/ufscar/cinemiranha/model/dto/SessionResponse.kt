@@ -1,4 +1,4 @@
-package br.ufscar.cinemiranha.model
+package br.ufscar.cinemiranha.model.dto
 
 import java.time.LocalDateTime
 

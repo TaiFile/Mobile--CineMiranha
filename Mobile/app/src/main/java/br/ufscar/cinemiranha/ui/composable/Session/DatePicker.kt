@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import br.ufscar.cinemiranha.model.SessionResponse
+import br.ufscar.cinemiranha.model.dto.SessionResponse
 import br.ufscar.cinemiranha.ui.theme.Dimens
 
 
@@ -37,8 +37,17 @@ fun DatePicker(
             Column(
                 modifier = Modifier
                     .clip(MaterialTheme.shapes.small)
-                    .background(if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface)
-                    .clickable { onDateSelected(date) }
+                    .background(
+                        if (selected)
+                        MaterialTheme.colorScheme.primary
+                    else
+                        MaterialTheme.colorScheme.surface)
+                    .clickable { onDateSelected(
+                        if (selected)
+                            null
+                        else
+                            date)
+                    }
                     .padding(horizontal = Dimens.SpaceM, vertical = Dimens.SpaceS),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {

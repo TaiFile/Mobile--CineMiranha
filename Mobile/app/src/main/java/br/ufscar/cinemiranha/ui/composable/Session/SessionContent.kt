@@ -15,8 +15,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.ufscar.cinemiranha.R
-import br.ufscar.cinemiranha.model.MovieResponse
-import br.ufscar.cinemiranha.model.SessionResponse
+import br.ufscar.cinemiranha.model.dto.MovieResponse
+import br.ufscar.cinemiranha.model.dto.SessionResponse
 import br.ufscar.cinemiranha.ui.theme.Dimens
 
 @Composable
@@ -25,18 +25,15 @@ fun SessionsContent(
     sessions: List<SessionResponse>,
     selectedDate: String?,
     selectedSubtitle: String?,
-    selectedFormat: String?,
     onDateSelected: (String?) -> Unit,
     onSubtitleSelected: (String?) -> Unit,
-    onFormatSelected: (String?) -> Unit,
     onSessionSelected: (Long) -> Unit
 ) {
     val dates = sessions.map { it.dateDayLabel() }.distinct().sorted()
 
     val filtered = sessions.filter { s ->
         (selectedDate == null || s.dateDayLabel() == selectedDate) &&
-                (selectedSubtitle == null || s.subtitleLabel() == selectedSubtitle) &&
-                (selectedFormat == null || s.formatLabel() == selectedFormat)
+                (selectedSubtitle == null || s.subtitleLabel() == selectedSubtitle)
     }
 
     val byRoom = filtered
@@ -44,7 +41,6 @@ fun SessionsContent(
         .toSortedMap()
 
     val subtitleOptions = sessions.map { it.subtitleLabel() }.distinct().sorted()
-    val formatOptions   = sessions.map { it.formatLabel() }.distinct().sorted()
 
     LazyColumn(
         contentPadding = PaddingValues(bottom = Dimens.SpaceL)
@@ -84,12 +80,9 @@ fun SessionsContent(
 
         item {
             FilterRow(
-                subtitleOptions  = subtitleOptions,
-                formatOptions    = formatOptions,
-                selectedSubtitle = selectedSubtitle,
-                selectedFormat   = selectedFormat,
-                onSubtitleSelected = onSubtitleSelected,
-                onFormatSelected   = onFormatSelected
+                subtitleOptions    = subtitleOptions,
+                selectedSubtitle   = selectedSubtitle,
+                onSubtitleSelected = onSubtitleSelected
             )
         }
 

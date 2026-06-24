@@ -10,7 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import br.ufscar.cinemiranha.model.MovieResponse
+import br.ufscar.cinemiranha.model.dto.MovieResponse
 import br.ufscar.cinemiranha.ui.composable.Home.AgeBadgeBox
 import br.ufscar.cinemiranha.ui.theme.Dimens
 

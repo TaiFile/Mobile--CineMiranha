@@ -1,6 +1,6 @@
 package br.ufscar.cinemiranha.repository
 
-import br.ufscar.cinemiranha.model.MovieResponse
+import br.ufscar.cinemiranha.model.dto.MovieResponse
 import br.ufscar.cinemiranha.network.ApiService
 
 class MovieRepository(private val api: ApiService) {

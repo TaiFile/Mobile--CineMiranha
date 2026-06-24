@@ -26,9 +26,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import br.ufscar.cinemiranha.R
-import br.ufscar.cinemiranha.model.MovieResponse
-import br.ufscar.cinemiranha.model.SessionResponse
-import br.ufscar.cinemiranha.ui.composable.Stepper
+import br.ufscar.cinemiranha.model.dto.MovieResponse
+import br.ufscar.cinemiranha.model.dto.SessionResponse
+import br.ufscar.cinemiranha.ui.composable._shared.Stepper
 import br.ufscar.cinemiranha.viewmodel.SessionsViewModel
 import br.ufscar.cinemiranha.ui.theme.Dimens
 import coil.compose.AsyncImage
