@@ -7,15 +7,26 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import br.ufscar.cinemiranha.ui.views.*
-import br.ufscar.cinemiranha.viewmodel.CheckoutViewModel
 import br.ufscar.cinemiranha.viewmodel.HomeViewModel
 import br.ufscar.cinemiranha.viewmodel.MovieDetailViewModel
 import br.ufscar.cinemiranha.viewmodel.SessionsViewModel
+import br.ufscar.cinemiranha.ui.views.HomeScreen
+import br.ufscar.cinemiranha.ui.views.MovieDetailScreen
+import br.ufscar.cinemiranha.ui.views.SessionsScreen
+import br.ufscar.cinemiranha.ui.views.SeatsScreen
+import br.ufscar.cinemiranha.ui.views.TicketsScreen
+import br.ufscar.cinemiranha.ui.views.SnacksScreen
+import br.ufscar.cinemiranha.ui.screens.OrderSummaryScreen
+import br.ufscar.cinemiranha.ui.views.SuccessScreen
+import br.ufscar.cinemiranha.viewmodel.SeatsViewModel
+import br.ufscar.cinemiranha.viewmodel.TicketsViewModel
+import br.ufscar.cinemiranha.viewmodel.SnacksViewModel
 
 @Composable
 fun MainAppNavigation(navController: NavHostController) {
-    val checkoutViewModel: CheckoutViewModel = viewModel()
+    val seatsViewModel: SeatsViewModel = viewModel()
+    val ticketsViewModel: TicketsViewModel = viewModel()
+    val snacksViewModel: SnacksViewModel = viewModel()
 
     NavHost(navController = navController, startDestination = "home") {
         composable("home") {
@@ -61,7 +72,9 @@ fun MainAppNavigation(navController: NavHostController) {
                 selectedDate       = vm.uiState.selectedDate,
                 selectedSubtitle   = vm.uiState.selectedSubtitle,
                 onSessionSelected  = { sessionId ->
-                    checkoutViewModel.resetCheckout()
+                    seatsViewModel.reset()
+                    ticketsViewModel.reset()
+                    snacksViewModel.reset()
                     navController.navigate("seats/$movieId/$sessionId")
                 },
                 onDateSelected     = { vm.selectDate(it) },
@@ -73,93 +86,78 @@ fun MainAppNavigation(navController: NavHostController) {
         composable(
             route = "seats/{movieId}/{sessionId}",
             arguments = listOf(
-                navArgument("movieId") { type = NavType.LongType },
+                navArgument("movieId")   { type = NavType.LongType },
                 navArgument("sessionId") { type = NavType.LongType }
             )
         ) { backStackEntry ->
             val movieId   = backStackEntry.arguments?.getLong("movieId") ?: return@composable
             val sessionId = backStackEntry.arguments?.getLong("sessionId") ?: return@composable
             SeatsScreen(
-                movieId   = movieId,
-                sessionId = sessionId,
-                onBack    = { navController.popBackStack() },
-                onSeatsSelected = { seats ->
-                    checkoutViewModel.setSelectedSeats(seats)
-                    navController.navigate("tickets/$movieId/$sessionId")
-                }
+                movieId        = movieId,
+                sessionId      = sessionId,
+                seatsViewModel = seatsViewModel,
+                onBack         = { navController.popBackStack() },
+                onNext         = { navController.navigate("tickets/$movieId/$sessionId") }
             )
         }
 
         composable(
             route = "tickets/{movieId}/{sessionId}",
             arguments = listOf(
-                navArgument("movieId") { type = NavType.LongType },
+                navArgument("movieId")   { type = NavType.LongType },
                 navArgument("sessionId") { type = NavType.LongType }
             )
         ) { backStackEntry ->
             val movieId   = backStackEntry.arguments?.getLong("movieId") ?: return@composable
             val sessionId = backStackEntry.arguments?.getLong("sessionId") ?: return@composable
             TicketsScreen(
-                movieId           = movieId,
-                sessionId         = sessionId,
-                checkoutViewModel = checkoutViewModel,
-                onBack            = { navController.popBackStack() },
-                onNext            = { navController.navigate("snacks/$movieId/$sessionId") }
+                movieId          = movieId,
+                sessionId        = sessionId,
+                seatsViewModel   = seatsViewModel,
+                ticketsViewModel = ticketsViewModel,
+                onBack           = { navController.popBackStack() },
+                onNext           = { navController.navigate("snacks/$movieId/$sessionId") }
             )
         }
-
         composable(
             route = "snacks/{movieId}/{sessionId}",
             arguments = listOf(
-                navArgument("movieId") { type = NavType.LongType },
+                navArgument("movieId")   { type = NavType.LongType },
                 navArgument("sessionId") { type = NavType.LongType }
             )
         ) { backStackEntry ->
             val movieId   = backStackEntry.arguments?.getLong("movieId") ?: return@composable
             val sessionId = backStackEntry.arguments?.getLong("sessionId") ?: return@composable
             SnacksScreen(
-                viewModel = checkoutViewModel,
-                onBack    = { navController.popBackStack() },
-                onNext    = { navController.navigate("summary/$movieId/$sessionId") }
+                snacksViewModel = snacksViewModel,
+                onBack          = { navController.popBackStack() },
+                onNext          = { navController.navigate("summary/$movieId/$sessionId") }
             )
         }
 
         composable(
             route = "summary/{movieId}/{sessionId}",
             arguments = listOf(
-                navArgument("movieId") { type = NavType.LongType },
+                navArgument("movieId")   { type = NavType.LongType },
                 navArgument("sessionId") { type = NavType.LongType }
             )
         ) { backStackEntry ->
             val movieId   = backStackEntry.arguments?.getLong("movieId") ?: return@composable
             val sessionId = backStackEntry.arguments?.getLong("sessionId") ?: return@composable
             OrderSummaryScreen(
-                movieId           = movieId,
-                sessionId         = sessionId,
-                checkoutViewModel = checkoutViewModel,
-                onBack            = { navController.popBackStack() },
-                onNext            = { navController.navigate("payment/$movieId/$sessionId") }
-            )
-        }
-
-        composable(
-            route = "payment/{movieId}/{sessionId}",
-            arguments = listOf(
-                navArgument("movieId") { type = NavType.LongType },
-                navArgument("sessionId") { type = NavType.LongType }
-            )
-        ) {
-            PaymentMethodScreen(
-                checkoutViewModel = checkoutViewModel,
-                onBack            = { navController.popBackStack() },
-                onSelectMethod    = {
+                movieId          = movieId,
+                sessionId        = sessionId,
+                seatsViewModel   = seatsViewModel,
+                ticketsViewModel = ticketsViewModel,
+                snacksViewModel  = snacksViewModel,
+                onBack           = { navController.popBackStack() },
+                onNext           = {
                     navController.navigate("success") {
                         popUpTo("home") { inclusive = false }
                     }
                 }
             )
         }
-
         composable("success") {
             SuccessScreen(
                 onBackToMenu = {
