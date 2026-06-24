@@ -7,16 +7,15 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import br.ufscar.cinemiranha.ui.screens.HomeScreen
-import br.ufscar.cinemiranha.ui.screens.MovieDetailScreen
+import br.ufscar.cinemiranha.ui.views.HomeScreen
+import br.ufscar.cinemiranha.ui.views.MovieDetailScreen
 import br.ufscar.cinemiranha.viewmodel.HomeViewModel
-import br.ufscar.cinemiranha.ui.screens.SessionsScreen
-import br.ufscar.cinemiranha.ui.screens.SeatsScreen
-import br.ufscar.cinemiranha.ui.screens.TicketsScreen
-import br.ufscar.cinemiranha.ui.screens.SnacksScreen
-import br.ufscar.cinemiranha.ui.screens.OrderSummaryScreen
-import br.ufscar.cinemiranha.ui.screens.PaymentMethodScreen
-import br.ufscar.cinemiranha.ui.screens.SuccessScreen
+import br.ufscar.cinemiranha.ui.views.SessionsScreen
+import br.ufscar.cinemiranha.ui.views.SeatsScreen
+import br.ufscar.cinemiranha.ui.views.TicketsScreen
+import br.ufscar.cinemiranha.ui.views.SnacksScreen
+import br.ufscar.cinemiranha.ui.views.OrderSummaryScreen
+import br.ufscar.cinemiranha.ui.views.PaymentMethodScreen
 import br.ufscar.cinemiranha.viewmodel.CheckoutViewModel
 
 @Composable

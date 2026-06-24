@@ -1,4 +1,4 @@
-package br.ufscar.cinemiranha.ui.screens
+package br.ufscar.cinemiranha.ui.views
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import br.ufscar.cinemiranha.ui.composable.Session.SessionsContent
@@ -22,7 +20,7 @@ import br.ufscar.cinemiranha.viewmodel.SessionsViewModel
 @Composable
 fun SessionsScreen(movieId: Long, onBack: () -> Unit, onSessionSelected: (Long) -> Unit) {
     val vm: SessionsViewModel = viewModel(factory = SessionsViewModel.factory(movieId))
-    val state by vm.uiState.collectAsState()
+    val state = vm.uiState
 
     Scaffold(
         topBar    = { TopBar() },

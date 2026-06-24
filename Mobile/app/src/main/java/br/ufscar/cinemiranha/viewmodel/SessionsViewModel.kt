@@ -1,5 +1,8 @@
 package br.ufscar.cinemiranha.viewmodel
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -8,9 +11,6 @@ import br.ufscar.cinemiranha.model.SessionResponse
 import br.ufscar.cinemiranha.network.RetrofitClient
 import br.ufscar.cinemiranha.repository.MovieRepository
 import br.ufscar.cinemiranha.repository.SessionRepository
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 data class SessionsUiState(
@@ -29,28 +29,28 @@ class SessionsViewModel(
     private val sessionRepository: SessionRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(SessionsUiState())
-    val uiState: StateFlow<SessionsUiState> = _uiState.asStateFlow()
+    var uiState by mutableStateOf(SessionsUiState())
+        private set
 
     init {
         load()
     }
 
     fun load() {
-        _uiState.value = SessionsUiState(isLoading = true)
+        uiState = SessionsUiState(isLoading = true)
         viewModelScope.launch {
             try {
                 val movie = movieRepository.getMovie(movieId)
                 val sessions = sessionRepository.getSessions(movieId)
                 val firstDate = sessions.map { it.dateDayLabel() }.distinct().firstOrNull()
-                _uiState.value = SessionsUiState(
+                uiState = SessionsUiState(
                     movie = movie,
                     sessions = sessions,
                     isLoading = false,
                     selectedDate = firstDate
                 )
             } catch (e: Exception) {
-                _uiState.value = SessionsUiState(
+                uiState = SessionsUiState(
                     isLoading = false,
                     errorMessage = "Não foi possível carregar as sessões.\n${e.message}"
                 )
@@ -59,15 +59,15 @@ class SessionsViewModel(
     }
 
     fun selectDate(date: String?) {
-        _uiState.value = _uiState.value.copy(selectedDate = date)
+        uiState = uiState.copy(selectedDate = date)
     }
 
     fun selectSubtitle(subtitle: String?) {
-        _uiState.value = _uiState.value.copy(selectedSubtitle = subtitle)
+        uiState = uiState.copy(selectedSubtitle = subtitle)
     }
 
     fun selectFormat(format: String?) {
-        _uiState.value = _uiState.value.copy(selectedFormat = format)
+        uiState = uiState.copy(selectedFormat = format)
     }
 
     companion object {

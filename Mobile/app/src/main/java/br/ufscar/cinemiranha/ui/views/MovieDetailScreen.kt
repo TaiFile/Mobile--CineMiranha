@@ -1,10 +1,8 @@
-package br.ufscar.cinemiranha.ui.screens
+package br.ufscar.cinemiranha.ui.views
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import br.ufscar.cinemiranha.ui.composable.MovieDetail.MovieDetail
@@ -17,7 +15,7 @@ import br.ufscar.cinemiranha.viewmodel.MovieDetailViewModel
 @Composable
 fun MovieDetailScreen(movieId: Long, onBack: () -> Unit, onBuyTickets: (Long) -> Unit = {}) {
     val viewModel: MovieDetailViewModel = viewModel(factory = MovieDetailViewModel.factory(movieId))
-    val state by viewModel.uiState.collectAsState()
+    val state = viewModel.uiState
 
     Scaffold(
         topBar    = { TopBar() },

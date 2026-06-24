@@ -1,4 +1,4 @@
-package br.ufscar.cinemiranha.ui.screens
+package br.ufscar.cinemiranha.ui.views
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -42,7 +42,7 @@ fun TicketsScreen(
     onNext: () -> Unit
 ) {
     val vm: SessionsViewModel = viewModel(factory = SessionsViewModel.factory(movieId))
-    val state by vm.uiState.collectAsState()
+    val state = vm.uiState
     val session = state.sessions.find { it.id == sessionId }
 
     val checkoutState by checkoutViewModel.uiState.collectAsState()

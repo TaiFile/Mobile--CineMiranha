@@ -1,14 +1,14 @@
 package br.ufscar.cinemiranha.viewmodel
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import br.ufscar.cinemiranha.model.MovieResponse
 import br.ufscar.cinemiranha.network.RetrofitClient
 import br.ufscar.cinemiranha.repository.MovieRepository
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 data class MovieDetailUiState(
@@ -22,21 +22,21 @@ class MovieDetailViewModel(
     private val movieRepository: MovieRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(MovieDetailUiState())
-    val uiState: StateFlow<MovieDetailUiState> = _uiState.asStateFlow()
+    var uiState by mutableStateOf(MovieDetailUiState())
+        private set
 
     init {
         loadMovie()
     }
 
     fun loadMovie() {
-        _uiState.value = MovieDetailUiState(isLoading = true)
+        uiState = MovieDetailUiState(isLoading = true)
         viewModelScope.launch {
             try {
                 val movie = movieRepository.getMovie(movieId)
-                _uiState.value = MovieDetailUiState(movie = movie, isLoading = false)
+                uiState = MovieDetailUiState(movie = movie, isLoading = false)
             } catch (e: Exception) {
-                _uiState.value = MovieDetailUiState(
+                uiState = MovieDetailUiState(
                     isLoading = false,
                     errorMessage = "Não foi possível carregar o filme.\n${e.message}"
                 )
