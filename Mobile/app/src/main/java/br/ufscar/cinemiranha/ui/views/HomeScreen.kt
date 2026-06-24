@@ -7,7 +7,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import br.ufscar.cinemiranha.model.MovieResponse
+import br.ufscar.cinemiranha.model.dto.MovieResponse
 import br.ufscar.cinemiranha.ui.composable.Home.MovieContent
 import br.ufscar.cinemiranha.ui.composable._shared.BottomBar
 import br.ufscar.cinemiranha.ui.composable._shared.ErrorState

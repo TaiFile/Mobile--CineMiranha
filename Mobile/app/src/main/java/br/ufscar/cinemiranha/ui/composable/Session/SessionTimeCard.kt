@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import br.ufscar.cinemiranha.model.SessionResponse
+import br.ufscar.cinemiranha.model.dto.SessionResponse
 import br.ufscar.cinemiranha.ui.theme.Dimens
 
 @Composable

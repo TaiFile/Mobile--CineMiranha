@@ -19,7 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.ufscar.cinemiranha.R
-import br.ufscar.cinemiranha.model.MovieResponse
+import br.ufscar.cinemiranha.model.dto.MovieResponse
 import br.ufscar.cinemiranha.ui.theme.Dimens
 
 @Composable

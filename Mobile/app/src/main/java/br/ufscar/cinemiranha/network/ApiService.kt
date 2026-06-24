@@ -1,7 +1,7 @@
 package br.ufscar.cinemiranha.network
 
-import br.ufscar.cinemiranha.model.MovieResponse
-import br.ufscar.cinemiranha.model.SessionResponse
+import br.ufscar.cinemiranha.model.dto.MovieResponse
+import br.ufscar.cinemiranha.model.dto.SessionResponse
 import retrofit2.http.GET
 import retrofit2.http.Path
 

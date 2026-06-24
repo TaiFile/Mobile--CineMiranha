@@ -8,20 +8,30 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
+import br.ufscar.cinemiranha.model.dto.MovieResponse
+import br.ufscar.cinemiranha.model.dto.SessionResponse
 import br.ufscar.cinemiranha.ui.composable.Session.SessionsContent
-import br.ufscar.cinemiranha.ui.composable.Stepper
+import br.ufscar.cinemiranha.ui.composable._shared.Stepper
 import br.ufscar.cinemiranha.ui.composable._shared.BottomBar
 import br.ufscar.cinemiranha.ui.composable._shared.ErrorState
 import br.ufscar.cinemiranha.ui.composable._shared.LoadingState
 import br.ufscar.cinemiranha.ui.composable._shared.TopBar
-import br.ufscar.cinemiranha.viewmodel.SessionsViewModel
 
 @Composable
-fun SessionsScreen(movieId: Long, onBack: () -> Unit, onSessionSelected: (Long) -> Unit) {
-    val vm: SessionsViewModel = viewModel(factory = SessionsViewModel.factory(movieId))
-    val state = vm.uiState
-
+fun SessionsScreen(
+    isLoading: Boolean,
+    errorMessage: String?,
+    movie: MovieResponse?,
+    sessions: List<SessionResponse>,
+    selectedDate: String?,
+    selectedSubtitle: String?,
+    selectedFormat: String?,
+    onSessionSelected: (Long) -> Unit,
+    onDateSelected: (String?) -> Unit,
+    onSubtitleSelected: (String?) -> Unit,
+    onFormatSelected: (String?) -> Unit,
+    onRetry: () -> Unit
+) {
     Scaffold(
         topBar    = { TopBar() },
         bottomBar = { BottomBar() },
@@ -33,26 +43,21 @@ fun SessionsScreen(movieId: Long, onBack: () -> Unit, onSessionSelected: (Long) 
                 .padding(padding)
         ) {
             Stepper(currentStep = 0)
-            
-            Box(
-                modifier = Modifier.weight(1f)
-            ) {
+
+            Box(modifier = Modifier.weight(1f)) {
                 when {
-                    state.isLoading -> LoadingState()
-                    state.errorMessage != null -> ErrorState(
-                        message = state.errorMessage!!,
-                        onRetry = { vm.load() }
-                    )
+                    isLoading            -> LoadingState()
+                    errorMessage != null -> ErrorState(message = errorMessage, onRetry = onRetry)
                     else -> SessionsContent(
-                        movie           = state.movie,
-                        sessions        = state.sessions,
-                        selectedDate    = state.selectedDate,
-                        selectedSubtitle = state.selectedSubtitle,
-                        selectedFormat  = state.selectedFormat,
-                        onDateSelected  = { vm.selectDate(it) },
-                        onSubtitleSelected = { vm.selectSubtitle(it) },
-                        onFormatSelected   = { vm.selectFormat(it) },
-                        onSessionSelected = onSessionSelected
+                        movie              = movie,
+                        sessions           = sessions,
+                        selectedDate       = selectedDate,
+                        selectedSubtitle   = selectedSubtitle,
+                        selectedFormat     = selectedFormat,
+                        onDateSelected     = onDateSelected,
+                        onSubtitleSelected = onSubtitleSelected,
+                        onFormatSelected   = onFormatSelected,
+                        onSessionSelected  = onSessionSelected
                     )
                 }
             }

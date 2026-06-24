@@ -1,4 +1,4 @@
-package br.ufscar.cinemiranha.ui.composable
+package br.ufscar.cinemiranha.ui.composable._shared
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
