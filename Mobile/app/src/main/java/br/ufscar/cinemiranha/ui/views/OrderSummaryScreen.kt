@@ -1,4 +1,4 @@
-package br.ufscar.cinemiranha.ui.screens
+package br.ufscar.cinemiranha.ui.views
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -46,7 +46,7 @@ fun OrderSummaryScreen(
     onNext: () -> Unit
 ) {
     val sessionsVm: SessionsViewModel = viewModel(factory = SessionsViewModel.factory(movieId))
-    val sessionsState by sessionsVm.uiState.collectAsState()
+    val sessionsState = sessionsVm.uiState
     val session = sessionsState.sessions.find { it.id == sessionId }
 
     val seatsState by seatsViewModel.uiState.collectAsState()
