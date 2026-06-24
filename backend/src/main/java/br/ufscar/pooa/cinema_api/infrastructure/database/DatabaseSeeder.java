@@ -4,8 +4,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
@@ -56,12 +58,18 @@ public class DatabaseSeeder implements CommandLineRunner {
     private final ISessionRepository sessionRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public DatabaseSeeder(ITheaterRepository theaterRepository, IClientRepository clientRepository,
+    public DatabaseSeeder(
+        ITheaterRepository theaterRepository,
+        IClientRepository clientRepository,
         IManagerRepository managerRepository,
-        IGenreRepository genreRepository, IMovieRepository movieRepository,
-        IRoomRepository roomRepository, IRowRepository rowRepository,
-        ISeatRepository seatRepository, ISessionRepository sessionRepository,
-        PasswordEncoder passwordEncoder) {
+        IGenreRepository genreRepository,
+        IMovieRepository movieRepository,
+        IRoomRepository roomRepository,
+        IRowRepository rowRepository,
+        ISeatRepository seatRepository,
+        ISessionRepository sessionRepository,
+        PasswordEncoder passwordEncoder
+    ) {
         this.theaterRepository = theaterRepository;
         this.clientRepository = clientRepository;
         this.managerRepository = managerRepository;
@@ -74,6 +82,10 @@ public class DatabaseSeeder implements CommandLineRunner {
         this.passwordEncoder = passwordEncoder;
     }
 
+    // =========================================================================
+    // Entry point
+    // =========================================================================
+
     @Override
     @Transactional
     public void run(String... args) throws Exception {
@@ -82,8 +94,25 @@ public class DatabaseSeeder implements CommandLineRunner {
             return;
         }
 
-        System.out.println("Iniciando seeding MÍNIMO para criação de Ticket...");
+        System.out.println("Iniciando seeding...");
 
+        Theater theater = createTheater();
+        Client client = createClient();
+        Manager manager = createManager();
+        List<Room> rooms = createRooms(theater);
+        Map<String, Genre> genres = createGenres();
+        List<Session> sessions = createNowPlayingMoviesAndSessions(rooms, genres);
+        createComingSoonMovies(genres);
+
+        Seat firstSeat = seatRepository.findAll().get(0);
+        printSeedInfo(client, manager, sessions.get(0), firstSeat);
+    }
+
+    // =========================================================================
+    // Infrastructure
+    // =========================================================================
+
+    private Theater createTheater() {
         Address address = new Address()
             .setZipCode("13560-000")
             .setStreet("Rua do Teste")
@@ -94,15 +123,17 @@ public class DatabaseSeeder implements CommandLineRunner {
             .setCountry("Brasil")
             .setLatitude(-22.0176)
             .setLongitude(-47.8836);
-        Theater theater = new Theater()
-            .setName("Cine Teste")
-            .setLogoUrl("https://placehold.co/200x200/292929/FFFFFF/png?text=Cine+Teste")
+
+        return theaterRepository.save(new Theater()
+            .setName("CineMiranha")
+            .setLogoUrl("https://placehold.co/200x200/292929/FFFFFF/png?text=CineMiranha")
             .setRooms(new ArrayList<>())
             .setAddress(address)
-            .setManagers(new ArrayList<>());
-        Theater savedTheater = theaterRepository.save(theater);
+            .setManagers(new ArrayList<>()));
+    }
 
-        Client client = new Client()
+    private Client createClient() {
+        return clientRepository.save(new Client()
             .setEmail("cliente@teste.com")
             .setPassword(passwordEncoder.encode("123456"))
             .setCpf("123.456.789-00")
@@ -111,288 +142,262 @@ public class DatabaseSeeder implements CommandLineRunner {
             .setGender(Gender.MALE)
             .setBirthDate(LocalDate.now().minusYears(25))
             .setTickets(new ArrayList<>())
-            .setRole(Role.CLIENT);
-        Client savedClient = clientRepository.save(client);
+            .setRole(Role.CLIENT));
+    }
 
+    private Manager createManager() {
         Manager manager = new Manager();
         manager.setEmail("manager@teste.com");
         manager.setRole(Role.MANAGER);
         manager.setPassword(passwordEncoder.encode("123456"));
-        manager.setCpf("123.456.789-00");
-        manager.setBirthDate(LocalDate.now().minusYears(25));
-        Manager savedManager = managerRepository.save(manager);
+        manager.setCpf("987.654.321-00");
+        manager.setBirthDate(LocalDate.now().minusYears(30));
+        return managerRepository.save(manager);
+    }
 
-        Room room = new Room()
-            .setName("Sala Teste 1")
-            .setRoomType(RoomType.STANDARD)
-            .setTheater(savedTheater)
+    // =========================================================================
+    // Rooms & Seats
+    // =========================================================================
+
+    private List<Room> createRooms(Theater theater) {
+        Room sala1 = saveRoom("Sala 1", RoomType.STANDARD, theater);
+        Room sala2 = saveRoom("Sala 2", RoomType.SPECIAL, theater);
+        Room sala3 = saveRoom("Sala 3", RoomType.STANDARD, theater);
+        Room sala4 = saveRoom("Sala 4", RoomType.SPECIAL, theater);
+
+        seedRoom(sala1, new char[]{'A', 'B', 'C'}, 8);
+        seedRoom(sala2, new char[]{'A', 'B', 'C'}, 8);
+        seedRoom(sala3, new char[]{'A', 'B', 'C'}, 8);
+        seedRoom(sala4, new char[]{'A', 'B'}, 6);
+
+        return List.of(sala1, sala2, sala3, sala4);
+    }
+
+    private Room saveRoom(String name, RoomType type, Theater theater) {
+        return roomRepository.save(new Room()
+            .setName(name)
+            .setRoomType(type)
+            .setTheater(theater)
             .setRows(new HashSet<>())
-            .setSessions(new ArrayList<>());
-        Room savedRoom = roomRepository.save(room);
+            .setSessions(new ArrayList<>()));
+    }
 
-        Row row = new Row()
-            .setLetter('A')
-            .setRoom(savedRoom)
-            .setSeats(new HashSet<>());
-        Row savedRow = rowRepository.save(row);
+    private void seedRoom(Room room, char[] rowLetters, int seatsPerRow) {
+        for (char letter : rowLetters) {
+            Row row = rowRepository.save(new Row()
+                .setLetter(letter)
+                .setRoom(room)
+                .setSeats(new HashSet<>()));
+            for (int i = 1; i <= seatsPerRow; i++) {
+                seatRepository.save(new Seat()
+                    .setNumber((char) ('0' + i))
+                    .setRow(row)
+                    .setTickets(new ArrayList<>())
+                    .setSeatType(SeatType.STANDARD));
+            }
+        }
+    }
 
-        Seat seat = new Seat()
-            .setNumber('1')
-            .setRow(savedRow)
-            .setTickets(new ArrayList<>())
-            .setSeatType(SeatType.STANDARD);
-        Seat savedSeat = seatRepository.save(seat);
+    // =========================================================================
+    // Genres
+    // =========================================================================
 
-        Genre genre = new Genre()
-            .setName("Ação")
-            .setMovies(new ArrayList<>());
-        Genre savedGenre = genreRepository.save(genre);
+    private Map<String, Genre> createGenres() {
+        Genre acao = new Genre().setName("Ação");
+        Genre comedia = new Genre().setName("Comédia");
+        Genre drama = new Genre().setName("Drama");
+        Genre ficcaoCientifica = new Genre().setName("Ficção Científica");
+        Genre terror = new Genre().setName("Terror");
+        Genre animacao = new Genre().setName("Animação");
+        Genre familia = new Genre().setName("Família");
+        Genre aventura = new Genre().setName("Aventura");
+        Genre fantasia = new Genre().setName("Fantasia");
+        Genre musical = new Genre().setName("Musical");
+        Genre crime = new Genre().setName("Crime");
 
-        List<Genre> genres = new ArrayList<>();
-        genres.add(savedGenre);
-        Movie movie = new Movie()
-            .setAgeRating(AgeRating.FOURTEEN_YEARS)
-            .setGenres(genres)
-            .setSessions(new ArrayList<>())
-            .setDurationInSeconds(7500)
-            .setTrailerUrl("https://www.youtube.com/watch?v=ScMzIvxBSi4")
-            .setCoverUrl("https://placehold.co/400x600/292929/FFFFFF/png?text=Filme+De+Teste")
-            .setSynopsis("Um filme de teste para uma API incrível.")
-            .setTitle("Filme de Teste")
-            .setStatus(MovieStatus.NOW_PLAYING);
-        Movie savedMovie = movieRepository.save(movie);
+        genreRepository.saveAll(List.of(
+            acao, comedia, drama, ficcaoCientifica, terror,
+            animacao, familia, aventura, fantasia, musical, crime));
 
-        Session session = new Session()
-            .setFormat(Format.TWO_D)
-            .setDate(LocalDateTime.now(ZoneId.of("America/Sao_Paulo")).plusHours(1).plusMinutes(1))
-            .setSubtitle(Subtitle.DUBBED)
-            .setPriceInCents(3500)
-            .setRoom(savedRoom)
-            .setMovie(savedMovie)
-            .setTickets(new ArrayList<>());
-        Session savedSession = sessionRepository.save(session);
+        Map<String, Genre> genres = new HashMap<>();
+        genres.put("acao", acao);
+        genres.put("comedia", comedia);
+        genres.put("drama", drama);
+        genres.put("ficcaoCientifica", ficcaoCientifica);
+        genres.put("terror", terror);
+        genres.put("animacao", animacao);
+        genres.put("familia", familia);
+        genres.put("aventura", aventura);
+        genres.put("fantasia", fantasia);
+        genres.put("musical", musical);
+        genres.put("crime", crime);
+        return genres;
+    }
 
+    // =========================================================================
+    // Now Playing — Movies & Sessions
+    // =========================================================================
 
-        Room room2 = new Room()
-            .setName("Sala Teste 2")
-            .setRoomType(RoomType.SPECIAL)
-            .setTheater(savedTheater)
-            .setRows(new HashSet<>())
-            .setSessions(new ArrayList<>());
-        Room savedRoom2 = roomRepository.save(room2);
+    private List<Session> createNowPlayingMoviesAndSessions(List<Room> rooms, Map<String, Genre> g) {
+        List<Session> sessions = new ArrayList<>();
+        ZoneId tz = ZoneId.of("America/Sao_Paulo");
 
-        Row rowB = new Row().setLetter('B').setRoom(savedRoom2).setSeats(new HashSet<>());
-        rowRepository.save(rowB);
-        Seat seat2 = new Seat().setNumber('2').setRow(rowB).setSeatType(SeatType.PLUS_SIZE);
-        seatRepository.save(seat2);
-
-        Genre comedyGenre = new Genre().setName("Comédia");
-        Genre dramaGenre = new Genre().setName("Drama");
-        Genre scifiGenre = new Genre().setName("Ficção Científica");
-        Genre horrorGenre = new Genre().setName("Terror");
-
-        genreRepository.saveAll(List.of(comedyGenre, dramaGenre, scifiGenre, horrorGenre));
-
-        Movie movie2 = new Movie()
-            .setTitle("The Godcomputer")
-            .setSynopsis(
-                "In a future where an AI governs the world, a small group of rebels attempts to overthrow it.")
-            .setDurationInSeconds(8100)
-            .setAgeRating(AgeRating.SIXTEEN_YEARS)
-            .setGenres(List.of(scifiGenre, dramaGenre))
-            .setCoverUrl("https://placehold.co/400x600/292929/FFFFFF/png?text=The+Godcomputer")
-            .setTrailerUrl("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
-            .setStatus(MovieStatus.NOW_PLAYING);
-        movieRepository.save(movie2);
-
-        Session session2 = new Session()
-            .setFormat(Format.TWO_D)
-            .setDate(LocalDateTime.now(ZoneId.of("America/Sao_Paulo")).plusHours(2))
-            .setSubtitle(Subtitle.SUBTITLED)
-            .setPriceInCents(4000)
-            .setRoom(savedRoom)
-            .setMovie(movie2)
-            .setTickets(new ArrayList<>());
-        sessionRepository.save(session2);
-
-        Session session3 = new Session()
-            .setFormat(Format.THREE_D)
-            .setDate(LocalDateTime.now(ZoneId.of("America/Sao_Paulo")).plusHours(5))
-            .setSubtitle(Subtitle.DUBBED)
-            .setPriceInCents(5000)
-            .setRoom(savedRoom2)
-            .setMovie(movie2)
-            .setTickets(new ArrayList<>());
-        sessionRepository.save(session3);
-
-        Movie movie3 = new Movie()
-            .setTitle("Weekend at Bernie's 3")
-            .setSynopsis(
-                "Two insurance salesmen try to pretend their murdered boss is still alive, leading to a series of comical situations.")
-            .setDurationInSeconds(5820)
-            .setAgeRating(AgeRating.TWELVE_YEARS)
-            .setGenres(List.of(comedyGenre))
-            .setCoverUrl("https://placehold.co/400x600/292929/FFFFFF/png?text=Weekend+at+Bernies+3")
-            .setTrailerUrl("https://www.youtube.com/watch?v=YCQou_vQZhc")
-            .setStatus(MovieStatus.NOW_PLAYING);
-        movieRepository.save(movie3);
-
-        Session session4 = new Session()
-            .setFormat(Format.TWO_D)
-            .setDate(LocalDateTime.now(ZoneId.of("America/Sao_Paulo")).plusDays(1).plusHours(3))
-            .setSubtitle(Subtitle.DUBBED)
-            .setPriceInCents(3000)
-            .setRoom(savedRoom)
-            .setMovie(movie3)
-            .setTickets(new ArrayList<>());
-        sessionRepository.save(session4);
-
-        Movie movie4 = new Movie()
-            .setTitle("The Haunting of Hill House 2")
-            .setSynopsis(
-                "A family is confronted with haunting memories of their old home and the terrifying events that drove them from it.")
-            .setDurationInSeconds(7800)
-            .setAgeRating(AgeRating.EIGHTEEN_YEARS)
-            .setGenres(List.of(horrorGenre, dramaGenre))
-            .setCoverUrl("https://placehold.co/400x600/292929/FFFFFF/png?text=The+Haunting+of+Hill+House+2")
-            .setTrailerUrl("https://www.youtube.com/watch?v=G9OzG53VwIk")
-            .setStatus(MovieStatus.NOW_PLAYING);
-        movieRepository.save(movie4);
-
-        Session session5 = new Session()
-            .setFormat(Format.TWO_D)
-            .setDate(LocalDateTime.now(ZoneId.of("America/Sao_Paulo")).plusDays(2).plusHours(4))
-            .setSubtitle(Subtitle.ORIGINAL)
-            .setPriceInCents(4500)
-            .setRoom(savedRoom2)
-            .setMovie(movie4)
-            .setTickets(new ArrayList<>());
-        sessionRepository.save(session5);
-
-
-        Genre animationGenre = new Genre().setName("Animação");
-        Genre familyGenre = new Genre().setName("Família");
-        Genre adventureGenre = new Genre().setName("Aventura");
-        Genre fantasyGenre = new Genre().setName("Fantasia");
-        Genre musicalGenre = new Genre().setName("Musical");
-        Genre crimeGenre = new Genre().setName("Crime");
-        genreRepository.saveAll(
-            List.of(animationGenre, familyGenre, adventureGenre, fantasyGenre, musicalGenre,
-                crimeGenre));
-
-        Movie movieAindaEstouAqui = new Movie()
+        // --- AINDA ESTOU AQUI ---
+        Movie aindaEstouAqui = movieRepository.save(new Movie()
             .setTitle("AINDA ESTOU AQUI")
             .setDurationInSeconds(8100)
             .setCoverUrl("https://image.tmdb.org/t/p/w500/zNAw7jK8bwCK56rIW676pdgkwhd.jpg")
             .setTrailerUrl("https://www.youtube.com/watch?v=eruDAfbZvoY")
-            .setSynopsis(
-                "Rio de Janeiro, início dos anos 1970. O país enfrenta o endurecimento da ditadura militar. Os Paiva — Rubens, Eunice e seus cinco filhos — vivem na frente da praia, numa casa de portas abertas para os amigos. Um dia, Rubens é levado por militares à paisana e desaparece. Eunice, cuja busca pela verdade sobre o destino de seu marido se estenderia por décadas, é obrigada a se reinventar e traçar um novo futuro para si e seus filhos. Baseado no livro biográfico de Marcelo Rubens Paiva.")
+            .setSynopsis("Rio de Janeiro, início dos anos 1970. O país enfrenta o endurecimento da ditadura militar. Os Paiva — Rubens, Eunice e seus cinco filhos — vivem na frente da praia, numa casa de portas abertas para os amigos. Um dia, Rubens é levado por militares à paisana e desaparece. Eunice, cuja busca pela verdade sobre o destino de seu marido se estenderia por décadas, é obrigada a se reinventar e traçar um novo futuro para si e seus filhos. Baseado no livro biográfico de Marcelo Rubens Paiva.")
             .setAgeRating(AgeRating.FOURTEEN_YEARS)
-            .setGenres(List.of(dramaGenre))
-            .setStatus(MovieStatus.NOW_PLAYING);
-        movieRepository.save(movieAindaEstouAqui);
+            .setGenres(List.of(g.get("drama")))
+            .setSessions(new ArrayList<>())
+            .setStatus(MovieStatus.NOW_PLAYING));
 
-        Session sessionAindaEstouAqui = new Session()
-            .setFormat(Format.TWO_D)
-            .setDate(LocalDateTime.now(ZoneId.of("America/Sao_Paulo")).plusDays(3).plusHours(1))
-            .setSubtitle(Subtitle.ORIGINAL)
-            .setPriceInCents(3800)
-            .setRoom(savedRoom)
-            .setMovie(movieAindaEstouAqui);
-        sessionRepository.save(sessionAindaEstouAqui);
+        // 30/06
+        sessions.add(sessionRepository.save(new Session()
+            .setFormat(Format.TWO_D).setSubtitle(Subtitle.DUBBED).setPriceInCents(3800)
+            .setDate(LocalDateTime.of(2026, 6, 30, 14, 0))
+            .setRoom(rooms.get(0)).setMovie(aindaEstouAqui).setTickets(new ArrayList<>())));
 
-        Movie movieChicoBento = new Movie()
+        sessions.add(sessionRepository.save(new Session()
+            .setFormat(Format.TWO_D).setSubtitle(Subtitle.SUBTITLED).setPriceInCents(3800)
+            .setDate(LocalDateTime.of(2026, 6, 30, 19, 0))
+            .setRoom(rooms.get(2)).setMovie(aindaEstouAqui).setTickets(new ArrayList<>())));
+
+        // 01/07
+        sessions.add(sessionRepository.save(new Session()
+            .setFormat(Format.TWO_D).setSubtitle(Subtitle.DUBBED).setPriceInCents(3800)
+            .setDate(LocalDateTime.of(2026, 7, 1, 14, 0))
+            .setRoom(rooms.get(0)).setMovie(aindaEstouAqui).setTickets(new ArrayList<>())));
+
+        sessions.add(sessionRepository.save(new Session()
+            .setFormat(Format.TWO_D).setSubtitle(Subtitle.SUBTITLED).setPriceInCents(3800)
+            .setDate(LocalDateTime.of(2026, 7, 1, 19, 0))
+            .setRoom(rooms.get(3)).setMovie(aindaEstouAqui).setTickets(new ArrayList<>())));
+
+        // 02/07
+        sessions.add(sessionRepository.save(new Session()
+            .setFormat(Format.TWO_D).setSubtitle(Subtitle.DUBBED).setPriceInCents(3800)
+            .setDate(LocalDateTime.of(2026, 7, 2, 16, 0))
+            .setRoom(rooms.get(1)).setMovie(aindaEstouAqui).setTickets(new ArrayList<>())));
+
+        sessions.add(sessionRepository.save(new Session()
+            .setFormat(Format.TWO_D).setSubtitle(Subtitle.SUBTITLED).setPriceInCents(3800)
+            .setDate(LocalDateTime.of(2026, 7, 2, 20, 30))
+            .setRoom(rooms.get(2)).setMovie(aindaEstouAqui).setTickets(new ArrayList<>())));
+
+        // --- CHICO BENTO E A GOIABEIRA MARAVILHOSA ---
+        Movie chicoBento = movieRepository.save(new Movie()
             .setTitle("CHICO BENTO E A GOIABEIRA MARAVILHOSA")
             .setDurationInSeconds(6000)
             .setCoverUrl("https://image.tmdb.org/t/p/w500/a5AuXy70HjNy7RJexXwNpoBGkg0.jpg")
             .setTrailerUrl("https://www.youtube.com/watch?v=jp54vQvfqEY")
             .setSynopsis("Chico Bento cresceu colhendo goiabas da goiabeira do Nhô Lau, mas quando o Dr. Agripino decide construir uma estrada que derrubará a árvore centenária, Chico e seus amigos farão de tudo para salvá-la.")
             .setAgeRating(AgeRating.GENERAL_AUDIENCE)
-            .setGenres(List.of(animationGenre, comedyGenre, familyGenre))
-            .setStatus(MovieStatus.NOW_PLAYING);
-        movieRepository.save(movieChicoBento);
+            .setGenres(List.of(g.get("animacao"), g.get("comedia"), g.get("familia")))
+            .setSessions(new ArrayList<>())
+            .setStatus(MovieStatus.NOW_PLAYING));
 
-        Session sessionChicoBento = new Session()
-            .setFormat(Format.TWO_D)
-            .setDate(LocalDateTime.now(ZoneId.of("America/Sao_Paulo")).plusDays(4).plusHours(2))
-            .setSubtitle(Subtitle.DUBBED)
-            .setPriceInCents(2500)
-            .setRoom(savedRoom2)
-            .setMovie(movieChicoBento);
-        sessionRepository.save(sessionChicoBento);
+        sessions.add(sessionRepository.save(new Session()
+            .setFormat(Format.TWO_D).setSubtitle(Subtitle.DUBBED).setPriceInCents(2500)
+            .setDate(LocalDateTime.now(tz).plusDays(2).plusHours(2))
+            .setRoom(rooms.get(0)).setMovie(chicoBento).setTickets(new ArrayList<>())));
 
-        Movie movieMoana2 = new Movie()
+        sessions.add(sessionRepository.save(new Session()
+            .setFormat(Format.TWO_D).setSubtitle(Subtitle.DUBBED).setPriceInCents(2500)
+            .setDate(LocalDateTime.now(tz).plusDays(2).plusHours(5))
+            .setRoom(rooms.get(2)).setMovie(chicoBento).setTickets(new ArrayList<>())));
+
+        // --- MOANA 2 ---
+        Movie moana2 = movieRepository.save(new Movie()
             .setTitle("MOANA 2")
             .setDurationInSeconds(7200)
             .setCoverUrl("https://image.tmdb.org/t/p/w500/dnqgkKoIGf6hErzRm6VtaK1OJrD.jpg")
             .setTrailerUrl("https://www.youtube.com/watch?v=OLHrdmwW7KM")
+            .setSynopsis("Moana embarca em uma nova e épica aventura pelos mares, seguindo uma mensagem ancestral que a leva além dos confins de Motunui.")
             .setAgeRating(AgeRating.GENERAL_AUDIENCE)
-            .setGenres(List.of(animationGenre, adventureGenre, familyGenre))
-            .setStatus(MovieStatus.NOW_PLAYING);
-        movieRepository.save(movieMoana2);
+            .setGenres(List.of(g.get("animacao"), g.get("aventura"), g.get("familia")))
+            .setSessions(new ArrayList<>())
+            .setStatus(MovieStatus.NOW_PLAYING));
 
-        Session sessionMoana2 = new Session()
-            .setFormat(Format.THREE_D)
-            .setDate(LocalDateTime.now(ZoneId.of("America/Sao_Paulo")).plusDays(5).plusHours(3))
-            .setSubtitle(Subtitle.DUBBED)
-            .setPriceInCents(5500)
-            .setRoom(savedRoom2)
-            .setMovie(movieMoana2);
-        sessionRepository.save(sessionMoana2);
+        sessions.add(sessionRepository.save(new Session()
+            .setFormat(Format.THREE_D).setSubtitle(Subtitle.DUBBED).setPriceInCents(5500)
+            .setDate(LocalDateTime.now(tz).plusDays(3).plusHours(3))
+            .setRoom(rooms.get(1)).setMovie(moana2).setTickets(new ArrayList<>())));
 
-        Movie movieWicked = new Movie()
+        sessions.add(sessionRepository.save(new Session()
+            .setFormat(Format.TWO_D).setSubtitle(Subtitle.DUBBED).setPriceInCents(4000)
+            .setDate(LocalDateTime.now(tz).plusDays(3).plusHours(6))
+            .setRoom(rooms.get(3)).setMovie(moana2).setTickets(new ArrayList<>())));
+
+        // --- WICKED ---
+        Movie wicked = movieRepository.save(new Movie()
             .setTitle("WICKED")
             .setDurationInSeconds(9600)
             .setCoverUrl("https://image.tmdb.org/t/p/w500/qcaKkLwIXCAxJtpetVYHniCvLZj.jpg")
             .setTrailerUrl("https://www.youtube.com/watch?v=FRJplq6nutA")
+            .setSynopsis("A história de como Elphaba, a futura Bruxa Má do Oeste, e Glinda, a futura Bruxa Boa, tornaram-se amigas antes que as circunstâncias as separassem.")
             .setAgeRating(AgeRating.TWELVE_YEARS)
-            .setGenres(List.of(fantasyGenre, musicalGenre))
-            .setStatus(MovieStatus.NOW_PLAYING);
-        movieRepository.save(movieWicked);
+            .setGenres(List.of(g.get("fantasia"), g.get("musical")))
+            .setSessions(new ArrayList<>())
+            .setStatus(MovieStatus.NOW_PLAYING));
 
-        Session sessionWicked = new Session()
-            .setFormat(Format.TWO_D)
-            .setDate(LocalDateTime.now(ZoneId.of("America/Sao_Paulo")).plusDays(6).plusHours(4))
-            .setSubtitle(Subtitle.SUBTITLED)
-            .setPriceInCents(4800)
-            .setRoom(savedRoom)
-            .setMovie(movieWicked);
-        sessionRepository.save(sessionWicked);
+        sessions.add(sessionRepository.save(new Session()
+            .setFormat(Format.TWO_D).setSubtitle(Subtitle.SUBTITLED).setPriceInCents(4800)
+            .setDate(LocalDateTime.now(tz).plusDays(4).plusHours(4))
+            .setRoom(rooms.get(1)).setMovie(wicked).setTickets(new ArrayList<>())));
 
-        Movie movieShrek5 = new Movie()
-            .setTitle("SHREK 5")
-            .setDurationInSeconds(0)
-            .setCoverUrl("https://image.tmdb.org/t/p/w500/8XwmMjwiQ91Rm0eU4AcxyFA3XUZ.jpg")
-            .setTrailerUrl("https://www.youtube.com/watch?v=I9-wXs4KtrU")
-            .setGenres(List.of(animationGenre, comedyGenre, familyGenre))
-            .setStatus(MovieStatus.COMING_SOON);
-        movieRepository.save(movieShrek5);
+        sessions.add(sessionRepository.save(new Session()
+            .setFormat(Format.TWO_D).setSubtitle(Subtitle.DUBBED).setPriceInCents(4800)
+            .setDate(LocalDateTime.now(tz).plusDays(4).plusHours(7))
+            .setRoom(rooms.get(3)).setMovie(wicked).setTickets(new ArrayList<>())));
 
-        Movie movieCapitaoAmerica = new Movie()
-            .setTitle("CAPITÃO AMÉRICA: ADMIRÁVEL MUNDO NOVO")
-            .setDurationInSeconds(0)
-            .setCoverUrl("https://image.tmdb.org/t/p/w500/5nbSgP8f5LMCI0PwVRRaHJaUmR3.jpg")
-            .setTrailerUrl("https://www.youtube.com/watch?v=FEa9pPqGhPY")
-            .setGenres(List.of(savedGenre, scifiGenre)) // Ação e Ficção Científica
-            .setStatus(MovieStatus.COMING_SOON);
-        movieRepository.save(movieCapitaoAmerica);
+        return sessions;
+    }
 
-        Movie movieCoringa2 = new Movie()
-            .setTitle("CORINGA 2")
-            .setDurationInSeconds(0)
-            .setCoverUrl("https://image.tmdb.org/t/p/w500/9RmVr8dPWicFyPZ5JCQK3NcBNB5.jpg")
-            .setTrailerUrl("https://www.youtube.com/watch?v=_OKAwz2MsJs")
-            .setGenres(List.of(crimeGenre, dramaGenre, musicalGenre))
-            .setStatus(MovieStatus.COMING_SOON);
-        movieRepository.save(movieCoringa2);
+    // =========================================================================
+    // Coming Soon — Movies only
+    // =========================================================================
 
+    private void createComingSoonMovies(Map<String, Genre> g) {
+        movieRepository.saveAll(List.of(
+            new Movie()
+                .setTitle("SHREK 5")
+                .setDurationInSeconds(0)
+                .setCoverUrl("https://image.tmdb.org/t/p/w500/8XwmMjwiQ91Rm0eU4AcxyFA3XUZ.jpg")
+                .setTrailerUrl("https://www.youtube.com/watch?v=I9-wXs4KtrU")
+                .setGenres(List.of(g.get("animacao"), g.get("comedia"), g.get("familia")))
+                .setStatus(MovieStatus.COMING_SOON),
+            new Movie()
+                .setTitle("CAPITÃO AMÉRICA: ADMIRÁVEL MUNDO NOVO")
+                .setDurationInSeconds(0)
+                .setCoverUrl("https://image.tmdb.org/t/p/w500/5nbSgP8f5LMCI0PwVRRaHJaUmR3.jpg")
+                .setTrailerUrl("https://www.youtube.com/watch?v=FEa9pPqGhPY")
+                .setGenres(List.of(g.get("acao"), g.get("ficcaoCientifica")))
+                .setStatus(MovieStatus.COMING_SOON),
+            new Movie()
+                .setTitle("CORINGA 2")
+                .setDurationInSeconds(0)
+                .setCoverUrl("https://image.tmdb.org/t/p/w500/9RmVr8dPWicFyPZ5JCQK3NcBNB5.jpg")
+                .setTrailerUrl("https://www.youtube.com/watch?v=_OKAwz2MsJs")
+                .setGenres(List.of(g.get("crime"), g.get("drama"), g.get("musical")))
+                .setStatus(MovieStatus.COMING_SOON)
+        ));
+    }
+
+    // =========================================================================
+    // Utils
+    // =========================================================================
+
+    private void printSeedInfo(Client client, Manager manager, Session firstSession, Seat firstSeat) {
         System.out.println("\n------------------------------------------------------------");
-        System.out.println("Seeding Mínimo Finalizado!");
-        System.out.println("Use os seguintes IDs para criar um Ticket no Insomnia:");
-        System.out.println(">>> clientId: " + savedClient.getId());
-        System.out.println(">>> managerId: " + savedManager.getId());
-        System.out.println(">>> sessionId: " + savedSession.getId());
-        System.out.println(">>> seatId: " + savedSeat.getId());
+        System.out.println("Seeding Finalizado!");
+        System.out.println("Use os seguintes IDs para testar tickets no Insomnia:");
+        System.out.println(">>> clientId:  " + client.getId());
+        System.out.println(">>> managerId: " + manager.getId());
+        System.out.println(">>> sessionId: " + firstSession.getId());
+        System.out.println(">>> seatId:    " + firstSeat.getId());
         System.out.println("------------------------------------------------------------\n");
     }
 }

@@ -1,4 +1,4 @@
-package br.ufscar.cinemiranha.ui
+package br.ufscar.cinemiranha.ui.views
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -6,6 +6,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -20,35 +21,30 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import br.ufscar.cinemiranha.R
 import br.ufscar.cinemiranha.model.MovieResponse
 import br.ufscar.cinemiranha.model.SessionResponse
-import br.ufscar.cinemiranha.ui.components.Stepper
+import br.ufscar.cinemiranha.ui.composable.Stepper
 import br.ufscar.cinemiranha.viewmodel.SessionsViewModel
+import br.ufscar.cinemiranha.ui.theme.Dimens
 import coil.compose.AsyncImage
-
-private val SBg = Color(0xFF1F2024)
-private val SSurface = Color(0xFF2F3036)
-private val SRed = Color(0xFFBF0903)
-private val SPrimary = Color(0xFFFAFAFA)
-private val SSecond = Color(0xFF8F9098)
-private val SDivider = Color(0xFF494A50)
 
 @Composable
 fun SeatsScreen(movieId: Long, sessionId: Long, onBack: () -> Unit, onSeatsSelected: (List<String>) -> Unit) {
     val vm: SessionsViewModel = viewModel(factory = SessionsViewModel.factory(movieId))
-    val state by vm.uiState.collectAsState()
+    val state  = vm.uiState
     val session = state.sessions.find { it.id == sessionId }
-    
+
     var selectedSeats by remember { mutableStateOf(setOf<String>()) }
 
     Scaffold(
         topBar = { SeatsTopBar(onBack = onBack) },
         bottomBar = { SeatsBottomBar(selectedSeats.size, onConfirm = { onSeatsSelected(selectedSeats.toList()) }) },
-        containerColor = SBg
+        containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         Column(
             modifier = Modifier
@@ -56,19 +52,19 @@ fun SeatsScreen(movieId: Long, sessionId: Long, onBack: () -> Unit, onSeatsSelec
                 .padding(padding)
         ) {
             Stepper(currentStep = 1)
-            
+
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(bottom = 16.dp)
+                contentPadding = PaddingValues(bottom = Dimens.SpaceL)
             ) {
                 item {
                     Text(
                         text = stringResource(R.string.choose_seats),
-                        color = SPrimary,
+                        color = MaterialTheme.colorScheme.onBackground,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(16.dp).fillMaxWidth(),
-                        textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                        modifier = Modifier.padding(Dimens.SpaceL).fillMaxWidth(),
+                        textAlign = TextAlign.Center
                     )
                 }
 
@@ -78,19 +74,19 @@ fun SeatsScreen(movieId: Long, sessionId: Long, onBack: () -> Unit, onSeatsSelec
 
                 item {
                     Column(
-                        modifier = Modifier.padding(16.dp),
+                        modifier = Modifier.padding(Dimens.SpaceL),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Button(
                             onClick = {},
-                            colors = ButtonDefaults.buttonColors(containerColor = SDivider),
-                            shape = RoundedCornerShape(8.dp)
+                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.outline),
+                            shape = MaterialTheme.shapes.medium
                         ) {
-                            Text(stringResource(R.string.seats_view), color = SPrimary)
+                            Text(stringResource(R.string.seats_view), color = MaterialTheme.colorScheme.onBackground)
                         }
-                        
-                        Spacer(modifier = Modifier.height(24.dp))
-                        
+
+                        Spacer(modifier = Modifier.height(Dimens.SpaceXL))
+
                         // Mock grid of seats
                         SeatGrid(selectedSeats) { seat ->
                             if (selectedSeats.contains(seat)) {
@@ -99,9 +95,9 @@ fun SeatsScreen(movieId: Long, sessionId: Long, onBack: () -> Unit, onSeatsSelec
                                 selectedSeats = selectedSeats + seat
                             }
                         }
-                        
-                        Spacer(modifier = Modifier.height(24.dp))
-                        
+
+                        Spacer(modifier = Modifier.height(Dimens.SpaceXL))
+
                         SeatLegend()
                     }
                 }
@@ -117,28 +113,28 @@ private fun SeatGrid(selectedSeats: Set<String>, onSeatToggle: (String) -> Unit)
 
     Column(
         modifier = Modifier
-            .background(SSurface, RoundedCornerShape(8.dp))
-            .padding(16.dp),
+            .background(MaterialTheme.colorScheme.surface, MaterialTheme.shapes.medium)
+            .padding(Dimens.SpaceL),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         rows.forEach { row ->
-            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(Dimens.SpaceXS)) {
                 for (col in 1..cols) {
                     val seatId = "$row$col"
                     val isOccupied = (row == "B" && col == 4) || (row == "C" && col > 5)
                     val isSpecial = row == "C" && col == 5
                     val isSelected = selectedSeats.contains(seatId)
-                    
+
                     Box(
                         modifier = Modifier
                             .size(24.dp)
                             .clip(RoundedCornerShape(2.dp))
                             .background(
                                 when {
-                                    isSelected -> SRed
-                                    isOccupied -> SDivider
+                                    isSelected -> MaterialTheme.colorScheme.primary
+                                    isOccupied -> MaterialTheme.colorScheme.outline
                                     isSpecial -> Color.White
-                                    else -> SSecond
+                                    else -> MaterialTheme.colorScheme.secondary
                                 }
                             )
                             .clickable(!isOccupied) { onSeatToggle(seatId) },
@@ -150,27 +146,27 @@ private fun SeatGrid(selectedSeats: Set<String>, onSeatToggle: (String) -> Unit)
                     }
                 }
             }
-            Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(Dimens.SpaceXS))
         }
-        
-        Spacer(modifier = Modifier.height(16.dp))
+
+        Spacer(modifier = Modifier.height(Dimens.SpaceL))
         // Screen indicator
         Box(
             modifier = Modifier
                 .fillMaxWidth(0.8f)
                 .height(4.dp)
-                .background(SDivider)
+                .background(MaterialTheme.colorScheme.outline)
         )
     }
 }
 
 @Composable
 private fun SeatLegend() {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text(stringResource(R.string.legend), color = SPrimary, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+    Column(verticalArrangement = Arrangement.spacedBy(Dimens.SpaceS)) {
+        Text(stringResource(R.string.legend), color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold, fontSize = 14.sp)
         LegendItem(Color.White, stringResource(R.string.legend_best_view))
-        LegendItem(SDivider, stringResource(R.string.legend_occupied), isOccupied = true)
-        LegendItem(SRed, stringResource(R.string.legend_selected))
+        LegendItem(MaterialTheme.colorScheme.outline, stringResource(R.string.legend_occupied), isOccupied = true)
+        LegendItem(MaterialTheme.colorScheme.primary, stringResource(R.string.legend_selected))
     }
 }
 
@@ -181,13 +177,13 @@ private fun LegendItem(color: Color, text: String, isOccupied: Boolean = false) 
             modifier = Modifier
                 .size(16.dp)
                 .background(color)
-                .border(1.dp, SDivider),
+                .border(1.dp, MaterialTheme.colorScheme.outline),
             contentAlignment = Alignment.Center
         ) {
             if (isOccupied) Text("X", color = Color.Black, fontSize = 8.sp)
         }
-        Spacer(modifier = Modifier.width(8.dp))
-        Text(text = text, color = SSecond, fontSize = 12.sp)
+        Spacer(modifier = Modifier.width(Dimens.SpaceS))
+        Text(text = text, color = MaterialTheme.colorScheme.secondary, style = MaterialTheme.typography.bodySmall)
     }
 }
 
@@ -196,7 +192,7 @@ private fun SeatMovieInfo(movie: MovieResponse, session: SessionResponse) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
+            .padding(Dimens.SpaceL),
         verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
@@ -206,26 +202,25 @@ private fun SeatMovieInfo(movie: MovieResponse, session: SessionResponse) {
                 .width(56.dp)
                 .height(80.dp)
                 .clip(RoundedCornerShape(4.dp))
-                .background(SSurface),
+                .background(MaterialTheme.colorScheme.surface),
             contentScale = ContentScale.Crop
         )
-        Spacer(modifier = Modifier.width(12.dp))
+        Spacer(modifier = Modifier.width(Dimens.SpaceM))
         Column {
             Text(
                 text = movie.title.uppercase(),
-                color = SPrimary,
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Bold
+                color = MaterialTheme.colorScheme.onBackground,
+                style = MaterialTheme.typography.titleSmall
             )
             Text(
                 text = stringResource(R.string.movie_duration, (movie.durationInSeconds?.let { it / 60 } ?: 0)),
-                color = SSecond,
-                fontSize = 12.sp
+                color = MaterialTheme.colorScheme.secondary,
+                style = MaterialTheme.typography.bodySmall
             )
             Text(
                 text = "${session.dateDayLabel()}  ${session.timeLabel()}  ${session.formatLabel()}  ${session.subtitleLabel()}",
-                color = SSecond,
-                fontSize = 12.sp
+                color = MaterialTheme.colorScheme.secondary,
+                style = MaterialTheme.typography.bodySmall
             )
         }
     }
@@ -236,23 +231,23 @@ private fun SeatsTopBar(onBack: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(SSurface)
+            .background(MaterialTheme.colorScheme.surface)
             .windowInsetsPadding(WindowInsets.statusBars)
-            .padding(horizontal = 8.dp, vertical = 12.dp),
+            .padding(horizontal = Dimens.SpaceS, vertical = Dimens.SpaceM),
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(onClick = onBack) {
-            Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.cd_back), tint = SPrimary)
+            Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.cd_back), tint = MaterialTheme.colorScheme.onBackground)
         }
         Spacer(modifier = Modifier.weight(1f))
         Image(
             painter = painterResource(id = R.drawable.logo),
             contentDescription = stringResource(R.string.cd_logo),
             modifier = Modifier.height(36.dp),
-            colorFilter = ColorFilter.tint(SRed)
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
         )
         Spacer(modifier = Modifier.weight(1f))
-        Spacer(modifier = Modifier.size(48.dp))
+        Spacer(modifier = Modifier.size(Dimens.ButtonHeight))
     }
 }
 
@@ -261,9 +256,9 @@ private fun SeatsBottomBar(selectedCount: Int, onConfirm: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(SSurface)
+            .background(MaterialTheme.colorScheme.surface)
             .windowInsetsPadding(WindowInsets.navigationBars)
-            .padding(16.dp)
+            .padding(Dimens.SpaceL)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -273,31 +268,31 @@ private fun SeatsBottomBar(selectedCount: Int, onConfirm: () -> Unit) {
             Box(
                 modifier = Modifier
                     .size(40.dp)
-                    .clip(androidx.compose.foundation.shape.CircleShape)
-                    .background(SDivider),
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.outline),
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = "$selectedCount", color = SPrimary, fontWeight = FontWeight.Bold)
+                Text(text = "$selectedCount", color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold)
             }
-            
+
             Button(
                 onClick = onConfirm,
                 enabled = selectedCount > 0,
-                colors = ButtonDefaults.buttonColors(containerColor = SSecond, disabledContainerColor = SDivider),
-                shape = RoundedCornerShape(8.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary, disabledContainerColor = MaterialTheme.colorScheme.outline),
+                shape = MaterialTheme.shapes.medium,
                 modifier = Modifier
-                    .height(48.dp)
+                    .height(Dimens.ButtonHeight)
                     .fillMaxWidth(0.8f)
             ) {
-                Text(stringResource(R.string.btn_choose_tickets), color = SBg, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.btn_choose_tickets), color = MaterialTheme.colorScheme.background, fontWeight = FontWeight.Bold)
             }
         }
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(Dimens.SpaceS))
         Image(
             painter = painterResource(id = R.drawable.logo),
             contentDescription = stringResource(R.string.cd_logo),
             modifier = Modifier.height(30.dp).align(Alignment.CenterHorizontally),
-            colorFilter = ColorFilter.tint(SRed)
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
         )
     }
 }

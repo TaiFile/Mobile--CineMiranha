@@ -45,6 +45,7 @@ public class Movie {
     @OneToMany(mappedBy = "movie")
     private List<Session> sessions = new ArrayList<>();
 
+    @Enumerated(EnumType.STRING)
     @Column
     private AgeRating ageRating;
 

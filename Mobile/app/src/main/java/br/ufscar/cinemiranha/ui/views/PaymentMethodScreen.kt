@@ -1,10 +1,9 @@
-package br.ufscar.cinemiranha.ui
+package br.ufscar.cinemiranha.ui.views
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CreditCard
@@ -15,22 +14,18 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.ufscar.cinemiranha.R
-import br.ufscar.cinemiranha.ui.components.Stepper
+import br.ufscar.cinemiranha.ui.composable.Stepper
+import br.ufscar.cinemiranha.ui.theme.Dimens
 import br.ufscar.cinemiranha.viewmodel.CheckoutViewModel
-
-private val SBg = Color(0xFF1F2024)
-private val SSurface = Color(0xFF2F3036)
-private val SRed = Color(0xFFBF0903)
-private val SPrimary = Color(0xFFFAFAFA)
 
 @Composable
 fun PaymentMethodScreen(
@@ -43,7 +38,7 @@ fun PaymentMethodScreen(
     Scaffold(
         topBar = { PaymentTopBar(onBack = onBack) },
         bottomBar = { PaymentBottomBar() },
-        containerColor = SBg
+        containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         Column(
             modifier = Modifier
@@ -54,17 +49,17 @@ fun PaymentMethodScreen(
 
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(16.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                contentPadding = PaddingValues(Dimens.SpaceL),
+                verticalArrangement = Arrangement.spacedBy(Dimens.SpaceL)
             ) {
                 item {
                     Text(
                         text = stringResource(R.string.choose_payment_method),
-                        color = SPrimary,
+                        color = MaterialTheme.colorScheme.onBackground,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.fillMaxWidth(),
-                        textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                        textAlign = TextAlign.Center
                     )
                 }
 
@@ -77,7 +72,7 @@ fun PaymentMethodScreen(
                 }
 
                 item {
-                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Column(verticalArrangement = Arrangement.spacedBy(Dimens.SpaceM)) {
                         PaymentMethodButton(stringResource(R.string.payment_credit_card), Icons.Default.CreditCard) { onSelectMethod("CREDIT") }
                         PaymentMethodButton(stringResource(R.string.payment_debit_card), Icons.Default.CreditCard) { onSelectMethod("DEBIT") }
                         PaymentMethodButton(stringResource(R.string.payment_pix), Icons.Default.Pix) { onSelectMethod("PIX") }
@@ -95,17 +90,17 @@ private fun PaymentMethodButton(label: String, icon: ImageVector, onClick: () ->
         modifier = Modifier
             .fillMaxWidth()
             .height(56.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = SSurface),
-        shape = RoundedCornerShape(8.dp),
-        contentPadding = PaddingValues(horizontal = 16.dp)
+        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.surface),
+        shape = MaterialTheme.shapes.medium,
+        contentPadding = PaddingValues(horizontal = Dimens.SpaceL)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(icon, contentDescription = null, tint = SPrimary)
-            Spacer(modifier = Modifier.width(16.dp))
-            Text(text = label, color = SPrimary, fontSize = 16.sp, fontWeight = FontWeight.Medium)
+            Icon(icon, contentDescription = null, tint = MaterialTheme.colorScheme.onBackground)
+            Spacer(modifier = Modifier.width(Dimens.SpaceL))
+            Text(text = label, color = MaterialTheme.colorScheme.onBackground, fontSize = 16.sp, fontWeight = FontWeight.Medium)
         }
     }
 }
@@ -115,23 +110,23 @@ private fun PaymentTopBar(onBack: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(SSurface)
+            .background(MaterialTheme.colorScheme.surface)
             .windowInsetsPadding(WindowInsets.statusBars)
-            .padding(horizontal = 8.dp, vertical = 12.dp),
+            .padding(horizontal = Dimens.SpaceS, vertical = Dimens.SpaceM),
         verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(onClick = onBack) {
-            Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.cd_back), tint = SPrimary)
+            Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.cd_back), tint = MaterialTheme.colorScheme.onBackground)
         }
         Spacer(modifier = Modifier.weight(1f))
         Image(
             painter = painterResource(id = R.drawable.logo),
             contentDescription = stringResource(R.string.cd_logo),
             modifier = Modifier.height(36.dp),
-            colorFilter = ColorFilter.tint(SRed)
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
         )
         Spacer(modifier = Modifier.weight(1f))
-        Spacer(modifier = Modifier.size(48.dp))
+        Spacer(modifier = Modifier.size(Dimens.ButtonHeight))
     }
 }
 
@@ -140,7 +135,7 @@ private fun PaymentBottomBar() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(SSurface)
+            .background(MaterialTheme.colorScheme.surface)
             .windowInsetsPadding(WindowInsets.navigationBars)
             .padding(vertical = 14.dp),
         contentAlignment = Alignment.Center
@@ -149,7 +144,7 @@ private fun PaymentBottomBar() {
             painter = painterResource(id = R.drawable.logo),
             contentDescription = stringResource(R.string.cd_logo),
             modifier = Modifier.height(30.dp),
-            colorFilter = ColorFilter.tint(SRed)
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
         )
     }
 }
