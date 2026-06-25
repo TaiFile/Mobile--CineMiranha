@@ -1,54 +1,60 @@
 package br.ufscar.cinemiranha.ui.views
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import br.ufscar.cinemiranha.R
+import br.ufscar.cinemiranha.model.Snack
 import br.ufscar.cinemiranha.model.dto.MovieResponse
 import br.ufscar.cinemiranha.model.dto.SessionResponse
+import br.ufscar.cinemiranha.ui.composable.OrderSummary.OrderTotalCard
+import br.ufscar.cinemiranha.ui.composable.OrderSummary.SummaryInfoRow
+import br.ufscar.cinemiranha.ui.composable._shared.BottomBar
+import br.ufscar.cinemiranha.ui.composable._shared.MovieSessionInfoRow
 import br.ufscar.cinemiranha.ui.composable._shared.Stepper
+import br.ufscar.cinemiranha.ui.composable._shared.TopBar
 import br.ufscar.cinemiranha.ui.theme.Dimens
-import br.ufscar.cinemiranha.viewmodel.CheckoutViewModel
-import br.ufscar.cinemiranha.viewmodel.SessionsViewModel
-import coil.compose.AsyncImage
-import java.util.Locale
 
 @Composable
 fun OrderSummaryScreen(
-    movieId: Long,
-    sessionId: Long,
-    checkoutViewModel: CheckoutViewModel,
+    movie: MovieResponse?,
+    session: SessionResponse?,
+    selectedSeats: List<String>,
+    fullPriceCount: Int,
+    halfPriceCount: Int,
+    ticketTotal: Float,
+    snackTotal: Float,
+    selectedSnacks: Map<Int, Int>,
+    availableSnacks: List<Snack>,
     onBack: () -> Unit,
     onNext: () -> Unit
 ) {
-    val vm: SessionsViewModel = viewModel(factory = SessionsViewModel.factory(movieId))
-    val state = vm.uiState
-    val session = state.sessions.find { it.id == sessionId }
-    val checkoutState by checkoutViewModel.uiState.collectAsState()
-
     Scaffold(
-        topBar = { SummaryTopBar(onBack = onBack) },
-        bottomBar = { SummaryBottomBar() },
+        topBar = { TopBar(onBack = onBack) },
+        bottomBar = { BottomBar() },
         containerColor = MaterialTheme.colorScheme.background
     ) { padding ->
         Column(
@@ -74,9 +80,16 @@ fun OrderSummaryScreen(
                     )
                 }
 
-                if (state.movie != null && session != null) {
+                if (movie != null && session != null) {
                     item {
-                        SummaryMovieInfo(state.movie!!, session)
+                        MovieSessionInfoRow(
+                            movie = movie,
+                            session = session,
+                            showDateTime = false,
+                            trailingContent = {
+                                Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.cd_remove), tint = MaterialTheme.colorScheme.secondary)
+                            }
+                        )
                     }
 
                     item {
@@ -88,19 +101,19 @@ fun OrderSummaryScreen(
                             HorizontalDivider(color = MaterialTheme.colorScheme.outline)
 
                             val ticketTypeDesc = buildString {
-                                if (checkoutState.fullPriceCount > 0) append("${checkoutState.fullPriceCount} ${stringResource(R.string.ticket_full)}")
-                                if (checkoutState.fullPriceCount > 0 && checkoutState.halfPriceCount > 0) append(", ")
-                                if (checkoutState.halfPriceCount > 0) append("${checkoutState.halfPriceCount} ${stringResource(R.string.ticket_half)}")
+                                if (fullPriceCount > 0) append("$fullPriceCount ${stringResource(R.string.ticket_full)}")
+                                if (fullPriceCount > 0 && halfPriceCount > 0) append(", ")
+                                if (halfPriceCount > 0) append("$halfPriceCount ${stringResource(R.string.ticket_half)}")
                             }
-                            SummaryInfoRow(stringResource(R.string.summary_seats), "${checkoutState.selectedSeats.joinToString(", ")} ($ticketTypeDesc)")
+                            SummaryInfoRow(stringResource(R.string.summary_seats), "${selectedSeats.joinToString(", ")} ($ticketTypeDesc)")
 
                             HorizontalDivider(color = MaterialTheme.colorScheme.outline)
 
-                            val snacksSummary = if (checkoutState.selectedSnacks.isEmpty()) {
+                            val snacksSummary = if (selectedSnacks.isEmpty()) {
                                 "---"
                             } else {
-                                checkoutState.selectedSnacks.mapNotNull { (id, qty) ->
-                                    checkoutViewModel.availableSnacks.find { it.id == id }?.let { "${qty}x ${it.name}" }
+                                selectedSnacks.mapNotNull { (id, qty) ->
+                                    availableSnacks.find { it.id == id }?.let { "${qty}x ${it.name}" }
                                 }.joinToString(", ")
                             }
                             SummaryInfoRow(stringResource(R.string.summary_snackbar), snacksSummary)
@@ -123,9 +136,9 @@ fun OrderSummaryScreen(
 
                 item {
                     OrderTotalCard(
-                        ticketCount = checkoutState.fullPriceCount + checkoutState.halfPriceCount,
-                        ticketTotal = checkoutViewModel.getTotalTicketPrice(),
-                        snackTotal = checkoutViewModel.getTotalSnackPrice()
+                        ticketCount = fullPriceCount + halfPriceCount,
+                        ticketTotal = ticketTotal,
+                        snackTotal = snackTotal
                     )
                 }
 
@@ -138,140 +151,10 @@ fun OrderSummaryScreen(
                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary),
                         shape = MaterialTheme.shapes.medium
                     ) {
-                        Text(stringResource(R.string.btn_next), color = MaterialTheme.colorScheme.background, fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.btn_confirm_purchase), color = MaterialTheme.colorScheme.background, fontWeight = FontWeight.Bold)
                     }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun OrderTotalCard(ticketCount: Int, ticketTotal: Float, snackTotal: Float) {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(MaterialTheme.shapes.medium)
-            .background(Color.White)
-            .padding(Dimens.SpaceL)
-    ) {
-        Text(stringResource(R.string.order_summary_title), color = Color.Black, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-        Spacer(modifier = Modifier.height(Dimens.SpaceS))
-        HorizontalDivider(color = Color.Black.copy(alpha = 0.1f))
-
-        SummaryPriceRow(stringResource(R.string.summary_tickets_count, ticketCount), "R$ ${String.format(Locale.getDefault(), "%.2f", ticketTotal)}")
-        SummaryPriceRow(stringResource(R.string.summary_snackbar_label), "R$ ${String.format(Locale.getDefault(), "%.2f", snackTotal)}")
-        SummaryPriceRow(stringResource(R.string.summary_discount), "R$ 0,00")
-
-        HorizontalDivider(color = Color.Black.copy(alpha = 0.5f), modifier = Modifier.padding(vertical = Dimens.SpaceS))
-
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Text(stringResource(R.string.summary_total), color = Color.Black, fontWeight = FontWeight.Bold)
-            Text("R$ ${String.format(Locale.getDefault(), "%.2f", ticketTotal + snackTotal)}", color = Color.Black, fontWeight = FontWeight.Bold)
-        }
-    }
-}
-
-@Composable
-private fun SummaryPriceRow(label: String, price: String) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = Dimens.SpaceS),
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(text = label, color = MaterialTheme.colorScheme.secondary, style = MaterialTheme.typography.bodyLarge)
-        Text(text = price, color = Color.Black, style = MaterialTheme.typography.bodyLarge)
-    }
-}
-
-@Composable
-private fun SummaryInfoRow(label: String, value: String) {
-    Row(modifier = Modifier.fillMaxWidth()) {
-        Text(text = label, color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.width(100.dp))
-        Spacer(modifier = Modifier.width(Dimens.SpaceS))
-        Text(text = value, color = MaterialTheme.colorScheme.secondary, style = MaterialTheme.typography.bodyLarge, modifier = Modifier.weight(1f))
-    }
-}
-
-@Composable
-private fun SummaryMovieInfo(movie: MovieResponse, session: SessionResponse) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        AsyncImage(
-            model = movie.coverUrl,
-            contentDescription = movie.title,
-            modifier = Modifier
-                .width(56.dp)
-                .height(80.dp)
-                .clip(RoundedCornerShape(4.dp))
-                .background(MaterialTheme.colorScheme.surface),
-            contentScale = ContentScale.Crop
-        )
-        Spacer(modifier = Modifier.width(Dimens.SpaceM))
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = movie.title.uppercase(),
-                color = MaterialTheme.colorScheme.onBackground,
-                style = MaterialTheme.typography.titleSmall
-            )
-            Text(
-                text = stringResource(R.string.movie_duration, (movie.durationInSeconds?.let { it / 60 } ?: 0)),
-                color = MaterialTheme.colorScheme.secondary,
-                style = MaterialTheme.typography.bodySmall
-            )
-            Text(
-                text = "${session.formatLabel()}  ${session.subtitleLabel()}",
-                color = MaterialTheme.colorScheme.secondary,
-                style = MaterialTheme.typography.bodySmall
-            )
-        }
-        Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.cd_remove), tint = MaterialTheme.colorScheme.secondary)
-    }
-}
-
-@Composable
-private fun SummaryTopBar(onBack: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surface)
-            .windowInsetsPadding(WindowInsets.statusBars)
-            .padding(horizontal = Dimens.SpaceS, vertical = Dimens.SpaceM),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        IconButton(onClick = onBack) {
-            Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.cd_back), tint = MaterialTheme.colorScheme.onBackground)
-        }
-        Spacer(modifier = Modifier.weight(1f))
-        Image(
-            painter = painterResource(id = R.drawable.logo),
-            contentDescription = stringResource(R.string.cd_logo),
-            modifier = Modifier.height(36.dp),
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
-        )
-        Spacer(modifier = Modifier.weight(1f))
-        Spacer(modifier = Modifier.size(Dimens.ButtonHeight))
-    }
-}
-
-@Composable
-private fun SummaryBottomBar() {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surface)
-            .windowInsetsPadding(WindowInsets.navigationBars)
-            .padding(vertical = 14.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.logo),
-            contentDescription = stringResource(R.string.cd_logo),
-            modifier = Modifier.height(30.dp),
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary)
-        )
     }
 }

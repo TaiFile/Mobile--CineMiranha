@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -34,7 +35,7 @@ import br.ufscar.cinemiranha.R
 import br.ufscar.cinemiranha.ui.theme.Dimens
 
 @Composable
-fun TopBar() {
+fun TopBar(onBack: (() -> Unit)? = null) {
     val currentLocales = AppCompatDelegate.getApplicationLocales()
     val isPtBr = !currentLocales.isEmpty && currentLocales[0]?.language == "pt"
 
@@ -46,9 +47,22 @@ fun TopBar() {
             .padding(horizontal = Dimens.SpaceL, vertical = Dimens.SpaceL),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        if (onBack != null) {
+            IconButton(onClick = onBack) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = stringResource(R.string.cd_back),
+                    tint = MaterialTheme.colorScheme.onBackground
+                )
+            }
+        }
 
         Spacer(modifier = Modifier.weight(1f))
         AppLogo(modifier = Modifier.height(40.dp))
         Spacer(modifier = Modifier.weight(1f))
+
+        if (onBack != null) {
+            Spacer(modifier = Modifier.size(Dimens.ButtonHeight))
+        }
     }
 }
