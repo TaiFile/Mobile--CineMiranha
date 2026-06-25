@@ -3,7 +3,8 @@
 
 ## Alunos
 Vitor Taichi Taira 823838
-João Paulo Rangel
+
+João Paulo Morais Rangel 820827
 
 Aplicativo Android para consulta de filmes em cartaz e sessões de cinema, com backend Spring Boot.
 
