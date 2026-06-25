@@ -1,12 +1,14 @@
 package br.ufscar.cinemiranha
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import br.ufscar.cinemiranha.repository.SnackRepository
 import br.ufscar.cinemiranha.viewmodel.HomeViewModel
 import br.ufscar.cinemiranha.viewmodel.MovieDetailViewModel
 import br.ufscar.cinemiranha.viewmodel.SessionsViewModel
@@ -16,7 +18,7 @@ import br.ufscar.cinemiranha.ui.views.SessionsScreen
 import br.ufscar.cinemiranha.ui.views.SeatsScreen
 import br.ufscar.cinemiranha.ui.views.TicketsScreen
 import br.ufscar.cinemiranha.ui.views.SnacksScreen
-import br.ufscar.cinemiranha.ui.screens.OrderSummaryScreen
+import br.ufscar.cinemiranha.ui.views.OrderSummaryScreen
 import br.ufscar.cinemiranha.ui.views.SuccessScreen
 import br.ufscar.cinemiranha.viewmodel.SeatsViewModel
 import br.ufscar.cinemiranha.viewmodel.TicketsViewModel
@@ -24,9 +26,12 @@ import br.ufscar.cinemiranha.viewmodel.SnacksViewModel
 
 @Composable
 fun MainAppNavigation(navController: NavHostController) {
+    val context = LocalContext.current
     val seatsViewModel: SeatsViewModel = viewModel()
     val ticketsViewModel: TicketsViewModel = viewModel()
-    val snacksViewModel: SnacksViewModel = viewModel()
+    val snacksViewModel: SnacksViewModel = viewModel(
+        factory = SnacksViewModel.factory(SnackRepository(context.applicationContext))
+    )
 
     NavHost(navController = navController, startDestination = "home") {
         composable("home") {
@@ -92,12 +97,19 @@ fun MainAppNavigation(navController: NavHostController) {
         ) { backStackEntry ->
             val movieId   = backStackEntry.arguments?.getLong("movieId") ?: return@composable
             val sessionId = backStackEntry.arguments?.getLong("sessionId") ?: return@composable
+            val sessionsVm: SessionsViewModel = viewModel(factory = SessionsViewModel.factory(movieId))
+            val sessionsState = sessionsVm.uiState
+            val session = sessionsState.sessions.find { it.id == sessionId }
+
+            val seatsState = seatsViewModel.uiState
+
             SeatsScreen(
-                movieId        = movieId,
-                sessionId      = sessionId,
-                seatsViewModel = seatsViewModel,
-                onBack         = { navController.popBackStack() },
-                onNext         = { navController.navigate("tickets/$movieId/$sessionId") }
+                movie         = sessionsState.movie,
+                session       = session,
+                selectedSeats = seatsState.selectedSeats,
+                onSeatToggle  = { seat -> seatsViewModel.toggleSeat(seat) },
+                onBack        = { navController.popBackStack() },
+                onNext        = { navController.navigate("tickets/$movieId/$sessionId") }
             )
         }
 
@@ -110,15 +122,32 @@ fun MainAppNavigation(navController: NavHostController) {
         ) { backStackEntry ->
             val movieId   = backStackEntry.arguments?.getLong("movieId") ?: return@composable
             val sessionId = backStackEntry.arguments?.getLong("sessionId") ?: return@composable
+            val sessionsVm: SessionsViewModel = viewModel(factory = SessionsViewModel.factory(movieId))
+            val sessionsState = sessionsVm.uiState
+            val session = sessionsState.sessions.find { it.id == sessionId }
+
+            val seatsState = seatsViewModel.uiState
+            val ticketsState = ticketsViewModel.uiState
+            val fullPrice = (session?.priceInCents ?: 0) / 100f
+            val halfPrice = fullPrice / 2f
+
             TicketsScreen(
-                movieId          = movieId,
-                sessionId        = sessionId,
-                seatsViewModel   = seatsViewModel,
-                ticketsViewModel = ticketsViewModel,
-                onBack           = { navController.popBackStack() },
-                onNext           = { navController.navigate("snacks/$movieId/$sessionId") }
+                movie              = sessionsState.movie,
+                session            = session,
+                selectedSeatsCount = seatsState.selectedSeats.size,
+                selectedSeatsLabel = seatsState.selectedSeats.joinToString(", "),
+                fullPriceCount     = ticketsState.fullPriceCount,
+                halfPriceCount     = ticketsState.halfPriceCount,
+                fullPrice          = fullPrice,
+                halfPrice          = halfPrice,
+                onTicketCountsChanged = { full, half ->
+                    ticketsViewModel.setTicketCounts(full, half)
+                },
+                onBack             = { navController.popBackStack() },
+                onNext             = { navController.navigate("snacks/$movieId/$sessionId") }
             )
         }
+
         composable(
             route = "snacks/{movieId}/{sessionId}",
             arguments = listOf(
@@ -128,8 +157,17 @@ fun MainAppNavigation(navController: NavHostController) {
         ) { backStackEntry ->
             val movieId   = backStackEntry.arguments?.getLong("movieId") ?: return@composable
             val sessionId = backStackEntry.arguments?.getLong("sessionId") ?: return@composable
+            val snacksState = snacksViewModel.uiState
+
             SnacksScreen(
-                snacksViewModel = snacksViewModel,
+                isLoading       = snacksState.isLoading,
+                errorMessage    = snacksState.errorMessage,
+                availableSnacks = snacksState.availableSnacks,
+                selectedSnacks  = snacksState.selectedSnacks,
+                onUpdateSnackQuantity = { id, delta ->
+                    snacksViewModel.updateSnackQuantity(id, delta)
+                },
+                onRetry         = { snacksViewModel.loadSnacks() },
                 onBack          = { navController.popBackStack() },
                 onNext          = { navController.navigate("summary/$movieId/$sessionId") }
             )
@@ -144,20 +182,35 @@ fun MainAppNavigation(navController: NavHostController) {
         ) { backStackEntry ->
             val movieId   = backStackEntry.arguments?.getLong("movieId") ?: return@composable
             val sessionId = backStackEntry.arguments?.getLong("sessionId") ?: return@composable
+            val sessionsVm: SessionsViewModel = viewModel(factory = SessionsViewModel.factory(movieId))
+            val sessionsState = sessionsVm.uiState
+            val session = sessionsState.sessions.find { it.id == sessionId }
+
+            val seatsState = seatsViewModel.uiState
+            val ticketsState = ticketsViewModel.uiState
+            val snacksState = snacksViewModel.uiState
+            val fullPrice = (session?.priceInCents ?: 0) / 100f
+            val halfPrice = fullPrice / 2f
+
             OrderSummaryScreen(
-                movieId          = movieId,
-                sessionId        = sessionId,
-                seatsViewModel   = seatsViewModel,
-                ticketsViewModel = ticketsViewModel,
-                snacksViewModel  = snacksViewModel,
-                onBack           = { navController.popBackStack() },
-                onNext           = {
+                movie           = sessionsState.movie,
+                session         = session,
+                selectedSeats   = seatsState.selectedSeats,
+                fullPriceCount  = ticketsState.fullPriceCount,
+                halfPriceCount  = ticketsState.halfPriceCount,
+                ticketTotal     = ticketsViewModel.getTotalPrice(fullPrice, halfPrice),
+                snackTotal      = snacksViewModel.getTotalSnackPrice(),
+                selectedSnacks  = snacksState.selectedSnacks,
+                availableSnacks = snacksState.availableSnacks,
+                onBack          = { navController.popBackStack() },
+                onNext          = {
                     navController.navigate("success") {
                         popUpTo("home") { inclusive = false }
                     }
                 }
             )
         }
+
         composable("success") {
             SuccessScreen(
                 onBackToMenu = {

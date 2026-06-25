@@ -1,24 +1,29 @@
 package br.ufscar.cinemiranha.viewmodel
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 
 data class SeatsUiState(
     val selectedSeats: List<String> = emptyList()
 )
 
 class SeatsViewModel : ViewModel() {
-    private val _uiState = MutableStateFlow(SeatsUiState())
-    val uiState: StateFlow<SeatsUiState> = _uiState.asStateFlow()
+    var uiState by mutableStateOf(SeatsUiState())
+        private set
 
-    fun setSelectedSeats(seats: List<String>) {
-        _uiState.update { it.copy(selectedSeats = seats) }
+    fun toggleSeat(seat: String) {
+        val currentSeats = uiState.selectedSeats
+        val newSeats = if (currentSeats.contains(seat)) {
+            currentSeats - seat
+        } else {
+            currentSeats + seat
+        }
+        uiState = uiState.copy(selectedSeats = newSeats)
     }
 
     fun reset() {
-        _uiState.value = SeatsUiState()
+        uiState = SeatsUiState()
     }
 }

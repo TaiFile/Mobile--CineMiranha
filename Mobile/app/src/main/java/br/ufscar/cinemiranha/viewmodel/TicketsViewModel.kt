@@ -1,10 +1,9 @@
 package br.ufscar.cinemiranha.viewmodel
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 
 data class TicketsUiState(
     val fullPriceCount: Int = 0,
@@ -12,22 +11,22 @@ data class TicketsUiState(
 )
 
 class TicketsViewModel : ViewModel() {
-    private val _uiState = MutableStateFlow(TicketsUiState())
-    val uiState: StateFlow<TicketsUiState> = _uiState.asStateFlow()
+    var uiState by mutableStateOf(TicketsUiState())
+        private set
 
     fun setTicketCounts(full: Int, half: Int) {
-        _uiState.update { it.copy(fullPriceCount = full, halfPriceCount = half) }
-    }
-
-    fun getTotalPrice(): Float {
-        return (_uiState.value.fullPriceCount * 40f) + (_uiState.value.halfPriceCount * 20f)
+        uiState = uiState.copy(fullPriceCount = full, halfPriceCount = half)
     }
 
     fun getTotalCount(): Int {
-        return _uiState.value.fullPriceCount + _uiState.value.halfPriceCount
+        return uiState.fullPriceCount + uiState.halfPriceCount
+    }
+
+    fun getTotalPrice(fullPrice: Float, halfPrice: Float): Float {
+        return (uiState.fullPriceCount * fullPrice) + (uiState.halfPriceCount * halfPrice)
     }
 
     fun reset() {
-        _uiState.value = TicketsUiState()
+        uiState = TicketsUiState()
     }
 }

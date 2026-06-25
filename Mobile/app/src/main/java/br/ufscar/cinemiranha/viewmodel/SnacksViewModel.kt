@@ -1,51 +1,74 @@
 package br.ufscar.cinemiranha.viewmodel
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import br.ufscar.cinemiranha.R
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
 import br.ufscar.cinemiranha.model.Snack
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import br.ufscar.cinemiranha.repository.SnackRepository
+import kotlinx.coroutines.launch
 
 data class SnacksUiState(
-    val selectedSnacks: Map<Int, Int> = emptyMap() // snackId -> quantity
+    val availableSnacks: List<Snack> = emptyList(),
+    val selectedSnacks: Map<Int, Int> = emptyMap(), // snackId -> quantity
+    val isLoading: Boolean = true,
+    val errorMessage: String? = null
 )
 
-class SnacksViewModel : ViewModel() {
-    private val _uiState = MutableStateFlow(SnacksUiState())
-    val uiState: StateFlow<SnacksUiState> = _uiState.asStateFlow()
+class SnacksViewModel(private val snackRepository: SnackRepository) : ViewModel() {
+    var uiState by mutableStateOf(SnacksUiState())
+        private set
 
-    val availableSnacks = listOf(
-        Snack(1, "Pipoca Salgada P", "250g de pipoca salgada", 19.99f, R.drawable.logo),
-        Snack(2, "Pipoca Salgada M", "400g de pipoca salgada", 29.99f, R.drawable.logo),
-        Snack(3, "Balde de pipoca salgada", "500g de pipoca salgada", 59.99f, R.drawable.logo),
-        Snack(4, "Refrigerante 500ml", "Coca-cola, Fanta ou Sprite", 12.00f, R.drawable.logo),
-        Snack(5, "Água Mineral 500ml", "Com ou sem gás", 6.00f, R.drawable.logo)
-    )
+    init {
+        loadSnacks()
+    }
 
-    fun updateSnackQuantity(snackId: Int, delta: Int) {
-        _uiState.update { state ->
-            val currentQty = state.selectedSnacks.getOrDefault(snackId, 0)
-            val newQty = (currentQty + delta).coerceAtLeast(0)
-            val newSnacks = state.selectedSnacks.toMutableMap()
-            if (newQty > 0) {
-                newSnacks[snackId] = newQty
-            } else {
-                newSnacks.remove(snackId)
+    fun loadSnacks() {
+        uiState = SnacksUiState(isLoading = true)
+        viewModelScope.launch {
+            try {
+                val snacks = snackRepository.getSnacks()
+                uiState = SnacksUiState(availableSnacks = snacks, isLoading = false)
+            } catch (e: Exception) {
+                uiState = SnacksUiState(
+                    isLoading = false,
+                    errorMessage = "Não foi possível carregar os snacks.\n${e.message}"
+                )
             }
-            state.copy(selectedSnacks = newSnacks)
         }
     }
 
+    fun updateSnackQuantity(snackId: Int, delta: Int) {
+        val currentQty = uiState.selectedSnacks.getOrDefault(snackId, 0)
+        val newQty = (currentQty + delta).coerceAtLeast(0)
+        val newSnacks = uiState.selectedSnacks.toMutableMap()
+        if (newQty > 0) {
+            newSnacks[snackId] = newQty
+        } else {
+            newSnacks.remove(snackId)
+        }
+        uiState = uiState.copy(selectedSnacks = newSnacks)
+    }
+
     fun getTotalSnackPrice(): Float {
-        return _uiState.value.selectedSnacks.entries.sumOf { (id, qty) ->
-            val snack = availableSnacks.find { it.id == id }
+        return uiState.selectedSnacks.entries.sumOf { (id, qty) ->
+            val snack = uiState.availableSnacks.find { it.id == id }
             (snack?.price ?: 0f).toDouble() * qty
         }.toFloat()
     }
 
     fun reset() {
-        _uiState.value = SnacksUiState()
+        uiState = uiState.copy(selectedSnacks = emptyMap())
+    }
+
+    companion object {
+        fun factory(snackRepository: SnackRepository): ViewModelProvider.Factory =
+            object : ViewModelProvider.Factory {
+                @Suppress("UNCHECKED_CAST")
+                override fun <T : ViewModel> create(modelClass: Class<T>): T =
+                    SnacksViewModel(snackRepository) as T
+            }
     }
 }
