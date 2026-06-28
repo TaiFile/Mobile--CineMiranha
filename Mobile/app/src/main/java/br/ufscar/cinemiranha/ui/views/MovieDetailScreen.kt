@@ -17,10 +17,11 @@ fun MovieDetailScreen(
     errorMessage: String?,
     movie: MovieResponse?,
     onBuyTickets: () -> Unit,
+    onBack: () -> Unit,
     onRetry: () -> Unit
 ) {
     Scaffold(
-        topBar    = { TopBar() },
+        topBar    = { TopBar(onBack = onBack) },
         bottomBar = { BottomBar() },
         containerColor = MaterialTheme.colorScheme.background
     ) { padding ->

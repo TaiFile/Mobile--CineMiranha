@@ -68,6 +68,7 @@ fun MainAppNavigation(navController: NavHostController) {
                 errorMessage = vm.uiState.errorMessage,
                 movie        = vm.uiState.movie,
                 onBuyTickets = { navController.navigate("sessions/$movieId") },
+                onBack       = { navController.popBackStack() },
                 onRetry      = { vm.loadMovie() }
             )
         }
@@ -93,6 +94,7 @@ fun MainAppNavigation(navController: NavHostController) {
                 },
                 onDateSelected     = { vm.selectDate(it) },
                 onSubtitleSelected = { vm.selectSubtitle(it) },
+                onBack             = { navController.popBackStack() },
                 onRetry            = { vm.load() }
             )
         }
