@@ -35,7 +35,10 @@ import br.ufscar.cinemiranha.R
 import br.ufscar.cinemiranha.ui.theme.Dimens
 
 @Composable
-fun TopBar(onBack: (() -> Unit)? = null) {
+fun TopBar(
+    onBack: (() -> Unit)? = null,
+    trailingContent: (@Composable () -> Unit)? = null
+) {
     val currentLocales = AppCompatDelegate.getApplicationLocales()
     val isPtBr = !currentLocales.isEmpty && currentLocales[0]?.language == "pt"
 
@@ -55,13 +58,17 @@ fun TopBar(onBack: (() -> Unit)? = null) {
                     tint = MaterialTheme.colorScheme.onBackground
                 )
             }
+        } else if (trailingContent != null) {
+            Spacer(modifier = Modifier.size(Dimens.ButtonHeight))
         }
 
         Spacer(modifier = Modifier.weight(1f))
         AppLogo(modifier = Modifier.height(40.dp))
         Spacer(modifier = Modifier.weight(1f))
 
-        if (onBack != null) {
+        if (trailingContent != null) {
+            trailingContent()
+        } else if (onBack != null) {
             Spacer(modifier = Modifier.size(Dimens.ButtonHeight))
         }
     }

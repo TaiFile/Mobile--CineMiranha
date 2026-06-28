@@ -52,6 +52,7 @@ fun MainAppNavigation(navController: NavHostController) {
                 onMovieClick = { movieId ->
                     navController.navigate("movie_detail/$movieId")
                 },
+                onViewHistory = { navController.navigate("history") },
                 onRetry = { homeViewModel.loadMovies() }
             )
         }
