@@ -3,17 +3,12 @@ package br.ufscar.cinemiranha.ui.views
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.History
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import br.ufscar.cinemiranha.R
 import br.ufscar.cinemiranha.model.dto.MovieResponse
+import br.ufscar.cinemiranha.ui.composable.Home.HistoryButton
 import br.ufscar.cinemiranha.ui.composable.Home.MovieContent
 import br.ufscar.cinemiranha.ui.composable._shared.BottomBar
 import br.ufscar.cinemiranha.ui.composable._shared.ErrorState
@@ -32,17 +27,7 @@ fun HomeScreen(
 ) {
     Scaffold(
         topBar = {
-            TopBar(
-                trailingContent = {
-                    IconButton(onClick = onViewHistory) {
-                        Icon(
-                            imageVector = Icons.Default.History,
-                            contentDescription = stringResource(R.string.purchase_history_title),
-                            tint = MaterialTheme.colorScheme.onBackground
-                        )
-                    }
-                }
-            )
+            TopBar(trailingContent = { HistoryButton(onClick = onViewHistory) })
         },
         bottomBar      = { BottomBar() },
         containerColor = MaterialTheme.colorScheme.background
