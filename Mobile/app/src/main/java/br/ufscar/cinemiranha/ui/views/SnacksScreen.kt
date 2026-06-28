@@ -16,10 +16,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -27,7 +23,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import br.ufscar.cinemiranha.R
 import br.ufscar.cinemiranha.model.Snack
-import br.ufscar.cinemiranha.ui.composable.Snacks.SnackCategoryFilterRow
 import br.ufscar.cinemiranha.ui.composable.Snacks.SnackItem
 import br.ufscar.cinemiranha.ui.composable._shared.BottomBar
 import br.ufscar.cinemiranha.ui.composable._shared.ErrorState
@@ -47,16 +42,6 @@ fun SnacksScreen(
     onBack: () -> Unit,
     onNext: () -> Unit
 ) {
-    val categories = listOf(
-        stringResource(R.string.cat_popcorn),
-        stringResource(R.string.cat_sweets),
-        stringResource(R.string.cat_drinks),
-        stringResource(R.string.cat_combos),
-        stringResource(R.string.cat_movie_combos),
-        stringResource(R.string.cat_promotions)
-    )
-    var selectedCategory by remember { mutableStateOf(categories.first()) }
-
     Scaffold(
         topBar = { TopBar(onBack = onBack) },
         bottomBar = { BottomBar() },
@@ -76,12 +61,6 @@ fun SnacksScreen(
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(Dimens.SpaceL).fillMaxWidth(),
                 textAlign = TextAlign.Center
-            )
-
-            SnackCategoryFilterRow(
-                categories = categories,
-                selectedCategory = selectedCategory,
-                onCategorySelected = { selectedCategory = it }
             )
 
             Box(modifier = Modifier.weight(1f)) {
