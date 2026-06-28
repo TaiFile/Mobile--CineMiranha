@@ -58,7 +58,7 @@ fun SnacksScreen(
     var selectedCategory by remember { mutableStateOf(categories.first()) }
 
     Scaffold(
-        topBar = { TopBar() },
+        topBar = { TopBar(onBack = onBack) },
         bottomBar = { BottomBar() },
         containerColor = MaterialTheme.colorScheme.background
     ) { padding ->

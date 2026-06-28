@@ -1,7 +1,6 @@
 package br.ufscar.cinemiranha
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -26,11 +25,10 @@ import br.ufscar.cinemiranha.viewmodel.SnacksViewModel
 
 @Composable
 fun MainAppNavigation(navController: NavHostController) {
-    val context = LocalContext.current
     val seatsViewModel: SeatsViewModel = viewModel()
     val ticketsViewModel: TicketsViewModel = viewModel()
     val snacksViewModel: SnacksViewModel = viewModel(
-        factory = SnacksViewModel.factory(SnackRepository(context.applicationContext))
+        factory = SnacksViewModel.factory(SnackRepository())
     )
 
     NavHost(navController = navController, startDestination = "home") {
