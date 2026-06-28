@@ -114,10 +114,12 @@ private fun PurchaseHistoryItem(purchase: PurchaseEntity) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
+                val labelFull = stringResource(R.string.ticket_full)
+                val labelHalf = stringResource(R.string.ticket_half)
                 val ticketDesc = buildString {
-                    if (purchase.fullTickets > 0) append("${purchase.fullTickets}x inteira")
+                    if (purchase.fullTickets > 0) append("${purchase.fullTickets}x $labelFull")
                     if (purchase.fullTickets > 0 && purchase.halfTickets > 0) append(", ")
-                    if (purchase.halfTickets > 0) append("${purchase.halfTickets}x meia")
+                    if (purchase.halfTickets > 0) append("${purchase.halfTickets}x $labelHalf")
                 }
                 Text(text = ticketDesc, color = MaterialTheme.colorScheme.onBackground, style = MaterialTheme.typography.bodySmall)
                 Text(
