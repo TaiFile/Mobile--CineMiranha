@@ -13,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -49,6 +50,8 @@ fun OrderSummaryScreen(
     snackTotal: Float,
     selectedSnacks: Map<Int, Int>,
     availableSnacks: List<Snack>,
+    isConfirming: Boolean,
+    confirmError: String?,
     onBack: () -> Unit,
     onNext: () -> Unit
 ) {
@@ -142,16 +145,36 @@ fun OrderSummaryScreen(
                     )
                 }
 
+                if (confirmError != null) {
+                    item {
+                        Text(
+                            text = confirmError,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }
+
                 item {
                     Button(
                         onClick = onNext,
+                        enabled = !isConfirming,
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(Dimens.ButtonHeight),
                         colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary),
                         shape = MaterialTheme.shapes.medium
                     ) {
-                        Text(stringResource(R.string.btn_confirm_purchase), color = MaterialTheme.colorScheme.background, fontWeight = FontWeight.Bold)
+                        if (isConfirming) {
+                            CircularProgressIndicator(
+                                color = MaterialTheme.colorScheme.background,
+                                strokeWidth = androidx.compose.ui.unit.Dp(2f),
+                                modifier = Modifier.height(Dimens.SpaceL)
+                            )
+                        } else {
+                            Text(stringResource(R.string.btn_confirm_purchase), color = MaterialTheme.colorScheme.background, fontWeight = FontWeight.Bold)
+                        }
                     }
                 }
             }

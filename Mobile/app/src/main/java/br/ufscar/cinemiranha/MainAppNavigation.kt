@@ -7,9 +7,11 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import br.ufscar.cinemiranha.model.dto.CheckoutRequest
 import br.ufscar.cinemiranha.repository.SnackRepository
 import br.ufscar.cinemiranha.viewmodel.HomeViewModel
 import br.ufscar.cinemiranha.viewmodel.MovieDetailViewModel
+import br.ufscar.cinemiranha.viewmodel.OrderSummaryViewModel
 import br.ufscar.cinemiranha.viewmodel.SessionsViewModel
 import br.ufscar.cinemiranha.ui.views.HomeScreen
 import br.ufscar.cinemiranha.ui.views.MovieDetailScreen
@@ -30,6 +32,7 @@ fun MainAppNavigation(navController: NavHostController) {
     val snacksViewModel: SnacksViewModel = viewModel(
         factory = SnacksViewModel.factory(SnackRepository())
     )
+    val orderSummaryViewModel: OrderSummaryViewModel = viewModel()
 
     NavHost(navController = navController, startDestination = "home") {
         composable("home") {
@@ -190,6 +193,8 @@ fun MainAppNavigation(navController: NavHostController) {
             val fullPrice = (session?.priceInCents ?: 0) / 100f
             val halfPrice = fullPrice / 2f
 
+            val orderState = orderSummaryViewModel.uiState
+
             OrderSummaryScreen(
                 movie           = sessionsState.movie,
                 session         = session,
@@ -200,10 +205,21 @@ fun MainAppNavigation(navController: NavHostController) {
                 snackTotal      = snacksViewModel.getTotalSnackPrice(),
                 selectedSnacks  = snacksState.selectedSnacks,
                 availableSnacks = snacksState.availableSnacks,
+                isConfirming    = orderState.isConfirming,
+                confirmError    = orderState.confirmError,
                 onBack          = { navController.popBackStack() },
                 onNext          = {
-                    navController.navigate("success") {
-                        popUpTo("home") { inclusive = false }
+                    val request = CheckoutRequest(
+                        sessionId    = sessionId,
+                        seats        = seatsState.selectedSeats,
+                        fullTickets  = ticketsState.fullPriceCount,
+                        halfTickets  = ticketsState.halfPriceCount,
+                        totalPrice   = ticketsViewModel.getTotalPrice(fullPrice, halfPrice) + snacksViewModel.getTotalSnackPrice()
+                    )
+                    orderSummaryViewModel.confirmPurchase(request) {
+                        navController.navigate("success") {
+                            popUpTo("home") { inclusive = false }
+                        }
                     }
                 }
             )

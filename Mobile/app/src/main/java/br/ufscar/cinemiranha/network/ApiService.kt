@@ -2,8 +2,12 @@ package br.ufscar.cinemiranha.network
 
 import br.ufscar.cinemiranha.model.dto.MovieResponse
 import br.ufscar.cinemiranha.model.dto.SessionResponse
+import br.ufscar.cinemiranha.model.dto.CheckoutRequest
+import br.ufscar.cinemiranha.model.dto.CheckoutResponse
 import br.ufscar.cinemiranha.model.dto.SnackResponse
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface ApiService {
@@ -19,4 +23,7 @@ interface ApiService {
 
     @GET("snacks")
     suspend fun getSnacks(): List<SnackResponse>
+
+    @POST("checkout")
+    suspend fun postCheckout(@Body request: CheckoutRequest): CheckoutResponse
 }
