@@ -1,6 +1,7 @@
 package br.ufscar.cinemiranha
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -12,27 +13,33 @@ import br.ufscar.cinemiranha.repository.SnackRepository
 import br.ufscar.cinemiranha.viewmodel.HomeViewModel
 import br.ufscar.cinemiranha.viewmodel.MovieDetailViewModel
 import br.ufscar.cinemiranha.viewmodel.OrderSummaryViewModel
+import br.ufscar.cinemiranha.viewmodel.PurchaseHistoryViewModel
 import br.ufscar.cinemiranha.viewmodel.SessionsViewModel
 import br.ufscar.cinemiranha.ui.views.HomeScreen
 import br.ufscar.cinemiranha.ui.views.MovieDetailScreen
-import br.ufscar.cinemiranha.ui.views.SessionsScreen
-import br.ufscar.cinemiranha.ui.views.SeatsScreen
-import br.ufscar.cinemiranha.ui.views.TicketsScreen
-import br.ufscar.cinemiranha.ui.views.SnacksScreen
 import br.ufscar.cinemiranha.ui.views.OrderSummaryScreen
+import br.ufscar.cinemiranha.ui.views.PurchaseHistoryScreen
+import br.ufscar.cinemiranha.ui.views.SeatsScreen
+import br.ufscar.cinemiranha.ui.views.SessionsScreen
+import br.ufscar.cinemiranha.ui.views.SnacksScreen
 import br.ufscar.cinemiranha.ui.views.SuccessScreen
+import br.ufscar.cinemiranha.ui.views.TicketsScreen
 import br.ufscar.cinemiranha.viewmodel.SeatsViewModel
-import br.ufscar.cinemiranha.viewmodel.TicketsViewModel
 import br.ufscar.cinemiranha.viewmodel.SnacksViewModel
+import br.ufscar.cinemiranha.viewmodel.TicketsViewModel
 
 @Composable
 fun MainAppNavigation(navController: NavHostController) {
+    val context = LocalContext.current.applicationContext
+
     val seatsViewModel: SeatsViewModel = viewModel()
     val ticketsViewModel: TicketsViewModel = viewModel()
     val snacksViewModel: SnacksViewModel = viewModel(
         factory = SnacksViewModel.factory(SnackRepository())
     )
-    val orderSummaryViewModel: OrderSummaryViewModel = viewModel()
+    val orderSummaryViewModel: OrderSummaryViewModel = viewModel(
+        factory = OrderSummaryViewModel.factory(context)
+    )
 
     NavHost(navController = navController, startDestination = "home") {
         composable("home") {
@@ -101,7 +108,6 @@ fun MainAppNavigation(navController: NavHostController) {
             val sessionsVm: SessionsViewModel = viewModel(factory = SessionsViewModel.factory(movieId))
             val sessionsState = sessionsVm.uiState
             val session = sessionsState.sessions.find { it.id == sessionId }
-
             val seatsState = seatsViewModel.uiState
 
             SeatsScreen(
@@ -126,7 +132,6 @@ fun MainAppNavigation(navController: NavHostController) {
             val sessionsVm: SessionsViewModel = viewModel(factory = SessionsViewModel.factory(movieId))
             val sessionsState = sessionsVm.uiState
             val session = sessionsState.sessions.find { it.id == sessionId }
-
             val seatsState = seatsViewModel.uiState
             val ticketsState = ticketsViewModel.uiState
             val fullPrice = (session?.priceInCents ?: 0) / 100f
@@ -186,13 +191,11 @@ fun MainAppNavigation(navController: NavHostController) {
             val sessionsVm: SessionsViewModel = viewModel(factory = SessionsViewModel.factory(movieId))
             val sessionsState = sessionsVm.uiState
             val session = sessionsState.sessions.find { it.id == sessionId }
-
             val seatsState = seatsViewModel.uiState
             val ticketsState = ticketsViewModel.uiState
             val snacksState = snacksViewModel.uiState
             val fullPrice = (session?.priceInCents ?: 0) / 100f
             val halfPrice = fullPrice / 2f
-
             val orderState = orderSummaryViewModel.uiState
 
             OrderSummaryScreen(
@@ -210,13 +213,18 @@ fun MainAppNavigation(navController: NavHostController) {
                 onBack          = { navController.popBackStack() },
                 onNext          = {
                     val request = CheckoutRequest(
-                        sessionId    = sessionId,
-                        seats        = seatsState.selectedSeats,
-                        fullTickets  = ticketsState.fullPriceCount,
-                        halfTickets  = ticketsState.halfPriceCount,
-                        totalPrice   = ticketsViewModel.getTotalPrice(fullPrice, halfPrice) + snacksViewModel.getTotalSnackPrice()
+                        sessionId   = sessionId,
+                        seats       = seatsState.selectedSeats,
+                        fullTickets = ticketsState.fullPriceCount,
+                        halfTickets = ticketsState.halfPriceCount,
+                        totalPrice  = ticketsViewModel.getTotalPrice(fullPrice, halfPrice) + snacksViewModel.getTotalSnackPrice()
                     )
-                    orderSummaryViewModel.confirmPurchase(request) {
+                    orderSummaryViewModel.confirmPurchase(
+                        request      = request,
+                        movieTitle   = sessionsState.movie?.title ?: "",
+                        sessionDate  = session?.dateDayLabel() ?: "",
+                        sessionTime  = session?.timeLabel() ?: ""
+                    ) {
                         navController.navigate("success") {
                             popUpTo("home") { inclusive = false }
                         }
@@ -231,7 +239,21 @@ fun MainAppNavigation(navController: NavHostController) {
                     navController.navigate("home") {
                         popUpTo("home") { inclusive = true }
                     }
+                },
+                onViewHistory = {
+                    navController.navigate("history")
                 }
+            )
+        }
+
+        composable("history") {
+            val vm: PurchaseHistoryViewModel = viewModel(
+                factory = PurchaseHistoryViewModel.factory(context)
+            )
+            PurchaseHistoryScreen(
+                purchases = vm.uiState.purchases,
+                isLoading = vm.uiState.isLoading,
+                onBack    = { navController.popBackStack() }
             )
         }
     }

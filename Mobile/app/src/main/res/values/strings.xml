@@ -88,4 +88,10 @@
     <string name="success_email_info">We sent the ticket to your email</string>
     <string name="success_profile_info">Or see it in the \"my tickets\" tab in the profile icon</string>
     <string name="btn_back_to_menu">BACK TO MENU</string>
+    <string name="btn_view_history">VIEW PURCHASE HISTORY</string>
+
+    <!-- Purchase History -->
+    <string name="purchase_history_title">Purchase History</string>
+    <string name="purchase_history_empty">No purchases yet</string>
+    <string name="purchase_history_seats">Seats: %1$s</string>
 </resources>

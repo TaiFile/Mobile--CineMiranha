@@ -19,7 +19,7 @@ import br.ufscar.cinemiranha.R
 import br.ufscar.cinemiranha.ui.theme.Dimens
 
 @Composable
-fun SuccessScreen(onBackToMenu: () -> Unit) {
+fun SuccessScreen(onBackToMenu: () -> Unit, onViewHistory: () -> Unit) {
     Scaffold(
         bottomBar = { SuccessBottomBar() },
         containerColor = MaterialTheme.colorScheme.background
@@ -61,10 +61,21 @@ fun SuccessScreen(onBackToMenu: () -> Unit) {
             Spacer(modifier = Modifier.height(Dimens.ButtonHeight))
 
             Button(
+                onClick = onViewHistory,
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary),
+                shape = MaterialTheme.shapes.medium,
+                modifier = Modifier.fillMaxWidth().height(Dimens.ButtonHeight)
+            ) {
+                Text(stringResource(R.string.btn_view_history), color = MaterialTheme.colorScheme.background, fontWeight = FontWeight.Bold)
+            }
+
+            Spacer(modifier = Modifier.height(Dimens.SpaceM))
+
+            Button(
                 onClick = onBackToMenu,
                 colors = ButtonDefaults.buttonColors(containerColor = Color.White),
                 shape = MaterialTheme.shapes.medium,
-                modifier = Modifier.height(Dimens.ButtonHeight)
+                modifier = Modifier.fillMaxWidth().height(Dimens.ButtonHeight)
             ) {
                 Text(stringResource(R.string.btn_back_to_menu), color = MaterialTheme.colorScheme.background, fontWeight = FontWeight.Bold)
             }

@@ -88,4 +88,10 @@
     <string name="success_email_info">Enviamos o ingresso para o seu email</string>
     <string name="success_profile_info">Ou veja ele na aba \"meus ingressos\" no ícone de perfil</string>
     <string name="btn_back_to_menu">VOLTAR PARA O MENU</string>
+    <string name="btn_view_history">VER HISTÓRICO DE COMPRAS</string>
+
+    <!-- Purchase History -->
+    <string name="purchase_history_title">Histórico de Compras</string>
+    <string name="purchase_history_empty">Nenhuma compra realizada</string>
+    <string name="purchase_history_seats">Assentos: %1$s</string>
 </resources>
